@@ -49,8 +49,8 @@ userSchema.statics.login = async function(userName, password) {
     if(!userName || !password){
         throw Error("Username and password must be provided");
     }
-    
-    const user = await User.findOne({userName});
+
+    const user = await this.findOne({userName});
 
     if(!user){
         throw Error("Incorrect username");
