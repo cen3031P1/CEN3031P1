@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
 //maybe also include bio?
@@ -41,6 +42,16 @@ const userSchema = new mongoose.Schema({
 }, {collection: "users"})
 
 userSchema.index({userName: 1}, {unique: true})
+
+userSchema.statics.signup = async function(userName, password) {
+    const salt = await bcrypt.genSalt(10);
+
+    const hash = await bcrypt.hash(password, salt);
+
+    const user = await this.create({userName, password: hash, points: 0, gymLat: 0, gymLon: 0, streak: 0, bestStreak: 0, friends: []});
+
+    return user;
+}
 
 const User = mongoose.model('User', userSchema);
 
