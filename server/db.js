@@ -1,3 +1,13 @@
+/*
+    This function connects the database using the MONGO_URI
+
+    Exports:
+    ConnectDB - does the connection
+
+    Imports:
+    Mongoose - this is the library used to interact with the MongoDB database.
+*/
+
 import mongoose from 'mongoose';
 
 export const connectDB = async () => {

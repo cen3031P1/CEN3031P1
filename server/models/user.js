@@ -1,7 +1,32 @@
+/*
+    This file will create the schema for the database and include static functions for auth
+    
+    Exported Functions:
+    login - this function will be called in the controller when a user tries to log in.
+        It will check if the username exists and if the password is correct. If both are true, it will return the user.
+        Using bcrypt to compare the password with the hashed password in the database.
+
+    signup - this function will be called in the controller when a user tries to sign up.
+        It will check if the username already exists, if the username and password are provided, if the username is alphanumeric, and if the password is strong enough. 
+        If all checks pass, it will create a new user with the hashed password using bcrypt and return the user.
+
+    User - this is the model
+
+    Imports:
+    mongoose - this is the library used to interact with the MongoDB database.
+    bcrypt - this is the library used to hash passwords and compare them for authentication.
+    validator - this is the library used to validate the username and password for sign up. (just does quick checks, I could make these functions myself but no need)
+*/
+
+
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import validator from 'validator';
 
+
+//user schema... self explanatory. to be accepted into database the user must have
+//username, password, points, gym location, streak, best streak, and friends list.
+//when the user signs up they will be given 0 points, gym location of (0, 0), streak of 0, best streak of 0, and an empty friends list.
 const userSchema = new mongoose.Schema({
 //maybe also include bio?
     userName: {
@@ -42,8 +67,11 @@ const userSchema = new mongoose.Schema({
     }
 }, {collection: "users"})
 
+//keep all usernames unique and indexed for searching
 userSchema.index({userName: 1}, {unique: true})
 
+//static function for loggin in a user. does simple checks
+//finds if user is in database using username, then compares password with bcrypt to ensure its the right user
 userSchema.statics.login = async function(userName, password) {
 
     if(!userName || !password){
@@ -64,6 +92,9 @@ userSchema.statics.login = async function(userName, password) {
     return user;
 }
 
+
+//static function for signing up a user. does checks to ensure username is unique, username and password are provided, username is alphanumeric, and password is strong enough.
+//if all checks pass, it creates a new user with the hashed password using bcrypt and returns the user.
 userSchema.statics.signup = async function(userName, password) {
     
     const find = await this.findOne({userName});
@@ -83,11 +114,15 @@ userSchema.statics.signup = async function(userName, password) {
     if(!validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })){
         throw Error("Password not strong enough");
     }
-
+  
+    //salt is provided by bcrypt. It happens before hashing and adds random string of text to password.
+    //higher salt == more characters
     const salt = await bcrypt.genSalt(10);
 
+    //hash the passwords using the salt
     const hash = await bcrypt.hash(password, salt);
 
+    //adds user to db
     const user = await this.create({userName, password: hash, points: 0, gymLat: 0, gymLon: 0, streak: 0, bestStreak: 0, friends: []});
 
     return user;
