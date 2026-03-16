@@ -1,54 +1,37 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, Button, TextInput, StyleSheet, Pressable, Image} from 'react-native';
+import {useLogin} from './hook/useLogin.jsx'
 
 export default function LoginScreen() {
-
-    //server request
-    async function loginVerification(username, password){
-        try {
-            const response = await fetch('ip+port/login',{
-                method: 'POST',
-                headers: {
-                    'info-type' :'loginInfo'
-                },
-                body: JSON. stringify({username,password}),
-            }
-            );
-            const data = await response.json();
-            return data.result;
-        }
-        catch (error){
-            console.log(error);
-            return false;
-        }
-    }
+    const {doLogin, totalFailure, loginFail, loginPass} = useLogin()
 
     async function handleLogin(username, password){
-        setInvalid_Cred('');
-        if (username == '' || password == ''|| !basicVerify(password)|| !basicVerify(username)){
-            setInvalid_Cred('Invalid Username or Password');
-            return;
-        }
-        const result = await loginVerification(username,password);
 
-        if(result){
-            router.replace('/(tabs)');
-        }
-        else{
-            setInvalid_Cred('Username or Password does not exist');
-            return;
-        }
+        await doLogin(username, password)
     }
 
-    // idk what we are requiring
-    // i assume no spaces and maybe a min/max char len
-    function basicVerify(text){
-        if( text == null|| text.includes(' ') || text.length > 15 || text.length <5){
-            return false;
+    useEffect(() => {
+        console.log('something broke bad')
+    }, [totalFailure])
+
+    useEffect(() => {
+        console.log("login success")
+    }, [loginPass])
+    
+    useEffect(() => {
+        if(loginFail == 1){
+            setInvalid_Cred("Missing username or password")
+        } else if(loginFail == 2){
+            setInvalid_Cred("Incorrect username or password")
+        } else if(loginFail == 3){
+            setInvalid_Cred("Incorrect username or password")
+        } else if(loginFail == 0){
+            setInvalid_Cred("Sorry something unexpected occurred. Please try again")
+        } else if(loginFail == -1){
+            setInvalid_Cred("")
         }
-        return true; 
-    }
+    }, [loginFail])
 
     function handleSignin(){
         router.replace('/signin_screen');
@@ -86,6 +69,7 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             value = {password}
             placeholder='Password'
+            secureTextEntry= {true}
             style = {styles.inputbox}
             />
 

@@ -63,6 +63,8 @@ export default function SigninScreen() {
             setInvalid_Cred("Bad Username. Usernames cannot have any special characters or spaces.")
         } else if(signUpFail == 4){
             setInvalid_Cred("Bad Password. Passwords must be at least 8 characters long and include at least one uppercase, number and symbol")
+        }else if(signUpFail == 0){
+            setInvalid_Cred("Sorry something unexpected occurred. Please try again")
         }else if (signUpFail == -1){
             setInvalid_Cred("")
         }

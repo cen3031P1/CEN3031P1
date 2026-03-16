@@ -43,7 +43,7 @@ export async function login(req, res) {
 
         res.status(200).json({username: userName, token});
     } catch (error){
-        res.status(400).json({msg: "Couldn't log in user", error: error.message});
+        res.status(400).json({msg: "Couldn't log in user", code: error.code});
     }
 }
 

@@ -75,18 +75,24 @@ userSchema.index({userName: 1}, {unique: true})
 userSchema.statics.login = async function(userName, password) {
 
     if(!userName || !password){
-        throw Error("Username and password must be provided");
+        const err = new Error("Username and password must be provided")
+        err.code = "MISSING_FIELDS"
+        throw err
     }
 
     const user = await this.findOne({userName});
 
     if(!user){
-        throw Error("Incorrect username");
+        const err = new Error("Incorrect username")
+        err.code = "WRONG_USERNAME"
+        throw err;
     }
 
     const check = await bcrypt.compare(password, user.password);
     if(!check){
-        throw Error("Incorrect password");
+        const err = new Error("Incorrect password")
+        err.code = "WRONG_PASSWORD"
+        throw err;
     }
 
     return user;
