@@ -99,20 +99,28 @@ userSchema.statics.signup = async function(userName, password) {
     
     const find = await this.findOne({userName});
     if(find){
-        throw Error("Username already exists");
+        const err = new Error("Username already exists");
+        err.code = "USER_EXISTS"
+        throw err
     }
 
     if(!userName || !password){
-        throw Error("Username and password must be provided");
+        const err = new Error("Username and password must be provided");
+        err.code = "MISSING_FIELDS"
+        throw err
     }
 
     if(!validator.isAlphanumeric(userName)){
-        throw Error("Username must be alphanumeric");
+        const err = new Error("Username must be alphanumeric");
+        err.code = "BAD_USERNAME"
+        throw err
     }
 
     //username needs uppercase, lowercase, number, and symbol, and be at least 8 characters long
     if(!validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })){
-        throw Error("Password not strong enough");
+        const err = new Error("Password not strong enough");;
+        err.code = "BAD_PASSWORD"
+        throw err
     }
   
     //salt is provided by bcrypt. It happens before hashing and adds random string of text to password.

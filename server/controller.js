@@ -41,7 +41,7 @@ export async function login(req, res) {
 
         const token = createToken(user._id);
 
-        res.status(201).json({username: userName, token});
+        res.status(200).json({username: userName, token});
     } catch (error){
         res.status(400).json({msg: "Couldn't log in user", error: error.message});
     }
@@ -52,17 +52,18 @@ export async function login(req, res) {
 //Creates a JWT token so user stays logged in.
 //Calls static signup function in ./models/user.js.
 export async function signUp(req, res) {
+    console.log("Attempting sign up")
     try{
         const {userName, password} = req.body;
 
         const user = await User.signup(userName, password);
-
+        console.log("Shoudl be added to db?")
         const token = createToken(user._id);
 
         res.status(201).json({username: userName,  token});
 
     } catch (error){
         console.error("Error signing up user...", error);
-        res.status(400).json({msg: "Couldn't sign up user", error: error.message});
+        res.status(400).json({msg: "Couldn't sign up user", code: error.code});
     }
 }
