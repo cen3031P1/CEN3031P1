@@ -1,5 +1,5 @@
-import { View, Text, TextInput, Button} from 'react-native';
-import { useState } from 'react';
+import { View, Text, TextInput, Button, FlatList } from 'react-native';
+import { useEffect, useState } from 'react';
 import api from '../../api.js';
 import { useAuthContext } from '../hook/useAuthContext.jsx';
 
@@ -8,6 +8,26 @@ export default function FriendsScreen() {
   const {user} = useAuthContext()
   const [friendUsername, setFriendUsername] = useState('')
   const [message, setMessage] = useState('')
+  const [friends, setFriends] = useState([])
+
+  // Load friends when the page is loaded
+  useEffect(() => { 
+    if (user) {
+      loadFriends()
+    }
+  }, [user])
+
+
+  async function loadFriends() {
+    console.log("loading friends for:", user.username)
+    try {
+      const response = await api.get(`/api/friends/${user.username}`) // GET request to fetch friends!!
+      console.log("friends response:", response.data)
+      setFriends(response.data.friends)
+    } catch (error) {
+      console.error("Error loading friends:", error)
+    }
+  }
 
   async function handleAddFriend() {
     if (!user) {
@@ -57,6 +77,16 @@ export default function FriendsScreen() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>friends list</Text>
+
+      <FlatList
+        data={friends}
+        keyExtractor={(item) => item} // Assuming friends is an array of usernames (strings).
+                                      // Maybe change this to item._id if we decide to switch to storing friend IDs instead of usernames.
+        renderItem={({ item }) => <Text>{item}</Text>}
+        ListEmptyComponent={() => <Text>No friends found. Add some friends to see them here!</Text>}
+      />
+
+
       <TextInput
         placeholder="Enter friend's username"
         value={friendUsername}

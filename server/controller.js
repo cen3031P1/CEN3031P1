@@ -68,6 +68,23 @@ export async function signUp(req, res) {
     }
 }
 
+// Handle getting friends. Takes in username and returns list of friends.
+export async function getFriends(req, res) {
+    try {
+        const {userName} = req.params;
+        const user = await User.findOne({userName});
+        console.log("Friends: ", user?.friends);
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+        res.status(200).json({friends: user.friends});
+    } catch (error) {
+        console.error("Error getting friends...", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+
 // Handle adding friends. Takes in username and friend name.
 // Checks if both users exist, checks if they are already friends, and then adds friend to user's friend list.
 export async function addFriend(req, res) {
@@ -92,11 +109,11 @@ export async function addFriend(req, res) {
             return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
         }
 
-        if (user.friends.includes(friend._id)) {
+        if (user.friends.includes(friendUsername)) {
             return res.status(400).json({msg: "You are already friends with this user", code: "FRIEND_ALREADY_ADDED"});
         }
 
-        user.friends.push(friend._id);
+        user.friends.push(friendUsername);
         await user.save();
 
         res.status(200).json({msg: "Friend added successfully", code: "FRIEND_ADDED"});
