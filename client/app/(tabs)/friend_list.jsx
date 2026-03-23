@@ -29,7 +29,7 @@ export default function FriendsScreen() {
     }
   }
 
-  async function handleAddFriend() {
+  async function addFriend() {
     if (!user) {
       setMessage('User not authenticated')
       return
@@ -74,6 +74,28 @@ export default function FriendsScreen() {
     }
   }
 
+  async function removeFriend(friendUsername) {
+    try {
+      const response = await api.delete('/api/removefriend', {
+        params: {
+          userName: user.username,
+          friendUsername
+        }
+      })
+
+      setMessage('Friend removed successfully!')
+      loadFriends() // Refresh the friends list after removing a friend
+
+    } catch (error) {
+      if (!error.response) {
+        setMessage('Network error: ' + error.message)
+        return
+      }
+      setMessage('Failed to remove friend: ' + error.response.data.message)
+    }
+  }
+      
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>friends list</Text>
@@ -82,7 +104,12 @@ export default function FriendsScreen() {
         data={friends}
         keyExtractor={(item) => item} // Assuming friends is an array of usernames (strings).
                                       // Maybe change this to item._id if we decide to switch to storing friend IDs instead of usernames.
-        renderItem={({ item }) => <Text>{item}</Text>}
+        renderItem={({ item }) => (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Text>{item}</Text>
+            <Button title="Remove" onPress={() => removeFriend(item)} />
+          </View>
+        )}
         ListEmptyComponent={() => <Text>No friends found. Add some friends to see them here!</Text>}
       />
 
@@ -93,7 +120,7 @@ export default function FriendsScreen() {
         onChangeText={setFriendUsername}
         style={{ height: 40, borderColor: 'gray', padding: 8, width: '80%', marginBottom: 10 }}
       />
-      <Button title="Add Friend" onPress={handleAddFriend} />
+      <Button title="Add Friend" onPress={addFriend} />
       {message !== '' && <Text>{message}</Text>}
     </View>
   );

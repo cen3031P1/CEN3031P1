@@ -16,7 +16,7 @@
 */
 
 import express from 'express';
-import { signUp, login, addFriend, getFriends} from './controller.js';
+import { signUp, login, addFriend, getFriends, removeFriend} from './controller.js';
 import { get } from 'mongoose';
 
 const router = express.Router();
@@ -35,5 +35,8 @@ router.post('/addfriend', addFriend);
 
 // Get friends list
 router.get('/friends/:userName', getFriends);
+
+// Remove friends
+router.delete('/removefriend', removeFriend);
 
 export default router;

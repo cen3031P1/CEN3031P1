@@ -123,3 +123,31 @@ export async function addFriend(req, res) {
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }
+
+export async function removeFriend(req, res) {
+    try {
+        const {userName, friendUsername} = req.query;
+
+        if (!userName || !friendUsername) {
+            return res.status(400).json({msg: "Username and friend username must be provided", code: "MISSING_FIELDS"});
+        }
+
+        const user = await User.findOne({userName});
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        if (!user.friends.includes(friendUsername)) {
+            return res.status(400).json({msg: "You are not friends with this user", code: "NOT_FRIENDS"});
+        }
+
+        user.friends = user.friends.filter(friend => friend !== friendUsername);
+        await user.save();
+
+        res.status(200).json({msg: "Friend removed successfully", code: "FRIEND_REMOVED"});
+
+    } catch (error) {
+        console.error("Error removing friend: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
