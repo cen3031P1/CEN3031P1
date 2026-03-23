@@ -18,6 +18,7 @@ export default function FriendsScreen() {
   }, [user])
 
 
+  // Function to load friends from the server
   async function loadFriends() {
     console.log("loading friends for:", user.username)
     try {
@@ -29,6 +30,7 @@ export default function FriendsScreen() {
     }
   }
 
+  // Function to handle adding a friend
   async function addFriend() {
     if (!user) {
       setMessage('User not authenticated')
@@ -40,9 +42,11 @@ export default function FriendsScreen() {
         userName: user.username,
         friendUsername
       })
-      if (response.data.success) {
+
+      if (response.data.code === "FRIEND_ADDED") {
         setMessage('Friend added successfully!')
         setFriendUsername('')
+        loadFriends() // Refresh the friends list after adding a friend
       } else {
         setMessage('Failed to add friend: ' + response.data.message)
       }
@@ -74,6 +78,7 @@ export default function FriendsScreen() {
     }
   }
 
+  // Function to handle removing a friend
   async function removeFriend(friendUsername) {
     try {
       const response = await api.delete('/api/removefriend', {
