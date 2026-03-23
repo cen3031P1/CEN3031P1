@@ -19,9 +19,11 @@
 */
 
 
+
 import {useState} from 'react'
 import { useAuthContext } from './useAuthContext'
 import api from '../../api.js'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const useSignin = () => {
     const {dispatch} = useAuthContext()
@@ -42,7 +44,7 @@ export const useSignin = () => {
             const json = response.data
 
             
-            localStorage.setItem('user', JSON.stringify(json))
+            await AsyncStorage.setItem('user', JSON.stringify(json))
 
             dispatch({type: "LOGIN", payload: json})
 
@@ -56,14 +58,13 @@ export const useSignin = () => {
                 //what can follow in here is what you want to happen after an ok response. assuming it reaches this
                 //comment it should be added to db fine
         } catch (error) {
-
-            if(!error){
-                console.error("Other error: ", error.message)
+            if (!error.response) {
+                console.error("Network error: ", error.message)
                 setTotalFailure(true)
+                return
             }
 
             switch(error.response.data.code){
-                //missing fields, user exists, bad username, bad password
                 case "MISSING_FIELDS":
                     setSignUpFail(1)
                     break

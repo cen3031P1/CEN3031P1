@@ -57,7 +57,7 @@ export async function signUp(req, res) {
         const {userName, password} = req.body;
 
         const user = await User.signup(userName, password);
-        console.log("Shoudl be added to db?")
+        console.log("Should be added to db?")
         const token = createToken(user._id);
 
         res.status(201).json({username: userName,  token});
