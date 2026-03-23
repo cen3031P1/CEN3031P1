@@ -16,7 +16,7 @@
 */
 
 import express from 'express';
-import { signUp, login } from './controller.js';
+import { signUp, login, addFriend } from './controller.js';
 
 const router = express.Router();
 
@@ -28,5 +28,8 @@ router.get('/', (req, res) => {
 router.post('/login', login);
 
 router.post('/signup', signUp);
+
+// Add friends
+router.post('/addfriend', addFriend);
 
 export default router;

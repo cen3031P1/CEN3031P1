@@ -67,3 +67,42 @@ export async function signUp(req, res) {
         res.status(400).json({msg: "Couldn't sign up user", code: error.code});
     }
 }
+
+// Handle adding friends. Takes in username and friend name.
+// Checks if both users exist, checks if they are already friends, and then adds friend to user's friend list.
+export async function addFriend(req, res) {
+    try {
+        const {userName, friendUsername} = req.body;
+
+        if (!userName || !friendUsername) {
+            return res.status(400).json({msg: "Username and friend username must be provided", code: "MISSING_FIELDS"});
+        }
+
+        if (userName === friendUsername) {
+            return res.status(400).json({msg: "You cannot add yourself as a friend", code: "CANNOT_ADD_SELF"});
+        }
+
+        const friend = await User.findOne({userName: friendUsername});
+        if (!friend) {
+            return res.status(404).json({msg: "Friend not found in DB", code: "FRIEND_NOT_FOUND"});
+        }
+
+        const user = await User.findOne({userName});
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        if (user.friends.includes(friend._id)) {
+            return res.status(400).json({msg: "You are already friends with this user", code: "FRIEND_ALREADY_ADDED"});
+        }
+
+        user.friends.push(friend._id);
+        await user.save();
+
+        res.status(200).json({msg: "Friend added successfully", code: "FRIEND_ADDED"});
+
+    } catch (error) {
+        console.error("Error adding friend...", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
