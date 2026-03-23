@@ -124,6 +124,9 @@ export async function addFriend(req, res) {
     }
 }
 
+// Remove friend function.
+// Takes in username and friend name.
+// Checks if both users exist and if they are friends, and then removes friend from user's friend list.
 export async function removeFriend(req, res) {
     try {
         const {userName, friendUsername} = req.query;
@@ -151,3 +154,25 @@ export async function removeFriend(req, res) {
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }
+
+
+// Get leaderboard function.
+// Takes in query parameter for sorting (points or bestStreak) and returns top 50 users sorted by that parameter.
+export async function getLeaderboard(req, res) {
+    try {
+        const sortBy = req.query.sortBy || 'points'; // Default to sorting by points
+        const validFields = ['points', 'bestStreak'];
+        if (!validFields.includes(sortBy)) {
+            return res.status(400).json({msg: "Invalid sort field", code: "INVALID_SORT_FIELD"});
+        }
+        const users = await User.find({}, `userName ${sortBy}`).sort({ [sortBy]: -1 }).limit(50);
+        res.status(200).json({leaderboard: users});
+    } catch (error) {
+        console.error("Error getting leaderboard: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+
+
+
