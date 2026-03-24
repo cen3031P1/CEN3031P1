@@ -46,6 +46,7 @@ export const useLogin = () => {
             setLoginFail(-1)
             setTotalFailure(false)
             setLoginPass(true)
+            return true;
 
         } catch (error) {
             if(!error){
@@ -57,19 +58,19 @@ export const useLogin = () => {
 
                 case "MISSING_FIELDS":
                     setLoginFail(1)
-                    break
+                    return false;
                 
                 case "WRONG_USERNAME":
                     setLoginFail(2)
-                    break
+                    return false;
 
                 case "WRONG_PASSWORD":
                     setLoginFail(3)
-                    break
+                    return false;
                 
                 default:
                     setLoginFail(0)
-                    break
+                    return false;
             }
         }
     }
