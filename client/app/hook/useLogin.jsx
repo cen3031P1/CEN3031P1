@@ -22,6 +22,7 @@
 import {useState} from 'react'
 import { useAuthContext } from './useAuthContext'
 import api from '../../api.js'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const useLogin = () => {
     const {dispatch} = useAuthContext()
@@ -39,7 +40,7 @@ export const useLogin = () => {
 
             const json = response.data 
 
-            localStorage.setItem('user', JSON.stringify(json))
+            await AsyncStorage.setItem('user', JSON.stringify(json))
 
             dispatch({type: "LOGIN", payload: json})
 
@@ -49,24 +50,28 @@ export const useLogin = () => {
             return true;
 
         } catch (error) {
-            if(!error){
-                console.error("Other error: ", error.message)
+            if (!error.response) {
+                console.error("Network error: ", error.message)
                 setTotalFailure(true)
+                return
             }
 
             switch(error.response.data.code){
-
                 case "MISSING_FIELDS":
                     setLoginFail(1)
                     return false;
                 
-                case "WRONG_USERNAME":
+                case "USER_EXISTS":
                     setLoginFail(2)
                     return false;
 
-                case "WRONG_PASSWORD":
+                case "BAD_USERNAME":
                     setLoginFail(3)
                     return false;
+                
+                case "BAD_PASSWORD": 
+                    setLoginFail(4)
+                    break
                 
                 default:
                     setLoginFail(0)

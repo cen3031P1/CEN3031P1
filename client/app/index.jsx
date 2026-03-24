@@ -17,6 +17,9 @@ export default function LoginScreen() {
 
     useEffect(() => {
         console.log("login success")
+        if (loginPass){
+            router.replace('/(tabs)');
+        }
     }, [loginPass])
     
     useEffect(() => {
