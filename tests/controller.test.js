@@ -1,10 +1,13 @@
 import {jest} from '@jest/globals';
+import { resourceLimits } from 'node:worker_threads';
 //This is a unit test for the login
 //First we mock the database and make fake jwts
 jest.unstable_mockModule('../server/models/user.js', () => ({
     default: {
         login: jest.fn(),
-        signup: jest.fn()
+        signup: jest.fn(),
+        findOne: jest.fn(), //these are used in the controller so they have to get mocked too
+        find: jest.fn()
     }
 }));
 jest.unstable_mockModule('jsonwebtoken', () => ({
@@ -12,7 +15,11 @@ jest.unstable_mockModule('jsonwebtoken', () => ({
         sign: jest.fn()
     }
 }));
-
+//Using unstable_mockModule means i have to import the modules and then get the default export
+const UserModule = await import('../server/models/user.js');
+const jwtModule = await import('jsonwebtoken');
+const User = UserModule.default;
+const jwt = jwtModule.default;
 //Need to import all functions from controller.js and other js files
 const {login, signUp, getFriends, getLeaderboard, addFriend} =  await import('../server/controller.js');
 //These imports come from the controllers imports
@@ -115,7 +122,13 @@ describe('Controller Unit Tests', () => {
             { userName: 'sam', points: 50 },
             { userName: 'shakira', points: 5 },
         ];
-        User.find.mockResolvedValue(fakeLeaderboard);
+        //User.find.mockResolvedValue(fakeLeaderboard); This fails and gives a 500 error because of the difference in .sort() and 
+        //Mock find, mock return value, mock sort THEN mock limit
+        User.find.mockReturnValue({
+            sort: jest.fn().mockReturnValue({
+                limit: jest.fn().mockResolvedValue(fakeLeaderboard)
+            })
+        });
         await getLeaderboard(req, res);
 
         expect(User.find).toHaveBeenCalledWith({}, 'userName points'); //should only select username and points
