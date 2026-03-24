@@ -141,7 +141,7 @@ userSchema.statics.signup = async function(userName, password) {
 
     return user;
 }
-
-const User = mongoose.model('User', userSchema);
+//Need to allow mocked OR real so I'm gonna try changing this
+const User = mongoose.model('User', userSchema) || mongoose.models.User;
 
 export default User;

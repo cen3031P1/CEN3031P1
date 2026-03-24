@@ -1,5 +1,4 @@
 import {jest} from '@jest/globals';
-import { resourceLimits } from 'node:worker_threads';
 //This is a unit test for the login
 //First we mock the database and make fake jwts
 jest.unstable_mockModule('../server/models/user.js', () => ({
@@ -134,4 +133,43 @@ describe('Controller Unit Tests', () => {
         expect(User.find).toHaveBeenCalledWith({}, 'userName points'); //should only select username and points
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({ leaderboard: fakeLeaderboard });
+    });
+    test('Login - Failure - Invalid Credentials', async () => {
+        const req = mockRequest({ userName: 'FAKE-user', password: 'WRONG-password' });
+        const res = mockResponse();
+        User.login.mockRejectedValue({ code: 'INVALID_CREDENTIALS' });
+        await login(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ msg: "Couldn't log in user", code: 'INVALID_CREDENTIALS' });
+    });
+    test('Sign Up - Failure - Duplicated user', async () => {
+        const req = mockRequest({ userName: 'FAKE-user2', password: 'FAKE-password2' });
+        const res = mockResponse();
+        User.signup.mockRejectedValue({ code: 'USERNAME_TAKEN' });
+        await signUp(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ msg: "Couldn't sign up user", code: 'USERNAME_TAKEN' });
+    });
+    test('Get Friends - Failure - User Not Found', async () => {
+        const req = mockRequest({}, { userName: 'NONEXISTENT-user' });
+        const res = mockResponse();
+        User.findOne.mockResolvedValue(null);
+        await getFriends(req, res);
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({ msg: "User not found in DB", code: 'USER_NOT_FOUND' });
+    });
+    test('Add Friend - Failure - User Not Found', async () => {
+        const req = mockRequest({ userName: 'NONEXISTENT-user', friendUsername: 'susie' });
+        const res = mockResponse();
+        User.findOne.mockResolvedValue(null); //Friend doesnt exist so it returns null
+        await addFriend(req, res);
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({ msg: "Friend not found in DB", code: 'FRIEND_NOT_FOUND' });
+    });
+    test('Get Leaderboard - Failure - Invalid Sort Field', async () => {
+        const req = mockRequest({}, {}, { sortBy: 'invalidField' });
+        const res = mockResponse();
+        await getLeaderboard(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ msg: "Invalid sort field", code: 'INVALID_SORT_FIELD' });
     });
