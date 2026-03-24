@@ -20,7 +20,8 @@
 */
 
 
-import {createContext, useReducer} from 'react'
+import {createContext, useReducer, useEffect} from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AuthContext = createContext()
 
@@ -40,6 +41,23 @@ export const AuthContextProvider = ({children}) => {
     const [state, dispatch] = useReducer(authReducer, {
         user: null
     })
+
+    // check if user is logged in on app start
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const stored = await AsyncStorage.getItem('user')
+                if (stored) {
+                    dispatch({type: 'LOGIN', payload: JSON.parse(stored)})
+                }
+            } catch (error) {
+                console.error("Failed to load user from storage: ", error)
+            } 
+        }
+
+        loadUser()
+    }, [])
+
 
     console.log("current auth state: ", state)
 

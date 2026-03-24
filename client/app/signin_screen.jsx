@@ -35,7 +35,7 @@ export default function SigninScreen() {
         }
         
         const success = await signup(username, password)
-        if (success){router.reaplace("/(tabs)")};
+        if (success){router.replace("/(tabs)")};
     }
     useEffect(() => {
         /*
