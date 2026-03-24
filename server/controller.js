@@ -172,7 +172,3 @@ export async function getLeaderboard(req, res) {
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }
-
-
-
-

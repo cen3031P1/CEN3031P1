@@ -34,8 +34,9 @@ export default function SigninScreen() {
             return; 
         }
         
-        const success = await signup(username, password)
-        if (success){router.reaplace("/(tabs)")};
+        const success = await signup(username, password);
+        if (success){router.replace('/(tabs)')};
+        
     }
     useEffect(() => {
         /*
@@ -70,10 +71,6 @@ export default function SigninScreen() {
         }
         
     }, [signUpFail])
-
-    useEffect(() => {
-        console.log("load next page somehow? sign up success")
-    }, [signUpPass])
 
     function handleBack(){
         router.replace('/');
@@ -129,9 +126,6 @@ export default function SigninScreen() {
                 <Text style={styles.buttontext}>go back</Text>
             </Pressable>
             <Pressable onPress={() =>handleSignup(username,password,cpassword)} style ={styles.button}>
-
-                {/* need validation i think */}
-
                 <Text style={styles.buttontext}>Sign-Up</Text>
             </Pressable>
         </View>
@@ -148,6 +142,8 @@ const styles = StyleSheet.create({
         gap: 12,
     },
     failtext: {
+        textAlign: 'center',
+        width: 330,
         color: 'red'
     },
     inputbox: {
