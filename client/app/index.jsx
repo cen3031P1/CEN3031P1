@@ -7,8 +7,8 @@ export default function LoginScreen() {
     const {doLogin, totalFailure, loginFail, loginPass} = useLogin()
 
     async function handleLogin(username, password){
-
-        await doLogin(username, password)
+        const success = await doLogin(username, password)
+        if (success){router.replace("/(tabs)")};
     }
 
     useEffect(() => {

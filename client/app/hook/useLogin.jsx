@@ -47,6 +47,7 @@ export const useLogin = () => {
             setLoginFail(-1)
             setTotalFailure(false)
             setLoginPass(true)
+            return true;
 
         } catch (error) {
             if (!error.response) {
@@ -58,15 +59,15 @@ export const useLogin = () => {
             switch(error.response.data.code){
                 case "MISSING_FIELDS":
                     setLoginFail(1)
-                    break
+                    return false;
                 
                 case "USER_EXISTS":
                     setLoginFail(2)
-                    break
+                    return false;
 
                 case "BAD_USERNAME":
                     setLoginFail(3)
-                    break
+                    return false;
                 
                 case "BAD_PASSWORD": 
                     setLoginFail(4)
@@ -74,7 +75,7 @@ export const useLogin = () => {
                 
                 default:
                     setLoginFail(0)
-                    break
+                    return false;
             }
         }
     }
