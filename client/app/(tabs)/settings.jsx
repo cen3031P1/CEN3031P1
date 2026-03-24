@@ -11,27 +11,48 @@ export default function SettingScreen() {
 	}
 
 	return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Pressable onPress = {() => handleDelete()}style={styles.settingsButton}>
-		<Text style = {styles.settingText}>Delete Account</Text>
-      </Pressable>
+    <View style={styles.container}>
+		<Pressable onPress = {() => handleDelete()}style={styles.settingsButton}>
+			<Text style = {styles.settingText}>Set Profile Picture</Text>
+		</Pressable>
+
+		<Pressable onPress = {() => handleDelete()}style={styles.settingsButton}>
+			<Text style = {styles.settingText}>Delete Account</Text>
+		</Pressable>
+
+		<Pressable onPress = {() => handleDelete()}style={styles.settingsButton}>
+			<Text style = {styles.settingText}>Set Gym</Text>
+		</Pressable>
+
+		<Pressable onPress = {() => handleDelete()}style={styles.settingsButton}>
+			<Text style = {styles.settingText}>Set Goal</Text>
+		</Pressable>
+
+		<Pressable onPress = {() => handleDelete()}style={styles.settingsButton}>
+			<Text style = {styles.settingText}>Toggle Privacy Mode</Text>
+		</Pressable>
+
+	  
     </View>
   );
 }
 
 const styles = StyleSheet.create({
 	container: {
-
+		flex: 1, 
+		justifyContent: 'center', 
+		alignItems: 'center',
+		gap: 15,
 	},
 	settingsButton: {
-		width: 120,
+		width: 360,
 		height: 50,
-		backgroundColor: '#1E90FF',
+		backgroundColor: 'lightgrey',
 		borderRadius: 5,
-		justifyContent: 'center', 
-		alignItems: 'center'
+		alignItems: 'left',
+		
 	},
 	settingText: {
-
+		padding: 15,
 	}
 })
