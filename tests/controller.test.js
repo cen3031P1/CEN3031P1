@@ -1,14 +1,24 @@
+import {jest} from '@jest/globals';
 //This is a unit test for the login
 //First we mock the database and make fake jwts
-jest.mock('../server/models/user.js');
-jest.mock('jsonwebtoken');
+jest.unstable_mockModule('../server/models/user.js', () => ({
+    default: {
+        login: jest.fn(),
+        signup: jest.fn()
+    }
+}));
+jest.unstable_mockModule('jsonwebtoken', () => ({
+    default: {
+        sign: jest.fn()
+    }
+}));
 
 //Need to import all functions from controller.js and other js files
-import {login, signUp, getFriends, getLeaderboard, addFriend} from '../server/controllers/controller.js';
+const {login, signUp, getFriends, getLeaderboard, addFriend} =  await import('../server/controller.js');
 //These imports come from the controllers imports
 //Apparently jest assumes a different format? so i need require?
-import User from '../server/models/user.js';
-import jwt from 'jsonwebtoken';
+// const User = require('../server/models/user.js');
+// const jwt = require('jsonwebtoken');
 //test unit test
 test('Jest works!', () => {
     expect(true).toBe(true);
