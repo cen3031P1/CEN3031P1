@@ -1,14 +1,3 @@
-// import { View, Text } from 'react-native';
-
-// export default function LeaderboardScreen() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <Text>Leaderboard</Text>
-//     </View>
-//   );
-// }
-
-
 import { View, Text, FlatList, Button, useWindowDimensions } from 'react-native';
 import { useEffect, useState } from 'react';
 import api from '../../api.js';

@@ -16,7 +16,8 @@
 */
 
 import express from 'express';
-import { signUp, login } from './controller.js';
+import { signUp, login, addFriend, getFriends, removeFriend, getLeaderboard} from './controller.js';
+import { get } from 'mongoose';
 
 const router = express.Router();
 

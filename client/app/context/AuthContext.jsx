@@ -58,7 +58,6 @@ export const AuthContextProvider = ({children}) => {
         loadUser()
     }, [])
 
-
     console.log("current auth state: ", state)
 
     return (
