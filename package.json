@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "jest": "^30.3.0"
+  },
+  "type" : "module",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.3"
+  }
+}
