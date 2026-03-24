@@ -57,7 +57,7 @@ export async function signUp(req, res) {
         const {userName, password} = req.body;
 
         const user = await User.signup(userName, password);
-        console.log("Shoudl be added to db?")
+        console.log("Should be added to db?")
         const token = createToken(user._id);
 
         res.status(201).json({username: userName,  token});
@@ -65,5 +65,110 @@ export async function signUp(req, res) {
     } catch (error){
         console.error("Error signing up user...", error);
         res.status(400).json({msg: "Couldn't sign up user", code: error.code});
+    }
+}
+
+// Handle getting friends. Takes in username and returns list of friends.
+export async function getFriends(req, res) {
+    try {
+        const {userName} = req.params;
+        const user = await User.findOne({userName});
+        console.log("Friends: ", user?.friends);
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+        res.status(200).json({friends: user.friends});
+    } catch (error) {
+        console.error("Error getting friends...", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+
+// Handle adding friends. Takes in username and friend name.
+// Checks if both users exist, checks if they are already friends, and then adds friend to user's friend list.
+export async function addFriend(req, res) {
+    try {
+        const {userName, friendUsername} = req.body;
+
+        if (!userName || !friendUsername) {
+            return res.status(400).json({msg: "Username and friend username must be provided", code: "MISSING_FIELDS"});
+        }
+
+        if (userName === friendUsername) {
+            return res.status(400).json({msg: "You cannot add yourself as a friend", code: "CANNOT_ADD_SELF"});
+        }
+
+        const friend = await User.findOne({userName: friendUsername});
+        if (!friend) {
+            return res.status(404).json({msg: "Friend not found in DB", code: "FRIEND_NOT_FOUND"});
+        }
+
+        const user = await User.findOne({userName});
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        if (user.friends.includes(friendUsername)) {
+            return res.status(400).json({msg: "You are already friends with this user", code: "FRIEND_ALREADY_ADDED"});
+        }
+
+        user.friends.push(friendUsername);
+        await user.save();
+
+        res.status(200).json({msg: "Friend added successfully", code: "FRIEND_ADDED"});
+
+    } catch (error) {
+        console.error("Error adding friend...", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+// Remove friend function.
+// Takes in username and friend name.
+// Checks if both users exist and if they are friends, and then removes friend from user's friend list.
+export async function removeFriend(req, res) {
+    try {
+        const {userName, friendUsername} = req.query;
+
+        if (!userName || !friendUsername) {
+            return res.status(400).json({msg: "Username and friend username must be provided", code: "MISSING_FIELDS"});
+        }
+
+        const user = await User.findOne({userName});
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        if (!user.friends.includes(friendUsername)) {
+            return res.status(400).json({msg: "You are not friends with this user", code: "NOT_FRIENDS"});
+        }
+
+        user.friends = user.friends.filter(friend => friend !== friendUsername);
+        await user.save();
+
+        res.status(200).json({msg: "Friend removed successfully", code: "FRIEND_REMOVED"});
+
+    } catch (error) {
+        console.error("Error removing friend: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+
+// Get leaderboard function.
+// Takes in query parameter for sorting (points or bestStreak) and returns top 50 users sorted by that parameter.
+export async function getLeaderboard(req, res) {
+    try {
+        const sortBy = req.query.sortBy || 'points'; // Default to sorting by points
+        const validFields = ['points', 'bestStreak'];
+        if (!validFields.includes(sortBy)) {
+            return res.status(400).json({msg: "Invalid sort field", code: "INVALID_SORT_FIELD"});
+        }
+        const users = await User.find({}, `userName ${sortBy}`).sort({ [sortBy]: -1 }).limit(50);
+        res.status(200).json({leaderboard: users});
+    } catch (error) {
+        console.error("Error getting leaderboard: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }

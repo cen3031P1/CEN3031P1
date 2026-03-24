@@ -40,7 +40,6 @@ export const useLogin = () => {
 
             const json = response.data 
 
-            //localStorage.setItem('user', JSON.stringify(json))
             await AsyncStorage.setItem('user', JSON.stringify(json))
 
             dispatch({type: "LOGIN", payload: json})
@@ -51,20 +50,13 @@ export const useLogin = () => {
             return true;
 
         } catch (error) {
-            // if(!error){
-            //     console.error("Other error: ", error.message)
-            //     setTotalFailure(true)
-            // }
-
-            if (!error.response || !error.response.data) {
+            if (!error.response) {
                 console.error("Network error: ", error.message)
                 setTotalFailure(true)
-                setLoginFail(0);
-                return false;
+                return
             }
 
             switch(error.response.data.code){
-
                 case "MISSING_FIELDS":
                     setLoginFail(1)
                     return false;
@@ -80,7 +72,6 @@ export const useLogin = () => {
                 default:
                     setLoginFail(0)
                     return false;
-
             }
         }
     }
