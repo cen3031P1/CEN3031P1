@@ -1,10 +1,24 @@
 import {Stack, router} from 'expo-router';
-import { Appearance,useColorScheme } from 'react-native';
 import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
 import { AuthContextProvider } from './context/AuthContext';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { useFonts } from 'expo-font';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-    const colorscheme = useColorScheme();
+    
+    const [loaded, error] = useFonts({
+        'PressStart2P-Regular': require('./assets/PressStart2P-Regular.ttf')
+    });
+
+    useEffect(() => {
+        if (loaded || error) {
+        SplashScreen.hideAsync();
+        }
+    }, [loaded, error]);
+
     return (
         <ThemeProvider value={DefaultTheme}>
             <AuthContextProvider>

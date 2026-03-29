@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Button, FlatList, useWindowDimensions } from 'react-native';
+import { View, Text, TextInput, Button, FlatList } from 'react-native';
 import { useEffect, useState } from 'react';
 import api from '../../api.js';
 import { useAuthContext } from '../hook/useAuthContext.jsx';
@@ -9,8 +9,6 @@ export default function FriendsScreen() {
   const [friendUsername, setFriendUsername] = useState('')
   const [message, setMessage] = useState('')
   const [friends, setFriends] = useState([])
-  const windowWidth = useWindowDimensions().width
-  const tableWidth = windowWidth * 0.5;
 
   // Load friends when the page is loaded
   useEffect(() => { 
@@ -104,37 +102,31 @@ export default function FriendsScreen() {
       
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Your Friends</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>friends list</Text>
 
-      <View style={{ width: tableWidth}}>
       <FlatList
         data={friends}
         keyExtractor={(item) => item} // Assuming friends is an array of usernames (strings).
                                       // Maybe change this to item._id if we decide to switch to storing friend IDs instead of usernames.
         renderItem={({ item }) => (
-          <View style={{ alignItems: 'center',  marginBottom: 30, justifyContent: 'center' }}>
-            <Text style={{ flex: 1, textAlign: 'center', marginTop: 10}}>{item}</Text>
-              <View style={{ position: 'absolute', right: 60}}>
-                <Button title="Remove" onPress={() => removeFriend(item)} />
-              </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Text>{item}</Text>
+            <Button title="Remove" onPress={() => removeFriend(item)} />
           </View>
         )}
-        ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: 'gray' }}>No friends found. Add some friends to see them here!</Text>}
+        ListEmptyComponent={() => <Text>No friends found. Add some friends to see them here!</Text>}
       />
-      </View>
 
 
-      <View style={{ width: tableWidth, marginTop: 20, backgroundColor: '#f0f4ff', padding: 15, borderRadius: 10 }}>
-        <TextInput
-          placeholder="Enter friend's username"
-          value={friendUsername}
-          onChangeText={setFriendUsername}
-          style={{ height: 40, borderColor: 'gray', padding: 8, marginBottom: 10, textAlign: 'center', backgroundColor: 'white', borderRadius: 5 }}
+      <TextInput
+        placeholder="Enter friend's username"
+        value={friendUsername}
+        onChangeText={setFriendUsername}
+        style={{ height: 40, borderColor: 'gray', padding: 8, width: '80%', marginBottom: 10 }}
       />
       <Button title="Add Friend" onPress={addFriend} />
-      {message !== '' && <Text style={{ marginTop: 10, textAlign: 'center', color: message.includes('success') ? 'green' : 'red' }}>{message}</Text>}
-      </View>
+      {message !== '' && <Text>{message}</Text>}
     </View>
   );
 }

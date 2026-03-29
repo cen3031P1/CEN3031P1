@@ -1,14 +1,20 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Pressable, Image} from 'react-native';
-import {useLogin} from './hook/useLogin.jsx'
+import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ImageBackground} from 'react-native';
+import {useLogin} from './hook/useLogin.jsx';
+import AppText from './components/AppText.jsx';
+import TitleComp from './components/Titles.jsx';
+import Input from './components/Input.jsx';
+import colors from './theme/colors.jsx';
+import {LinearGradient} from 'expo-linear-gradient';
+import NavButton from './components/NavButton.jsx';
 
 export default function LoginScreen() {
     const {doLogin, totalFailure, loginFail, loginPass} = useLogin()
 
     async function handleLogin(username, password){
         const success = await doLogin(username, password)
-        if (success){router.replace("/(tabs)")};
+        if (success){router.replace('/(tabs)')};
     }
 
     useEffect(() => {
@@ -17,9 +23,6 @@ export default function LoginScreen() {
 
     useEffect(() => {
         console.log("login success")
-        if (loginPass){
-            router.replace('/(tabs)');
-        }
     }, [loginPass])
     
     useEffect(() => {
@@ -43,97 +46,94 @@ export default function LoginScreen() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [invalid_Cred, setInvalid_Cred] = useState('');
-    
-    return (
-        <View style={styles.container}>
-            <Image source={require('./assets/images/gfit_logo.png')}
-            style = {{height: 300, width: 300}}/>
 
-            <View style={styles.titleformat}>
-                <Text style={styles.gator}>
-                    Gator
-                </Text>
-                <Text style={styles.fit}>
-                    Fit
-                </Text>
-            </View>
+    return (    
+        <View style = {{flex : 1}}>
+        
+            <LinearGradient
+            colors = {[colors.bgPrimary,colors.bgSecondary]}
+            style= {{flex:1}}
+            >
             
+                <View style={styles.overlay}>
 
-            <Text>Log-in or Sign-in</Text>
-            {invalid_Cred !== '' && <Text style ={styles.failtext}>{invalid_Cred}</Text>}
+                    <Image source={require('./assets/images/gfit_logo.png')}
+                    style = {{
+                        height: 300, 
+                        width: '90%', 
+                        marginTop: 20, 
+                        maxWidth: 500,
+                        resizeMode: 'contain'
+                        }}/>
+                    
+                        <View style = {{marginBottom: 150, width: '90%'}}>
+                            <TitleComp>GATOR FIT</TitleComp>
+                        </View>
+                    <View style ={styles.textbox}>
+                        
+                        <View>
+                            {invalid_Cred !== '' && <AppText style={styles.failtext}>{invalid_Cred}</AppText>}
+                        </View>
+                        
+                        <View style = {{marginBottom: 10, marginTop: 10}}>
+                            <AppText>Log-In</AppText>
+                        </View>
 
-            <TextInput
-            onChangeText={setUsername}
-            value = {username}
-            placeholder='Username'
-            style = {styles.inputbox}
-            />
-            <TextInput
-            onChangeText={setPassword}
-            value = {password}
-            placeholder='Password'
-            secureTextEntry= {true}
-            style = {styles.inputbox}
-            />
+                        <Input 
+                            onChangeText={setUsername}
+                            value = {username}
+                            placeholder='Username'
+                        ></Input>
 
-            <View style={styles.buttonrow}>
-                <Pressable onPress={() => handleLogin(username,password)} style ={styles.button}>
-                    <Text style={styles.buttontext}>login</Text>
-                </Pressable>
-                <Pressable onPress={handleSignin} style ={styles.button}>
-                    <Text style={styles.buttontext}>sign-in</Text>
-                </Pressable>
-            </View>
-            
+                        <Input
+                            onChangeText={setPassword}
+                            value = {password}
+                            placeholder='Password'
+                            isPassword = 'true'
+                        ></Input>
+
+                        <View style={styles.buttonrow}>
+                            <NavButton onPress={() => handleLogin(username,password)}>Login</NavButton>
+                            <NavButton onPress={handleSignin}>Sign-in</NavButton>
+                        </View>
+
+                    </View>
+
+                </View>
+            </LinearGradient>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1, 
+    overlay: {
+        flex : 1,
+        backgroundColor: 'rgba(255,255,255,.65)',
         alignItems: 'center',
-        padding: 12,
         gap: 12,
     },
     failtext: {
-        color: 'red'
+        color: 'red',
+        fontSize: '60%',
+        width: '100%',
     },
-    inputbox: {
-        borderWidth: 1,
-        borderColor: '#444',
+    textbox: {
+        backgroundColor: 'white',
+        paddingHorizontal: 20,
+        paddingVertical: 12,
+        borderRadius: 10,
+        width: '85%',
+        height: '40%',
+        gap: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 5,
+        borderColor: colors.primary,
     },
     buttonrow: {
         flexDirection: 'row',
-        gap: 15,
-    },
-    button: {
-        width: 90,
-        height: 30,
-        backgroundColor: '#1E90FF',
-        borderRadius: 5,
+        gap: '25%',
         justifyContent: 'center',
-        alignItems: 'center'
+        fontSize: '80%',
     },
-    buttontext: {
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    gator: {
-        color: '#FFA500',
-        fontSize: 40,
-        fontWeight: 'bold',
-        marginBottom: 50,
-    },
-    fit: {
-        color: '#1E90FF',
-        fontSize: 40,
-        fontWeight: 'bold',
-        marginBottom: 50,
-    },
-    titleformat: {
-        justifyContent: 'flex-start',
-        flexDirection: 'row',
-        alignContent: 'top',
-    }
 })
