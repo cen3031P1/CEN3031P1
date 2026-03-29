@@ -43,7 +43,6 @@ export const useLogin = () => {
             await AsyncStorage.setItem('user', JSON.stringify(json))
 
             dispatch({type: "LOGIN", payload: json})
-
             setLoginFail(-1)
             setTotalFailure(false)
             setLoginPass(true)
@@ -53,7 +52,6 @@ export const useLogin = () => {
             if (!error.response) {
                 console.error("Network error: ", error.message)
                 setTotalFailure(true)
-                return
             }
 
             switch(error.response.data.code){

@@ -24,6 +24,9 @@
     },
     "web": {
       "favicon": "./assets/icons/gfit_icon.png"
-    }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }

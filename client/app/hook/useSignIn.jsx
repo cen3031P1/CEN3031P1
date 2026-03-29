@@ -61,7 +61,6 @@ export const useSignin = () => {
             if (!error.response) {
                 console.error("Network error: ", error.message)
                 setTotalFailure(true)
-                return
             }
 
             switch(error.response.data.code){
