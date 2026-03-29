@@ -53,7 +53,7 @@ export const useLogin = () => {
                 console.error("Network error: ", error.message)
                 setTotalFailure(true)
             }
-
+            
             switch(error.response.data.code){
                 case "MISSING_FIELDS":
                     setLoginFail(1)

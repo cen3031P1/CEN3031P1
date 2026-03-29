@@ -27,7 +27,6 @@ export default function LoginScreen() {
     
     useEffect(() => {
         if(loginFail == 1){
-            console.log('happens')
             setInvalid_Cred("Missing username or password")
         } else if(loginFail == 2){
             setInvalid_Cred("Incorrect username or password")

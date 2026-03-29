@@ -16,7 +16,7 @@
 */
 
 import express from 'express';
-import { signUp, login } from './controller.js';
+import { signUp, login, addFriend, getFriends,removeFriend,  getLeaderboard} from './controller.js';
 
 const router = express.Router();
 
@@ -29,16 +29,16 @@ router.post('/login', login);
 
 router.post('/signup', signUp);
 
-// // Add friends
-// router.post('/addfriend', addFriend);
+// Add friends
+router.post('/addfriend', addFriend);
 
-// // Get friends list
-// router.get('/friends/:userName', getFriends);
+// Get friends list
+router.get('/friends/:userName', getFriends);
 
-// // Remove friends
-// router.delete('/removefriend', removeFriend);
+// Remove friends
+router.delete('/removefriend', removeFriend);
 
-// // Get leaderboard
-// router.get('/leaderboard', getLeaderboard);
+// Get leaderboard
+router.get('/leaderboard', getLeaderboard);
 
 export default router;
