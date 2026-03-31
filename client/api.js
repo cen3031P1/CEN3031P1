@@ -6,7 +6,7 @@
     To get the API_URL check example.env. I can not give you this one.
 */
 
-import axios from 'axios'
+import axios from 'axios';
 
 const api = axios.create({
     baseURL: process.env.EXPO_PUBLIC_API_URL

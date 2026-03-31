@@ -43,38 +43,34 @@ export const useLogin = () => {
             await AsyncStorage.setItem('user', JSON.stringify(json))
 
             dispatch({type: "LOGIN", payload: json})
-
             setLoginFail(-1)
             setTotalFailure(false)
             setLoginPass(true)
+            return true;
 
         } catch (error) {
             if (!error.response) {
                 console.error("Network error: ", error.message)
                 setTotalFailure(true)
-                return
+                return false;
             }
 
             switch(error.response.data.code){
                 case "MISSING_FIELDS":
                     setLoginFail(1)
-                    break
+                    return false;
                 
-                case "USER_EXISTS":
+                case "WRONG_USERNAME":
                     setLoginFail(2)
-                    break
+                    return false;
 
-                case "BAD_USERNAME":
+                case "WRONG_PASSWORD":
                     setLoginFail(3)
-                    break
-                
-                case "BAD_PASSWORD": 
-                    setLoginFail(4)
-                    break
+                    return false;
                 
                 default:
                     setLoginFail(0)
-                    break
+                    return false;
             }
         }
     }

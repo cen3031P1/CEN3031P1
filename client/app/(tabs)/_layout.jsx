@@ -1,6 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Appearance, useColorScheme, Image} from 'react-native';
-import { Colors } from '../assets/color_configs';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 

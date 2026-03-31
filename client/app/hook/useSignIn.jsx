@@ -54,36 +54,36 @@ export const useSignin = () => {
             setSignUpFail(-1)
             setTotalFailure(false)
 
-
+            return true;
                 //what can follow in here is what you want to happen after an ok response. assuming it reaches this
                 //comment it should be added to db fine
         } catch (error) {
             if (!error.response) {
                 console.error("Network error: ", error.message)
                 setTotalFailure(true)
-                return
+                return false;
             }
 
             switch(error.response.data.code){
                 case "MISSING_FIELDS":
                     setSignUpFail(1)
-                    break
+                    return false;
                 
                 case "USER_EXISTS":
                     setSignUpFail(2)
-                    break
+                    return false;
 
                 case "BAD_USERNAME":
                     setSignUpFail(3)
-                    break
+                    return false;
                 
                 case "BAD_PASSWORD": 
                     setSignUpFail(4)
-                    break
+                    return false;
                 
                 default:
                     setSignUpFail(0)
-                    break
+                    return false;
             }
         }
     }
