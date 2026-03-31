@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ImageBackground} from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ImageBackground, ScrollView} from 'react-native';
 import {useLogin} from './hook/useLogin.jsx';
 import AppText from './components/AppText.jsx';
 import TitleComp from './components/Titles.jsx';
@@ -55,7 +55,7 @@ export default function LoginScreen() {
             style= {{flex:1}}
             >
             
-                <View style={styles.overlay}>
+                <ScrollView contentContainerStyle={styles.overlay}>
 
                     <Image source={require('./assets/images/gfit_logo.png')}
                     style = {{
@@ -99,7 +99,7 @@ export default function LoginScreen() {
 
                     </View>
 
-                </View>
+                </ScrollView>
             </LinearGradient>
         </View>
     );
@@ -107,10 +107,10 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
     overlay: {
-        flex : 1,
         backgroundColor: 'rgba(255,255,255,.65)',
         alignItems: 'center',
         gap: 12,
+        paddingBottom: 200,
     },
     failtext: {
         color: 'red',
