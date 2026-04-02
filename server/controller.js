@@ -60,7 +60,7 @@ export async function signUp(req, res) {
         console.log("Should be added to db?")
         const token = createToken(user._id);
 
-        res.status(201).json({username: userName,  token});
+        res.status(201).json({username: userName,  token, visibleOnLeaderboard: user.visibleOnLeaderboard !== false});
 
     } catch (error){
         console.error("Error signing up user...", error);
@@ -165,10 +165,59 @@ export async function getLeaderboard(req, res) {
         if (!validFields.includes(sortBy)) {
             return res.status(400).json({msg: "Invalid sort field", code: "INVALID_SORT_FIELD"});
         }
-        const users = await User.find({}, `userName ${sortBy}`).sort({ [sortBy]: -1 }).limit(50);
+        const users = await User.find({visibleOnLeaderboard: {$ne: false}}, `userName ${sortBy}`).sort({ [sortBy]: -1 }).limit(50);
         res.status(200).json({leaderboard: users});
     } catch (error) {
         console.error("Error getting leaderboard: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+// Get a user's leaderboard visibility.
+export async function getLeaderboardVisibility(req, res) {
+    try {
+        const {userName} = req.params;
+
+        if (!userName) {
+            return res.status(400).json({msg: "Username must be provided", code: "MISSING_FIELDS"});
+        }
+
+        const user = await User.findOne({userName}, 'visibleOnLeaderboard');
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        res.status(200).json({visibleOnLeaderboard: user.visibleOnLeaderboard});
+    } catch (error) {
+        console.error("Error getting leaderboard visibility: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+// Update a user's leaderboard visibility.
+export async function setLeaderboardVisibility(req, res) {
+    try {
+        const {userName, visibleOnLeaderboard} = req.body;
+
+        if (!userName || typeof visibleOnLeaderboard !== 'boolean') {
+            return res.status(400).json({msg: "Username and visibility boolean must be provided", code: "MISSING_FIELDS"});
+        }
+
+        const user = await User.findOne({userName});
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        user.visibleOnLeaderboard = visibleOnLeaderboard;
+        await user.save();
+
+        res.status(200).json({
+            msg: "Leaderboard visibility updated",
+            code: "LEADERBOARD_VISIBILITY_UPDATED",
+            visibleOnLeaderboard: user.visibleOnLeaderboard,
+        });
+    } catch (error) {
+        console.error("Error updating leaderboard visibility: ", error);
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }

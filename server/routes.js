@@ -16,7 +16,16 @@
 */
 
 import express from 'express';
-import { signUp, login, addFriend, getFriends, removeFriend, getLeaderboard} from './controller.js';
+import {
+    signUp,
+    login,
+    addFriend,
+    getFriends,
+    removeFriend,
+    getLeaderboard,
+    getLeaderboardVisibility,
+    setLeaderboardVisibility,
+} from './controller.js';
 import { get } from 'mongoose';
 
 const router = express.Router();
@@ -41,5 +50,11 @@ router.delete('/removefriend', removeFriend);
 
 // Get leaderboard
 router.get('/leaderboard', getLeaderboard);
+
+// Get current user leaderboard visibility
+router.get('/leaderboard/visibility/:userName', getLeaderboardVisibility);
+
+// Update current user leaderboard visibility
+router.patch('/leaderboard/visibility', setLeaderboardVisibility);
 
 export default router;
