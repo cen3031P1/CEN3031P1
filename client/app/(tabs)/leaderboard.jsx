@@ -1,5 +1,6 @@
-import { View, Text, FlatList, Button, useWindowDimensions } from 'react-native';
-import { useEffect, useState } from 'react';
+import { View, Text, FlatList, Button, useWindowDimensions} from 'react-native';
+import { useEffect, useState, useCallback} from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import api from '../../api.js';
 import { useAuthContext } from '../hook/useAuthContext.jsx';
 import TitleComp from '../components/Titles.jsx';
@@ -15,11 +16,14 @@ export default function LeaderboardScreen() {
 
   const tableWidth = windowWidth;
   
-  useEffect(() => {
-    if (user) {
-      loadGlobalLeaderboard()
-    }
-  }, [user, sortBy])
+  // Load leaderboard when screen is focused and when user or sortBy changes
+  useFocusEffect(
+    useCallback(() => {
+      if (user) {
+        loadGlobalLeaderboard()
+      }
+    }, [user, sortBy])
+  )
 
   async function loadGlobalLeaderboard() {
     try {

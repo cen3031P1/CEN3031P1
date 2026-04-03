@@ -8,9 +8,18 @@ import Input from './components/Input.jsx';
 import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
+import useAuthContext from './hook/useAuthContext.jsx';
 
 export default function LoginScreen() {
     const {doLogin, totalFailure, loginFail, loginPass} = useLogin()
+    
+    const { user } = useAuthContext();
+
+    useEffect(() => {
+        if (user) {
+            router.replace('/(tabs)');
+        }
+    }, [user]);
 
     async function handleLogin(username, password){
         const success = await doLogin(username, password)

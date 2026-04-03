@@ -172,3 +172,78 @@ export async function getLeaderboard(req, res) {
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }
+
+// Get a user's leaderboard visibility.
+export async function getLeaderboardVisibility(req, res) {
+    try {
+        const {userName} = req.params;
+
+        if (!userName) {
+            return res.status(400).json({msg: "Username must be provided", code: "MISSING_FIELDS"});
+        }
+
+        const user = await User.findOne({userName}, 'visibleOnLeaderboard');
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        res.status(200).json({visibleOnLeaderboard: user.visibleOnLeaderboard});
+    } catch (error) {
+        console.error("Error getting leaderboard visibility: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+// Update a user's leaderboard visibility.
+export async function setLeaderboardVisibility(req, res) {
+    try {
+        const {userName, visibleOnLeaderboard} = req.body;
+
+        if (!userName || typeof visibleOnLeaderboard !== 'boolean') {
+            return res.status(400).json({msg: "Username and visibility boolean must be provided", code: "MISSING_FIELDS"});
+        }
+
+        const user = await User.findOne({userName});
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        user.visibleOnLeaderboard = visibleOnLeaderboard;
+        await user.save();
+
+        res.status(200).json({
+            msg: "Leaderboard visibility updated",
+            code: "LEADERBOARD_VISIBILITY_UPDATED",
+            visibleOnLeaderboard: user.visibleOnLeaderboard,
+        });
+    } catch (error) {
+        console.error("Error updating leaderboard visibility: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+
+
+// Handle uploading profile picture. Takes in username and image data (base64 string).
+// Saves image to server and updates user's profilePic field with image URL.
+export async function uploadProfilePic(req, res) {
+    const {userName} = req.params;
+    const {profilePic} = req.body;
+
+    try {
+        const user = await User.findOneAndUpdate(
+            {userName},
+            {profilePic},
+            {new: true}
+        )
+
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        res.status(200).json({msg: "Profile picture updated successfully", code: "PROFILE_PIC_UPDATED", profilePic: user.profilePic});
+    } catch (error) {
+        console.error("Error uploading profile picture: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
