@@ -13,7 +13,7 @@ export default function TitleComp({children, style }){
 
 const styles = StyleSheet.create({
     text: {
-        fontSize: '235%',
+        fontSize: 35,
         fontWeight: 'bold',
         fontFamily: fonts.headers,
         color: colors.primary,
