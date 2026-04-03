@@ -5,25 +5,25 @@ import { Text,StyleSheet, Pressable} from 'react-native';
 import AppText from './AppText';
 
 
-export default function NavButton({onPress,children,style,...props}){
+export default function ButtonComp({onPress,children,style,...props}){
     return(
         <Pressable
         style = {[styles.button,style]}
         onPress={onPress}
-        >
-            <AppText>{children}</AppText>
+        > 
+            <AppText style = {{color : colors.buttonText, fontSize: 14}}>{children}</AppText>
         </Pressable>
     )
 }
 
 const styles = StyleSheet.create({
     button:{
-        width: '80%',
+        width: '65%',
         height: 40,
         backgroundColor: colors.secondary,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center',
-        fontSize: '90%',
+        fontSize: 12,
     }
 })

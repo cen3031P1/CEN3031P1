@@ -12,6 +12,12 @@ export default function TabLayout() {
       tabBarActiveTintColor: '#FFA500',
       tabBarInactiveTintColor: '#1E90FF',
       headerShown: false,
+      tabBarStyle: {
+        height: '6.5%'
+      },
+      tabBarLabelStyle: {
+        fontSize: 11,
+      }
     }}
     style={styles.container}
     >
@@ -29,7 +35,7 @@ export default function TabLayout() {
         title: 'Leaderboard',
         tabBarIcon: ({ color,size, focused}) => (
           <Ionicons
-          name = {focused ? 'settings' : 'settings'}
+          name = {focused ? 'trophy' : 'trophy'}
           size = {size}
           color = {color}
           />
@@ -39,7 +45,7 @@ export default function TabLayout() {
         title: 'Friends List',
         tabBarIcon: ({ color,size, focused}) => (
           <Ionicons
-          name = {focused ? 'settings' : 'settings'}
+          name = {focused ? 'people' : 'people'}
           size = {size}
           color = {color}
           />

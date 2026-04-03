@@ -1,54 +1,50 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Pressable, Image} from 'react-native';
-
+import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ImageBackground} from 'react-native';
+import TitleComp from '../components/Titles.jsx';
+import ProfileDisplay from '../components/ProfileDisplay.jsx';
+import colors from '../theme/colors.jsx';
+import AppText from '../components/AppText.jsx';
 // will display profile picture
+// log button
 // goal
 // streak
-// maybe calendar / map location
+// badges? 
 
 export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Hello usr!</Text>
-      <Image
-      source={require('../assets/images/defaultpfp.png')}
-      style = {styles.Profile}
-      />
-	<View style = {styles.featureBoxContainer}>
-		<Pressable onPress={()=>console.log("will do smt")} style ={styles.featureBox}>
-			<Text style={styles.boxText}>Goal</Text>
-		</Pressable>
-		<Pressable onPress={()=>console.log("will do smt")} style ={styles.featureBox}>
-			<Text style={styles.boxText}>Streak</Text>
-		</Pressable>
-		<Pressable onPress={()=>console.log("will do smt")} style ={styles.featureBox}>
-			<Text style={styles.boxText}>Log</Text>
-		</Pressable>
-		<Pressable onPress={()=>console.log("will do smt")} style ={styles.featureBox}>
-			<Text style={styles.boxText}>Calendar/map</Text>
-		</Pressable>
+	<View style={styles.container}>
+	<TitleComp style = {{fontSize: 40}}>MY PROFILE</TitleComp> 
+	<Image
+	source={require('../assets/images/defaultpfp.png')}
+	style = {styles.Profile}
+	/>
+	<AppText style ={{fontSize: 12}}>USERNAME</AppText>
+	<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey'}}>BIO - we just put smt i guess</AppText>
+
+
+		<View style = {styles.featureBoxContainer}>
+
+			<ProfileDisplay type='goal' base_numval={23} optimal_numval={32}>GOAL</ProfileDisplay>
+			<ProfileDisplay type='streak' base_numval={23} optimal_numval={32}>STREAK</ProfileDisplay>
+			<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} >LOG</ProfileDisplay>
+			<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} >BADGES</ProfileDisplay>
+		</View>
+
 	</View>
-    </View>
   );
 }
 
 const styles = StyleSheet.create({
 	container: {	
-		flex: 1, 
 		alignItems: 'center',
 		padding: 12,
-		gap: 40,
-	},
-	title: {
-		fontSize: 60,
-		fontWeight: 'bold',
-		color: '#fffff',
+		gap: 25,
 	},
 	Profile: {
-		height: 270, 
-		width: 270,
-		borderRadius: 135,
+		height: 120, 
+		width: 120,
+		borderRadius: 60,
 		resizeMode: 'fill',
 	},
 	featureBoxContainer: {
@@ -56,19 +52,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		justifyContent: 'space-between',
+		gap: 12,
+		// backgroundColor: colors.background
 	},
-	featureBox: {
-		backgroundColor: 'lightblue',
-		height: 150,
-		width: '48%',
-		backgroundColor: 'lightblue',
-		alignItems: 'center',
-		paddingTop: 20,
-		justifyContent: 'space-between',
-		marginBottom: 12,
-		borderRadius: 5,
-	},
-	boxText: {
-
-	}
 });

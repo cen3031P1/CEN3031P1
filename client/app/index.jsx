@@ -7,7 +7,7 @@ import TitleComp from './components/Titles.jsx';
 import Input from './components/Input.jsx';
 import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
-import NavButton from './components/NavButton.jsx';
+import ButtonComp from './components/ButtonComp.jsx';
 
 export default function LoginScreen() {
     const {doLogin, totalFailure, loginFail, loginPass} = useLogin()
@@ -66,7 +66,7 @@ export default function LoginScreen() {
                         resizeMode: 'contain'
                         }}/>
                     
-                        <View style = {{marginBottom: 150, width: '90%'}}>
+                        <View style = {{marginBottom: 100, width: '90%'}}>
                             <TitleComp>GATOR FIT</TitleComp>
                         </View>
                     <View style ={styles.textbox}>
@@ -93,8 +93,8 @@ export default function LoginScreen() {
                         ></Input>
 
                         <View style={styles.buttonrow}>
-                            <NavButton onPress={() => handleLogin(username,password)}>Login</NavButton>
-                            <NavButton onPress={handleSignin}>Sign-in</NavButton>
+                            <ButtonComp onPress={() => handleLogin(username,password)}>Login</ButtonComp>
+                            <ButtonComp onPress={handleSignin}>Sign-in</ButtonComp>
                         </View>
 
                     </View>
@@ -108,14 +108,15 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
     overlay: {
         flex : 1,
-        backgroundColor: 'rgba(255,255,255,.65)',
+        backgroundColor: 'rgba(255,255,255,.4)',
         alignItems: 'center',
         gap: 12,
     },
     failtext: {
         color: 'red',
-        fontSize: '60%',
+        fontSize: '70%',
         width: '100%',
+        textAlign: 'center'
     },
     textbox: {
         backgroundColor: 'white',
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     },
     buttonrow: {
         flexDirection: 'row',
-        gap: '25%',
+        gap: 25,
         justifyContent: 'center',
         fontSize: '80%',
     },
