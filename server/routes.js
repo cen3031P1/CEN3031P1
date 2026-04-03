@@ -25,6 +25,7 @@ import {
     getLeaderboard,
     getLeaderboardVisibility,
     setLeaderboardVisibility,
+    uploadProfilePic
 } from './controller.js';
 import { get } from 'mongoose';
 
@@ -56,5 +57,8 @@ router.get('/leaderboard/visibility/:userName', getLeaderboardVisibility);
 
 // Update current user leaderboard visibility
 router.patch('/leaderboard/visibility', setLeaderboardVisibility);
+
+// Upload profile picture
+router.patch('/user/:userName/profile-pic', uploadProfilePic);
 
 export default router;

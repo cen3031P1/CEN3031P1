@@ -2,11 +2,17 @@ import { View, Text, Alert, StyleSheet, Pressable } from 'react-native';
 import { useEffect, useState } from 'react';
 import useAuthContext from '../hook/useAuthContext.jsx';
 import api from '../../api.js';
+import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function SettingScreen() {
-	const { user } = useAuthContext();
+	const { user, dispatch } = useAuthContext();
 	const [visibleOnLeaderboard, setVisibleOnLeaderboard] = useState(true); // setVisibleOnLeaderboard updates visibleOnLeaderboard
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// LEADERBOARD VISIBILITY TOGGLE
 
 	// Load current visibility setting when user changes
 	useEffect(() => {
@@ -50,13 +56,64 @@ export default function SettingScreen() {
 		}
 	}
 
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// PROFILE PICTURE UPLOAD
+
+	async function handleSetProfilePicture(){
+
+		// Request permission to access media library
+		const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+		if (status !== 'granted') {
+		  Alert.alert('Permission Denied', 'Permission to access media library is required!');
+		  return;
+		}
+
+		// Open image picker
+		const result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ['images'],
+			allowsEditing: true,
+			aspect: [1, 1], // square aspect ratio
+			quality: 1,
+		});
+
+		if (result.canceled) {
+			return;
+		}
+
+		// Compress the image to reduce file size
+		const manipulated = await ImageManipulator.manipulateAsync(
+			result.assets[0].uri,
+			[{ resize: { width: 300 } }], 
+			{ compress: 0.7, format: ImageManipulator.SaveFormat.WEBP, base64: true }
+		);
+
+		// Upload the image to the server
+		try {
+			const response = await api.patch(`/api/user/${user.username}/profile-pic`, {
+				profilePic: `data:image/webp;base64,${manipulated.base64}`,
+			});
+
+			// Update user profile pic in auth context
+			const updatedUser = {...user, profilePic: response.data.profilePic};
+			dispatch({type: "LOGIN", payload: updatedUser});
+			await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+
+			Alert.alert('Success', 'Profile picture updated!');
+		} catch (error) {
+			console.error('Error uploading profile picture:', error);
+			Alert.alert('Upload Failed', 'Could not upload profile picture. Please try again.');
+		}
+	}
+
+
 	async function handleDelete(){
 		console.log("nothing yet");
 	}
 
 	return (
     <View style={styles.container}>
-		<Pressable onPress = {() => handleDelete()}style={styles.settingsButton}>
+		<Pressable onPress = {() => handleSetProfilePicture()}style={styles.settingsButton}>
 			<Text style = {styles.settingText}>Set Profile Picture</Text>
 		</Pressable>
 

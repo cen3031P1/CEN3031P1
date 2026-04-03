@@ -224,4 +224,29 @@ export async function setLeaderboardVisibility(req, res) {
 
 
 
+// Handle uploading profile picture. Takes in username and image data (base64 string).
+// Saves image to server and updates user's profilePic field with image URL.
+export async function uploadProfilePic(req, res) {
+    const {userName} = req.params;
+    const {profilePic} = req.body;
+
+    try {
+        const user = await User.findOneAndUpdate(
+            {userName},
+            {profilePic},
+            {new: true}
+        )
+
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        res.status(200).json({msg: "Profile picture updated successfully", code: "PROFILE_PIC_UPDATED", profilePic: user.profilePic});
+    } catch (error) {
+        console.error("Error uploading profile picture: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+
 

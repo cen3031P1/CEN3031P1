@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View, Text, Button, TextInput, StyleSheet, Pressable, Image} from 'react-native';
+import useAuthContext from '../hook/useAuthContext.jsx';
 
 // will display profile picture
 // goal
@@ -8,12 +9,22 @@ import { View, Text, Button, TextInput, StyleSheet, Pressable, Image} from 'reac
 // maybe calendar / map location
 
 export default function HomeScreen() {
-  return (
+	
+	const { user } = useAuthContext();
+	console.log('user:', user);
+
+  	return (
+
     <View style={styles.container}>
-      <Text style={styles.title}>Hello usr!</Text>
+	<Text style={styles.title}>Hello {user?.username}!</Text>
       <Image
-      source={require('../assets/images/defaultpfp.png')}
-      style = {styles.Profile}
+      source={
+	  	user?.profilePic
+		? { uri: user.profilePic }
+		: require('../assets/images/defaultpfp.png')
+		}
+
+		style={styles.Profile}
       />
 	<View style = {styles.featureBoxContainer}>
 		<Pressable onPress={()=>console.log("will do smt")} style ={styles.featureBox}>
