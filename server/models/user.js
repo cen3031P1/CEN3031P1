@@ -61,6 +61,11 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    visibleOnLeaderboard: {
+        type: Boolean,
+        required: true,
+        default: true,
+    },
     friends: {
         type: [String],
         required: true,
@@ -137,7 +142,7 @@ userSchema.statics.signup = async function(userName, password) {
     const hash = await bcrypt.hash(password, salt);
 
     //adds user to db
-    const user = await this.create({userName, password: hash, points: 0, gymLat: 0, gymLon: 0, streak: 0, bestStreak: 0, friends: []});
+    const user = await this.create({userName, password: hash, points: 0, gymLat: 0, gymLon: 0, streak: 0, bestStreak: 0, visibleOnLeaderboard: true, friends: []});
 
     return user;
 }
