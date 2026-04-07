@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ScrollView, Alert, Platform} from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ScrollView, Alert, Platform, Modal} from 'react-native';
 import { useEffect, useState } from 'react';
 import useAuthContext from '../hook/useAuthContext.jsx';
 import SettingButton from '../components/SettingButton.jsx';
@@ -16,6 +16,10 @@ import api from '../../api.js';
 export default function SettingScreen() {
 	const { user, dispatch } = useAuthContext();
 	const [visibleOnLeaderboard, setVisibleOnLeaderboard] = useState(true); // setVisibleOnLeaderboard updates visibleOnLeaderboard
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [deletePassword, setDeletePassword] = useState('');
+	const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
+	const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// LEADERBOARD VISIBILITY TOGGLE
@@ -112,14 +116,73 @@ export default function SettingScreen() {
 		}
 	}
 	async function handleDelete(){
-		console.log("nothing yet");
+		setDeletePassword('');
+		setDeleteErrorMessage('');
+		setShowDeleteModal(true);
 	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	// ACCOUNT DELETION
+
+	async function handleConfirmDeleteAccount() {
+		if (!user?.username || isDeletingAccount) {
+			return;
+		}
+
+		if (!deletePassword.trim()) {
+			setDeleteErrorMessage('Invalid password!');
+			return;
+		}
+
+		setDeleteErrorMessage('');
+		setIsDeletingAccount(true);
+
+		try {
+			const response = await api.delete(`/api/user/${user.username}`, {
+				data: { password: deletePassword },
+			});
+
+			if (response?.data?.code === 'WRONG_PASSWORD') {
+				setDeleteErrorMessage('Invalid password!');
+				return;
+			}
+
+			if (response?.data?.code === 'WRONG_USERNAME') {
+				setDeleteErrorMessage('User not found. Please log in again.');
+				return;
+			}
+			await AsyncStorage.removeItem('user');
+			dispatch({ type: 'LOGOUT' });
+			setDeletePassword('');
+			setDeleteErrorMessage('');
+			setShowDeleteModal(false);
+			router.replace('/');
+		} catch (error) {
+			if (error?.response?.data?.code === 'WRONG_PASSWORD') {
+				setDeleteErrorMessage('Invalid password!');
+			} else if (error?.response?.data?.code === 'MISSING_FIELDS') {
+				setDeleteErrorMessage('Password is required.');
+			} else if (error?.response?.data?.code === 'WRONG_USERNAME') {
+				setDeleteErrorMessage('User not found. Please log in again.');
+			} else {
+				setDeleteErrorMessage('Could not delete your account. Please try again.');
+			}
+		} finally {
+			setIsDeletingAccount(false);
+		}
+	}
+
 	async function handleGym(){
 		console.log("nothing yet");
 	}
 	async function handleGoal(){
 		console.log("nothing yet");
 	}
+
+	
+	/////////////////////////////////////////////////////////////////////////////////
+	// LOGOUT
 
 	async function performLogout() {
 		try {
@@ -176,6 +239,74 @@ export default function SettingScreen() {
 			{isAdmin && <SettingButton onPress={() => handleDelete} Icon = {Eye} isPrivacy = 'true'>Set Goal</SettingButton>}
 
 		</View>
+
+
+		{/* DELETE ACCOUNT CONFIRMATION MODAL */}
+
+		<Modal
+			animationType='fade'
+			transparent={true}
+			visible={showDeleteModal}
+			onRequestClose={() => {
+				if (!isDeletingAccount) {
+					setShowDeleteModal(false);
+				}
+			}}
+		>
+			<View style={styles.modalBackdrop}>
+				<View style={styles.modalCard}>
+					<Text style={styles.modalTitle}>Delete Account</Text>
+					<Text style={styles.modalBody}>
+						This action is permanent. Your profile and stats will be deleted.
+					</Text>
+					<Text style={styles.modalBody}>
+						Are you sure you want to continue?
+					</Text>
+
+					<TextInput
+						style={styles.modalInput}
+						placeholder='Enter YOUR account password to confirm'
+						secureTextEntry
+						autoCapitalize='none'
+						autoCorrect={false}
+						editable={!isDeletingAccount}
+						value={deletePassword}
+						onChangeText={(text) => {
+							setDeletePassword(text);
+							if (deleteErrorMessage) {
+								setDeleteErrorMessage('');
+							}
+						}}
+					/>
+
+					{!!deleteErrorMessage && (
+						<Text style={styles.modalErrorText}>{deleteErrorMessage}</Text>
+					)}
+
+					<View style={styles.modalActions}>
+						<Pressable
+							style={styles.cancelButton}
+							onPress={() => {
+								setShowDeleteModal(false);
+								setDeletePassword('');
+								setDeleteErrorMessage('');
+							}}
+							disabled={isDeletingAccount}
+						>
+							<Text style={styles.cancelButtonText}>Cancel</Text>
+						</Pressable>
+
+						<Pressable
+							style={[styles.deleteButton, isDeletingAccount && styles.disabledButton]}
+							onPress={handleConfirmDeleteAccount}
+							disabled={isDeletingAccount}
+						>
+							<Text style={styles.deleteButtonText}>{isDeletingAccount ? 'Deleting...' : 'Delete'}</Text>
+						</Pressable>
+					</View>
+				</View>
+			</View>
+		</Modal>
 	</ScrollView>
 
   );
@@ -187,5 +318,86 @@ const styles = StyleSheet.create({
 		margin: 25,
 		alignItems: 'center',
 		gap: 10,
+	},
+	modalBackdrop: {
+		flex: 1,
+		backgroundColor: 'rgba(0, 0, 0, 0.35)',
+		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 20,
+	},
+	modalCard: {
+		width: '100%',
+		maxWidth: 420,
+		backgroundColor: '#e4e9f5',
+		borderRadius: 10,
+		padding: 18,
+		borderWidth: 1,
+		borderColor: '#cdd7eb',
+	},
+	modalTitle: {
+		fontSize: 24,
+		fontWeight: '800',
+		marginBottom: 10,
+		textAlign: 'center',
+	},
+	modalBody: {
+		fontSize: 15,
+		textAlign: 'center',
+		marginBottom: 8,
+		color: '#333',
+	},
+	modalInput: {
+		height: 44,
+		borderWidth: 1,
+		borderColor: '#9da8bf',
+		borderRadius: 6,
+		paddingHorizontal: 12,
+		backgroundColor: '#fff',
+		marginTop: 4,
+	},
+	modalErrorText: {
+		marginTop: 8,
+		textAlign: 'center',
+		color: '#b42318',
+		fontSize: 14,
+		fontWeight: '700',
+	},
+	modalActions: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		gap: 10,
+		marginTop: 14,
+	},
+	cancelButton: {
+		flex: 1,
+		height: 42,
+		borderRadius: 6,
+		borderWidth: 1,
+		borderColor: '#9da8bf',
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#f4f6fb',
+	},
+	deleteButton: {
+		flex: 1,
+		height: 42,
+		borderRadius: 6,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#d43f3a',
+	},
+	cancelButtonText: {
+		fontSize: 15,
+		fontWeight: '700',
+		color: '#27364d',
+	},
+	deleteButtonText: {
+		fontSize: 15,
+		fontWeight: '700',
+		color: '#fff',
+	},
+	disabledButton: {
+		opacity: 0.7,
 	},
 })
