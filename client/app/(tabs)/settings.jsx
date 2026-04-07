@@ -17,6 +17,7 @@ export default function SettingScreen() {
 	const { user, dispatch } = useAuthContext();
 	const [visibleOnLeaderboard, setVisibleOnLeaderboard] = useState(true); // setVisibleOnLeaderboard updates visibleOnLeaderboard
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [showLogoutModal, setShowLogoutModal] = useState(false);
 	const [deletePassword, setDeletePassword] = useState('');
 	const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
 	const [isDeletingAccount, setIsDeletingAccount] = useState(false);
@@ -196,27 +197,7 @@ export default function SettingScreen() {
 	}
 	
 	async function handleLogout(){
-		if (Platform.OS === 'web') {
-			const confirmed = typeof window !== 'undefined'
-				? window.confirm('Are you sure you want to log out?')
-				: true;
-
-			if (!confirmed) {
-				return;
-			}
-
-			await performLogout();
-			return;
-		}
-
-		Alert.alert('Logout', 'Are you sure you want to log out?', [
-			{ text: 'Cancel', style: 'cancel' },
-			{
-				text: 'Logout',
-				style: 'destructive',
-				onPress: performLogout,
-			},
-		]);
+		setShowLogoutModal(true);
 	}
 	// async function handlePrivacy(){
 	// 	setPrivacyStatus(prev => !prev);
@@ -302,6 +283,48 @@ export default function SettingScreen() {
 							disabled={isDeletingAccount}
 						>
 							<Text style={styles.deleteButtonText}>{isDeletingAccount ? 'Deleting...' : 'Delete'}</Text>
+						</Pressable>
+					</View>
+				</View>
+			</View>
+		</Modal>
+
+		{/* LOGOUT CONFIRMATION MODAL */}
+
+		<Modal
+			animationType='fade'
+			transparent={true}
+			visible={showLogoutModal}
+			onRequestClose={() => {
+				setShowLogoutModal(false);
+			}}
+		>
+			<View style={styles.modalBackdrop}>
+				<View style={styles.modalCard}>
+					<Text style={styles.modalTitle}>Log Out</Text>
+					<Text style={styles.modalBody}>
+						You will need to log in again to access your account.
+					</Text>
+					<Text style={styles.modalBody}>
+						Do you want to continue?
+					</Text>
+
+					<View style={styles.modalActions}>
+						<Pressable
+							style={styles.cancelButton}
+							onPress={() => setShowLogoutModal(false)}
+						>
+							<Text style={styles.cancelButtonText}>Cancel</Text>
+						</Pressable>
+
+						<Pressable
+							style={styles.logoutButton}
+							onPress={async () => {
+								setShowLogoutModal(false);
+								await performLogout();
+							}}
+						>
+							<Text style={styles.logoutButtonText}>Logout</Text>
 						</Pressable>
 					</View>
 				</View>
@@ -393,6 +416,19 @@ const styles = StyleSheet.create({
 		color: '#27364d',
 	},
 	deleteButtonText: {
+		fontSize: 15,
+		fontWeight: '700',
+		color: '#fff',
+	},
+	logoutButton: {
+		flex: 1,
+		height: 42,
+		borderRadius: 6,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#355fa3',
+	},
+	logoutButtonText: {
 		fontSize: 15,
 		fontWeight: '700',
 		color: '#fff',
