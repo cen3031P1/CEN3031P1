@@ -7,7 +7,7 @@ import TitleComp from './components/Titles.jsx';
 import Input from './components/Input.jsx';
 import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
-import NavButton from './components/NavButton.jsx';
+import ButtonComp from './components/ButtonComp.jsx';
 
 
 export default function SigninScreen() {
@@ -107,7 +107,7 @@ export default function SigninScreen() {
                         resizeMode: 'contain'
                         }}/>
                     
-                        <View style = {{marginBottom: 150, width: '90%'}}>
+                        <View style = {{marginBottom: 100, width: '90%'}}>
                             <TitleComp>GATOR FIT</TitleComp>
                         </View>
                     <View style ={styles.textbox}>
@@ -141,8 +141,8 @@ export default function SigninScreen() {
                         ></Input>
 
                         <View style={styles.buttonrow}>
-                            <NavButton onPress={handleBack}>Back</NavButton>
-                            <NavButton onPress={() => handleSignup(username,password,cpassword)}>Sign-Up</NavButton>
+                            <ButtonComp onPress={handleBack}>Back</ButtonComp>
+                            <ButtonComp onPress={() => handleSignup(username,password,cpassword)}>Sign-Up</ButtonComp>
                         </View>
 
                     </View>
@@ -155,7 +155,8 @@ export default function SigninScreen() {
 
 const styles = StyleSheet.create({
     overlay: {
-        backgroundColor: 'rgba(255,255,255,.65)',
+        flex : 1,
+        backgroundColor: 'rgba(255,255,255,.4)',
         alignItems: 'center',
         gap: 12,
         paddingBottom: 200,
@@ -163,7 +164,8 @@ const styles = StyleSheet.create({
     failtext: {
         color: 'red',
         fontSize: '70%',
-        width: '100%'
+        width: '100%',
+        textAlign: 'center'
     },
     textbox: {
         backgroundColor: 'white',
@@ -180,7 +182,7 @@ const styles = StyleSheet.create({
     },
     buttonrow: {
         flexDirection: 'row',
-        gap: 15,
+        gap: 25,
         justifyContent: 'center',
         fontSize: '80%',
     },

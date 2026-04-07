@@ -16,18 +16,18 @@
 */
 
 import express from 'express';
-import {
-    signUp,
-    login,
-    addFriend,
+import { 
+    signUp, 
+    login, 
+    addFriend, 
     getFriends,
-    removeFriend,
-    getLeaderboard,
-    getLeaderboardVisibility,
-    setLeaderboardVisibility,
+    removeFriend,  
+    getLeaderboard,  
+    getLeaderboardVisibility, 
+    setLeaderboardVisibility, 
     uploadProfilePic
 } from './controller.js';
-import { get } from 'mongoose';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 

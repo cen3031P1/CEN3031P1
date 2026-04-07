@@ -1,8 +1,12 @@
-import { View, Text, FlatList, Button, useWindowDimensions } from 'react-native';
-import { useCallback, useState } from 'react';
+import { View, Text, FlatList, Button, useWindowDimensions} from 'react-native';
+import { useEffect, useState, useCallback} from 'react';;
 import { useFocusEffect } from '@react-navigation/native';
 import api from '../../api.js';
 import { useAuthContext } from '../hook/useAuthContext.jsx';
+import TitleComp from '../components/Titles.jsx';
+import AppText from '../components/AppText.jsx';
+import { AlignJustify } from 'lucide-react-native';
+import ButtonComp from '../components/ButtonComp.jsx';
 
 export default function LeaderboardScreen() {
   const {user} = useAuthContext()
@@ -10,8 +14,8 @@ export default function LeaderboardScreen() {
   const [sortBy, setSortBy] = useState('points')
   const windowWidth = useWindowDimensions().width
 
-  const tableWidth = windowWidth * 0.5;
-
+  const tableWidth = windowWidth;
+  
   // Load leaderboard when screen is focused and when user or sortBy changes
   useFocusEffect(
     useCallback(() => {
@@ -35,28 +39,30 @@ export default function LeaderboardScreen() {
   }
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', padding: 20 }}>
-      <Text style ={{fontSize: 24, fontWeight: 'bold', marginBottom: 20}}>Global Leaderboard</Text>
-      <View style={{ flexDirection: 'row', gap: 10, marginBottom: 20 }}>
-        <Button title="Points" onPress={() => setSortBy('points')} />
-        <Button title="Best Streak" onPress={() => setSortBy('bestStreak')} />
+    <View style={{ flex: 1, alignItems: 'center', padding: 20}}>
+      {/* <Text style ={{fontSize: 24, fontWeight: 'bold', marginBottom: 20}}>Global Leaderboard</Text> */}
+      <TitleComp style = {{marginBottom: 20}}>Global Leaderboard</TitleComp>
+      <View style={{ flexDirection: 'row', gap: 10, marginBottom: 20 , justifyContent: 'center'}}>
+        <ButtonComp onPress={() => setSortBy('points')}>Points</ButtonComp>
+        <ButtonComp onPress={() => setSortBy('bestStreak')}>Best Streak</ButtonComp>
       </View>
 
     <View style={{ width: tableWidth}}>
-      <View style={{ flexDirection: 'row', paddingHorizontal: 10, marginBottom: 5 }}>
-        <Text style={{ width: 100, fontWeight: 'bold', textAlign: 'center' }}>Rank</Text>
-        <Text style={{ flex: 1, fontWeight: 'bold', textAlign: 'center' }}>Username</Text>
-        <Text style={{ flex: 1, fontWeight: 'bold', textAlign: 'center' }}>{sortBy === 'points' ? 'Points' : 'Best Streak'}</Text>
+      <View style={{ flexDirection: 'row', paddingHorizontal: 5, paddingBottom: 15, height: '20%'}}>
+        <AppText style={{ width: '25%', fontWeight: 'bold', textAlign: 'center' ,fontSize: 14}}>Rank</AppText>
+        <AppText style={{ width: '50%', fontWeight: 'bold', textAlign: 'center', fontSize: 14}}>Username</AppText>
+        <AppText style={{ width: '25%', fontWeight: 'bold', textAlign: 'center', fontSize: 14}}>{sortBy === 'points' ? 'Points' : 'Best Streak'}</AppText>
       </View>
 
       <FlatList
         data={leaderboard}
         keyExtractor={(item) => item._id}
+        style = {{width: tableWidth}}
         renderItem={({ item, index }) => (
-          <View style={{ flexDirection: 'row', paddingHorizontal: 10, marginBottom: 5 }}>
-            <Text style={{ width: 100, textAlign: 'center' }}>#{index + 1}</Text>
-            <Text style={{ flex: 1, textAlign: 'center' }}>{item.userName}</Text>
-            <Text style={{ flex: 1, textAlign: 'center' }}>{item[sortBy]}</Text>
+          <View style={{ flexDirection: 'row', paddingHorizontal: 10}}>
+            <AppText style={{ width: '25%', textAlign: 'center', fontSize : 15, paddingTop : 10}} >#{index + 1}</AppText>
+            <AppText style={{ width: '50%', textAlign: 'center', fontSize : 15 , paddingTop : 10}} >{item.userName}</AppText>
+            <AppText style={{ width: '25%', textAlign: 'center', fontSize : 15 , paddingTop : 10}} >{sortBy === 'points' ? item.points : item.bestStreak}</AppText>
           </View>
         )}
       />

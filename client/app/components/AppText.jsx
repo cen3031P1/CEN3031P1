@@ -13,9 +13,7 @@ export default function AppText({children, style }){
 
 const styles = StyleSheet.create({
     text: {
-        fontSize: '95%',
-        fontWeight: 'bold',
+        fontSize: 25,
         fontFamily: fonts.headers,
-        color: colors.regularText,
     }
 });
