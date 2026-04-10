@@ -42,7 +42,7 @@ export default function SigninScreen() {
         }
         
         const success = await signup(username, password);
-        if (success){router.replace('/(tabs)')};
+        if (success){router.replace('/(tabs)/home')};
         
     }
     useEffect(() => {
@@ -141,8 +141,8 @@ export default function SigninScreen() {
                         ></Input>
 
                         <View style={styles.buttonrow}>
-                            <ButtonComp onPress={handleBack}>Back</ButtonComp>
-                            <ButtonComp onPress={() => handleSignup(username,password,cpassword)}>Sign-Up</ButtonComp>
+                            <ButtonComp style = {{width: '65%'}}onPress={handleBack}>Back</ButtonComp>
+                            <ButtonComp style = {{width: '65%'}}onPress={() => handleSignup(username,password,cpassword)}>Sign-Up</ButtonComp>
                         </View>
 
                     </View>
@@ -181,8 +181,8 @@ const styles = StyleSheet.create({
     },
     buttonrow: {
         flexDirection: 'row',
-        gap: 25,
+        gap: 20,
+        width: '65%',
         justifyContent: 'center',
-        fontSize: '80%',
     },
 })

@@ -60,7 +60,7 @@ export async function signUp(req, res) {
         console.log("Should be added to db?")
         const token = createToken(user._id);
 
-        res.status(201).json({username: userName,  token});
+        res.status(201).json({username: userName,  token, visibleOnLeaderboard: user.visibleOnLeaderboard !== false});
 
     } catch (error){
         console.error("Error signing up user...", error);
@@ -165,7 +165,7 @@ export async function getLeaderboard(req, res) {
         if (!validFields.includes(sortBy)) {
             return res.status(400).json({msg: "Invalid sort field", code: "INVALID_SORT_FIELD"});
         }
-        const users = await User.find({}, `userName ${sortBy}`).sort({ [sortBy]: -1 }).limit(50);
+        const users = await User.find({visibleOnLeaderboard: {$ne: false}}, `userName ${sortBy}`).sort({ [sortBy]: -1 }).limit(50);
         res.status(200).json({leaderboard: users});
     } catch (error) {
         console.error("Error getting leaderboard: ", error);
@@ -244,6 +244,40 @@ export async function uploadProfilePic(req, res) {
         res.status(200).json({msg: "Profile picture updated successfully", code: "PROFILE_PIC_UPDATED", profilePic: user.profilePic});
     } catch (error) {
         console.error("Error uploading profile picture: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+// Delete account by username and remove this user from every friend list.
+export async function deleteAccount(req, res) {
+    try {
+        const {userName} = req.params;
+        const password = req.body?.password || req.query?.password;
+
+        if (!userName || !password) {
+            return res.status(400).json({msg: "Username and password must be provided", code: "MISSING_FIELDS"});
+        }
+
+        // Verify the user's password before allowing permanent deletion.
+        await User.login(userName, password);
+
+        const deletedUser = await User.findOneAndDelete({userName});
+
+        if (!deletedUser) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        await User.updateMany(
+            {friends: userName},
+            {$pull: {friends: userName}}
+        );
+
+        res.status(200).json({msg: "Account deleted successfully", code: "ACCOUNT_DELETED"});
+    } catch (error) {
+        if (error?.code === 'WRONG_PASSWORD' || error?.code === 'WRONG_USERNAME') {
+            return res.status(200).json({msg: "Invalid credentials", code: error.code});
+        }
+        console.error("Error deleting account: ", error);
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }

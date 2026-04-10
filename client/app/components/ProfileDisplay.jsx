@@ -25,18 +25,18 @@ export default function ProfileDisplay({imgsrc,base_numval,optimal_numval,onPres
                 <View style = {styles.subdisplay}>
                     {type === 'goal' &&
                         <>
-                            <AppText style ={styles.textdisplay}> Current Goal: </AppText>
+                            {/* <AppText style ={styles.textdisplay}> Current Goal: </AppText>
                             <AppText style ={styles.textdisplay}>{base_numval}</AppText>
                             <AppText style ={styles.textdisplay}> Goal Status: </AppText>
-                            <AppText style ={styles.textdisplay}>{optimal_numval}</AppText>
+                            <AppText style ={styles.textdisplay}>{optimal_numval}</AppText> */}
                         </>
                     }
                     {type === 'streak' &&
                         <>
-                            <AppText style ={styles.textdisplay}>current Streak: </AppText>
+                            {/* <AppText style ={styles.textdisplay}>current Streak: </AppText>
                             <AppText style ={styles.textdisplay}>{base_numval}</AppText>
                             <AppText style ={styles.textdisplay}>Best Streak: </AppText>
-                            <AppText style ={styles.textdisplay}>{optimal_numval}</AppText>
+                            <AppText style ={styles.textdisplay}>{optimal_numval}</AppText> */}
                         </>
                     }
 

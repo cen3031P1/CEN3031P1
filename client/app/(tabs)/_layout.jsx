@@ -21,7 +21,7 @@ export default function TabLayout() {
     }}
     style={styles.container}
     >
-      <Tabs.Screen name="index" options={{ 
+      <Tabs.Screen name="home" options={{ 
         title: 'Home',
         tabBarIcon: ({ color,size, focused}) => (
           <Ionicons

@@ -17,13 +17,13 @@ export default function LoginScreen() {
 
     useEffect(() => {
         if (user) {
-            router.replace('/(tabs)');
+            router.replace('/(tabs)/home');
         }
     }, [user]);
 
     async function handleLogin(username, password){
         const success = await doLogin(username, password)
-        if (success){router.replace('/(tabs)')};
+        if (success){router.replace('/(tabs)/home')};
     }
 
     useEffect(() => {
@@ -102,8 +102,8 @@ export default function LoginScreen() {
                         ></Input>
 
                         <View style={styles.buttonrow}>
-                            <ButtonComp onPress={() => handleLogin(username,password)}>Login</ButtonComp>
-                            <ButtonComp onPress={handleSignin}>Sign-in</ButtonComp>
+                            <ButtonComp style = {{width: '65%'}}onPress={() => handleLogin(username,password)}>Login</ButtonComp>
+                            <ButtonComp style = {{width: '65%'}}onPress={handleSignin}>Sign-in</ButtonComp>
                         </View>
 
                     </View>
@@ -142,8 +142,8 @@ const styles = StyleSheet.create({
     },
     buttonrow: {
         flexDirection: 'row',
-        gap: 25,
+        gap: 20,
+        width: '65%',
         justifyContent: 'center',
-        fontSize: '80%',
     },
 })
