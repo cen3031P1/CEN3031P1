@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255,255,255,.4)',
         alignItems: 'center',
         gap: 12,
+        paddingBottom: 200,
     },
     failtext: {
         color: 'red',

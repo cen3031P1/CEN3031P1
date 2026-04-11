@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Pressable, Image} from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ScrollView} from 'react-native';
 import { useSignin } from './hook/useSignIn';
 import AppText from './components/AppText.jsx';
 import TitleComp from './components/Titles.jsx';
@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255,255,255,.4)',
         alignItems: 'center',
         gap: 12,
+        paddingBottom: 200,
     },
     failtext: {
         color: 'red',
