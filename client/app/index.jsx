@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ImageBackground} from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ScrollView} from 'react-native';
 import {useLogin} from './hook/useLogin.jsx';
 import AppText from './components/AppText.jsx';
 import TitleComp from './components/Titles.jsx';
@@ -57,27 +57,32 @@ export default function LoginScreen() {
     const [invalid_Cred, setInvalid_Cred] = useState('');
 
     return (    
-        <View style = {{flex : 1}}>
+        
+
+        // <View style = {{flex : 1}}>
         
             <LinearGradient
             colors = {[colors.bgPrimary,colors.bgSecondary]}
             style= {{flex:1}}
             >
-            
+            <ScrollView contentContainerStyle={{flexGrow: 1}}>
                 <View style={styles.overlay}>
 
-                    <Image source={require('./assets/images/gfit_logo.png')}
-                    style = {{
-                        height: 300, 
-                        width: '90%', 
-                        marginTop: 20, 
-                        maxWidth: 500,
-                        resizeMode: 'contain'
-                        }}/>
-                    
-                        <View style = {{marginBottom: 100, width: '90%'}}>
+                    <View style = {{marginBottom: 30, width: '90%', justifyContent: 'center', alignItems: 'center'}}>
+                        <Image source={require('./assets/images/gfit_logo.png')}
+                        style = {{
+                            height: 300, 
+                            width: '90%', 
+                            marginTop: 20, 
+                            maxWidth: 500,
+                            resizeMode: 'contain'
+                            }}/>
+                        
+                        <View>
                             <TitleComp>GATOR FIT</TitleComp>
                         </View>
+                    </View>
+                    
                     <View style ={styles.textbox}>
                         
                         <View>
@@ -103,14 +108,17 @@ export default function LoginScreen() {
 
                         <View style={styles.buttonrow}>
                             <ButtonComp style = {{width: '65%'}}onPress={() => handleLogin(username,password)}>Login</ButtonComp>
-                            <ButtonComp style = {{width: '65%'}}onPress={handleSignin}>Sign-in</ButtonComp>
+                            <ButtonComp style = {{width: '65%', backgroundColor: colors.bgPrimary}}onPress={handleSignin}>Sign-Up</ButtonComp>
                         </View>
 
                     </View>
 
                 </View>
-            </LinearGradient>
-        </View>
+            </ScrollView>
+        </LinearGradient>
+            
+        // </View>
+        
     );
 }
 
@@ -133,7 +141,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         borderRadius: 10,
         width: '85%',
-        height: '40%',
+        height: '45%',
         gap: 15,
         justifyContent: 'center',
         alignItems: 'center',

@@ -73,7 +73,6 @@ export async function getFriends(req, res) {
     try {
         const {userName} = req.params;
         const user = await User.findOne({userName});
-        console.log("Friends: ", user?.friends);
         if (!user) {
             return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
         }
@@ -278,6 +277,57 @@ export async function deleteAccount(req, res) {
             return res.status(200).json({msg: "Invalid credentials", code: error.code});
         }
         console.error("Error deleting account: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+//get points
+export async function getPoints(req, res) {
+    try {
+        const {userName} = req.params;
+        const user = await User.findOne({userName});
+        
+        if (!user) {
+            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
+        }
+
+        res.status(200).json({msg: "Points retrieved successfully", code: "POINTS_RETRIEVED", points: user.points});
+    } catch (error) {
+        console.error("Error getting points: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+//get streak
+export async function getStreak(req, res) {
+    try {
+        const {userName} = req.params;
+        const user = await User.findOne({userName});
+        
+        if (!user) {
+            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
+        }
+
+        res.status(200).json({msg: "Streak retrieved successfully", code: "STREAK_RETRIEVED", streak: user.streak});
+    } catch (error) {
+        console.error("Error getting streak: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+//get best streak
+export async function getBestStreak(req, res) {
+    try {
+        const {userName} = req.params;
+        const user = await User.findOne({userName});
+        
+        if (!user) {
+            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
+        }
+
+        res.status(200).json({msg: "Best streak retrieved successfully", code: "BEST_STREAK_RETRIEVED", bestStreak: user.bestStreak});
+    } catch (error) {
+        console.error("Error getting best streak: ", error);
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }

@@ -239,7 +239,7 @@ export default function SettingScreen() {
 		</View>
 
 		{/* DELETE ACCOUNT CONFIRMATION MODAL */}
-		<Modal
+		{/* <Modal
 			animationType='fade'
 			transparent={true}
 			visible={showDeleteModal}
@@ -302,10 +302,10 @@ export default function SettingScreen() {
 					</View>
 				</View>
 			</View>
-		</Modal>
+		</Modal> */}
 
 
-		{/* <SettingModal
+		<SettingModal
 			type='delete'
 			title='Delete Account'
 			subtext1='This action is permanent. Your profile and stats will be deleted.'
@@ -325,7 +325,7 @@ export default function SettingScreen() {
 			deleteErrorMessage = {deleteErrorMessage}
 			value={deletePassword}
 			onChangeText={setDeletePassword}
-		/> */}
+		/>
 
 		<SettingModal
 			type='logout'
@@ -376,7 +376,7 @@ export default function SettingScreen() {
 		<SettingModal
 			type='goal'
 			title='Set Goal'
-			subtext1='Enter your fitness goal in terms of points. For example, "1000".'
+			subtext1='Enter your fitness goal in terms of streaks. For example, "1000".'
 			subtext2='This can be changed at any time.'
 			action= 'Set Goal'
 			visible={showGoalModal}
