@@ -173,8 +173,9 @@ export default function SettingScreen() {
 	// 	setPrivacyStatus(prev => !prev);
 	// }
 
-	const { user, dispatch } = useAuthContext();
-	const [visibleOnLeaderboard, setVisibleOnLeaderboard] = useState(true);
+	// const { user, dispatch } = useAuthContext();
+	// const [visibleOnLeaderboard, setVisibleOnLeaderboard] = useState(true);
+	setVisibleOnLeaderboard(true)
 
 		useEffect(() => {
 		async function loadVisibility() {
