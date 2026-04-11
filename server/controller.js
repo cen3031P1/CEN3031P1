@@ -73,7 +73,6 @@ export async function getFriends(req, res) {
     try {
         const {userName} = req.params;
         const user = await User.findOne({userName});
-        console.log("Friends: ", user?.friends);
         if (!user) {
             return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
         }
@@ -244,6 +243,91 @@ export async function uploadProfilePic(req, res) {
         res.status(200).json({msg: "Profile picture updated successfully", code: "PROFILE_PIC_UPDATED", profilePic: user.profilePic});
     } catch (error) {
         console.error("Error uploading profile picture: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+// Delete account by username and remove this user from every friend list.
+export async function deleteAccount(req, res) {
+    try {
+        const {userName} = req.params;
+        const password = req.body?.password || req.query?.password;
+
+        if (!userName || !password) {
+            return res.status(400).json({msg: "Username and password must be provided", code: "MISSING_FIELDS"});
+        }
+
+        // Verify the user's password before allowing permanent deletion.
+        await User.login(userName, password);
+
+        const deletedUser = await User.findOneAndDelete({userName});
+
+        if (!deletedUser) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        await User.updateMany(
+            {friends: userName},
+            {$pull: {friends: userName}}
+        );
+
+        res.status(200).json({msg: "Account deleted successfully", code: "ACCOUNT_DELETED"});
+    } catch (error) {
+        if (error?.code === 'WRONG_PASSWORD' || error?.code === 'WRONG_USERNAME') {
+            return res.status(200).json({msg: "Invalid credentials", code: error.code});
+        }
+        console.error("Error deleting account: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+//get points
+export async function getPoints(req, res) {
+    try {
+        const {userName} = req.params;
+        const user = await User.findOne({userName});
+        
+        if (!user) {
+            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
+        }
+
+        res.status(200).json({msg: "Points retrieved successfully", code: "POINTS_RETRIEVED", points: user.points});
+    } catch (error) {
+        console.error("Error getting points: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+//get streak
+export async function getStreak(req, res) {
+    try {
+        const {userName} = req.params;
+        const user = await User.findOne({userName});
+        
+        if (!user) {
+            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
+        }
+
+        res.status(200).json({msg: "Streak retrieved successfully", code: "STREAK_RETRIEVED", streak: user.streak});
+    } catch (error) {
+        console.error("Error getting streak: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+//get best streak
+export async function getBestStreak(req, res) {
+    try {
+        const {userName} = req.params;
+        const user = await User.findOne({userName});
+        
+        if (!user) {
+            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
+        }
+
+        res.status(200).json({msg: "Best streak retrieved successfully", code: "BEST_STREAK_RETRIEVED", bestStreak: user.bestStreak});
+    } catch (error) {
+        console.error("Error getting best streak: ", error);
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }

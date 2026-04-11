@@ -14,7 +14,7 @@ export default function SettingButton({PrivateOn=false , isPrivacy=false, Icon, 
             style ={[styles.button,style]}
             onPress={onPress}
             >
-                <View style = {{flexDirection: 'row', width: '99%'}}>
+                <View style = {{flexDirection: 'row', width: '98%'}}>
                     <Icon style = {styles.icon}/>
                     <AppText style ={styles.settingText}>{children}</AppText>
                     {!isPrivacy && <X style = {styles.icon}/>}
@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     button:{
-		width: '96%',
-		height: 50,
+		width: '97%',
+		height: 53,
 		backgroundColor: 'lightgrey',
 		borderRadius: 5,
 		alignItems: 'left',
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     },
     settingText: {
         paddingLeft: 10,
-        paddingTop: 2,
+        paddingTop: 5,
         width: '100%',
         fontSize: 20,
         fontFamily: fonts.settings,
@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
     },
     icon: {
         paddingLeft: 10,
-        width: 30,
-        height: 30,
+        width: 35,
+        height: 35,
     },
     toggle:{
         marginTop: -7,

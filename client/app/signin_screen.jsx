@@ -8,6 +8,7 @@ import Input from './components/Input.jsx';
 import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
+import { ScrollView } from 'react-native-web';
 
 
 export default function SigninScreen() {
@@ -42,7 +43,7 @@ export default function SigninScreen() {
         }
         
         const success = await signup(username, password);
-        if (success){router.replace('/(tabs)')};
+        if (success){router.replace('/(tabs)/home')};
         
     }
     useEffect(() => {
@@ -89,27 +90,29 @@ export default function SigninScreen() {
     const [invalid_Cred, setInvalid_Cred] = useState('');
     
     return (    
-        <View style = {{flex : 1}}>
         
             <LinearGradient
             colors = {[colors.bgPrimary,colors.bgSecondary]}
             style= {{flex:1}}
             >
-            
-                <ScrollView contentContainerStyle={styles.overlay}>
+            <ScrollView contentContainerStyle={{flexGrow: 1}}>
+                <View style={styles.overlay}>
 
-                    <Image source={require('./assets/images/gfit_logo.png')}
-                    style = {{
-                        height: 300, 
-                        width: '90%', 
-                        marginTop: 20, 
-                        maxWidth: 500,
-                        resizeMode: 'contain'
-                        }}/>
-                    
-                        <View style = {{marginBottom: 100, width: '90%'}}>
+                    <View style = {{marginBottom: 30, width: '90%', justifyContent: 'center', alignItems: 'center'}}>
+                        <Image source={require('./assets/images/gfit_logo.png')}
+                        style = {{
+                            height: 300, 
+                            width: '90%', 
+                            marginTop: 20, 
+                            maxWidth: 500,
+                            resizeMode: 'contain'
+                            }}/>
+                        
+                        <View>
                             <TitleComp>GATOR FIT</TitleComp>
                         </View>
+                    </View>
+
                     <View style ={styles.textbox}>
 
                         <View>
@@ -141,15 +144,16 @@ export default function SigninScreen() {
                         ></Input>
 
                         <View style={styles.buttonrow}>
-                            <ButtonComp onPress={handleBack}>Back</ButtonComp>
-                            <ButtonComp onPress={() => handleSignup(username,password,cpassword)}>Sign-Up</ButtonComp>
+                            <ButtonComp style = {{width: '65%'}}onPress={handleBack}>Back</ButtonComp>
+                            <ButtonComp style = {{width: '65%', backgroundColor: colors.bgPrimary}}onPress={() => handleSignup(username,password,cpassword)}>Sign-Up</ButtonComp>
                         </View>
 
                     </View>
 
-                </ScrollView>
+                </View>
+            </ScrollView>
             </LinearGradient>
-        </View>
+
     );
 }
 
@@ -173,7 +177,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         borderRadius: 10,
         width: '85%',
-        height: '40%',
+        height: '45%',
         gap: 15,
         justifyContent: 'center',
         alignItems: 'center',
@@ -182,8 +186,8 @@ const styles = StyleSheet.create({
     },
     buttonrow: {
         flexDirection: 'row',
-        gap: 25,
+        gap: 20,
+        width: '65%',
         justifyContent: 'center',
-        fontSize: '80%',
     },
 })

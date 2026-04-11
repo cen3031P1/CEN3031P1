@@ -25,7 +25,11 @@ import {
     getLeaderboard,  
     getLeaderboardVisibility, 
     setLeaderboardVisibility, 
-    uploadProfilePic
+    uploadProfilePic,
+    deleteAccount,
+    getPoints,
+    getStreak,
+    getBestStreak
 } from './controller.js';
 import mongoose from 'mongoose';
 
@@ -60,5 +64,18 @@ router.patch('/leaderboard/visibility', setLeaderboardVisibility);
 
 // Upload profile picture
 router.patch('/user/:userName/profile-pic', uploadProfilePic);
+
+// Delete account
+router.delete('/user/:userName', deleteAccount);
+
+// Get Points
+router.get('/user/:userName/points', getPoints);
+
+// Get Streak
+router.get('/user/:userName/streak', getStreak);
+
+// Get Best Streak
+router.get('/user/:userName/best-streak', getBestStreak);
+
 
 export default router;

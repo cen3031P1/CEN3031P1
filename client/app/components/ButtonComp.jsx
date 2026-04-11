@@ -11,19 +11,20 @@ export default function ButtonComp({onPress,children,style,...props}){
         style = {[styles.button,style]}
         onPress={onPress}
         > 
-            <AppText style = {{color : colors.buttonText, fontSize: 14}}>{children}</AppText>
+            <AppText style = {{color : colors.buttonText, fontSize: 12}}>{children}</AppText>
         </Pressable>
     )
 }
 
 const styles = StyleSheet.create({
     button:{
-        width: '65%',
+        width: '80%',
         height: 40,
         backgroundColor: colors.secondary,
         borderRadius: 5,
+        borderWidth: 1,
+        borderColor: colors.border,
         justifyContent: 'center',
         alignItems: 'center',
-        fontSize: 12,
     }
 })
