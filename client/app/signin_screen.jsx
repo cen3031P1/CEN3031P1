@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Pressable, Image} from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ScrollView} from 'react-native';
 import { useSignin } from './hook/useSignIn';
 import AppText from './components/AppText.jsx';
 import TitleComp from './components/Titles.jsx';
@@ -8,7 +8,6 @@ import Input from './components/Input.jsx';
 import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
-import { ScrollView } from 'react-native-web';
 import { useAuthContext} from './hook/useAuthContext.jsx';
 
 export default function SigninScreen() {
