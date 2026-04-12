@@ -1,17 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Appearance, useColorScheme, Image} from 'react-native';
-import { Tabs, Redirect } from 'expo-router';
+import { Tabs, Redirect, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect } from 'react';
 import useAuthContext from '../hook/useAuthContext.jsx';
 
 export default function TabLayout() {
   const colorscheme = useColorScheme();
-  const { user } = useAuthContext();
+  const {user} = useAuthContext()
 
-  // if (!user) {
-  //   return <Redirect href="/" />;
-  // }
+  useEffect(() => {
+    if(!user){
+      router.replace('/signin_screen')
+    }
+  },[user] )
+
   
   return (
     <Tabs

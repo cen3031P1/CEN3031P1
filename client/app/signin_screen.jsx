@@ -8,6 +8,7 @@ import Input from './components/Input.jsx';
 import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
+import useAuthContext from './hook/useAuthContext.jsx';
 // import { ScrollView } from 'react-native-web';
 
 
@@ -32,7 +33,8 @@ export default function SigninScreen() {
             const response = await fetch('ip+port/signin',{
                 method: 'POST',
                 headers: {
-                    'info-type' :'signinInfo'
+                    'info-type' :'signinInfo',
+                    'Authorization': `Bearer ${user.token}`
                 },
                 body: JSON. stringify({username,password}),
             }

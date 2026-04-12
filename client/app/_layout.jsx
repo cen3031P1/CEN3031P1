@@ -4,7 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import useAuthContext from './hook/useAuthContext.jsx';
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -30,7 +30,6 @@ export default function RootLayout() {
 }
 
 function RootNavigator() {
-    const {user, loading} = useAuthContext()
 
 
    return (

@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, Image} from 'react-native';
 import TitleComp from '../components/Titles.jsx';
 import ProfileDisplay from '../components/ProfileDisplay.jsx';
@@ -37,7 +37,11 @@ export default function HomeScreen() {
 
 	async function fetchUserData() {
 		try {
-			const response = await api.get(`/api/user/${user.username}/points`);
+			const response = await api.get(`/api/user/${user.username}/points`, {
+				headers: {
+					'Authorization': `Bearer ${user.token}`
+				}
+			});
 			setPoints(response.data.points);
 		}
 		catch (error) {
@@ -45,7 +49,11 @@ export default function HomeScreen() {
 		}
 
 		try {
-			const response = await api.get(`/api/user/${user.username}/streak`);
+			const response = await api.get(`/api/user/${user.username}/streak`, {
+				headers: {
+					'Authorization': `Bearer ${user.token}`
+				}
+			});
 			setStreak(response.data.streak);
 		}
 		catch (error) {
@@ -53,7 +61,11 @@ export default function HomeScreen() {
 		}
 
 		try {
-			const response = await api.get(`/api/user/${user.username}/best-streak`);
+			const response = await api.get(`/api/user/${user.username}/best-streak`, {
+				headers: {
+					'Authorization': `Bearer ${user.token}`
+				}
+			});
 			setBestStreak(response.data.bestStreak);
 		}
 		catch (error) {

@@ -26,16 +26,13 @@ import {
     getLeaderboardVisibility, 
     setLeaderboardVisibility, 
     uploadProfilePic,
-<<<<<<< HEAD
-    deleteAccount
-=======
     deleteAccount,
     getPoints,
     getStreak,
     getBestStreak
->>>>>>> cfae70b08d6dd5068b19ce598807c61cb9ef7081
 } from './controller.js';
 import requireAuth from './middleware/requireAuth.js';
+import adminAuth from './middleware/adminAuth.js';
 
 const router = express.Router();
 
@@ -75,8 +72,6 @@ router.patch('/user/:userName/profile-pic', uploadProfilePic);
 // Delete account
 router.delete('/user/:userName', deleteAccount);
 
-<<<<<<< HEAD
-=======
 // Get Points
 router.get('/user/:userName/points', getPoints);
 
@@ -86,6 +81,7 @@ router.get('/user/:userName/streak', getStreak);
 // Get Best Streak
 router.get('/user/:userName/best-streak', getBestStreak);
 
+router.use(adminAuth)
 
->>>>>>> cfae70b08d6dd5068b19ce598807c61cb9ef7081
+
 export default router;

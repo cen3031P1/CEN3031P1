@@ -279,8 +279,6 @@ export async function deleteAccount(req, res) {
         console.error("Error deleting account: ", error);
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
-<<<<<<< HEAD
-=======
 }
 
 //get points
@@ -332,5 +330,4 @@ export async function getBestStreak(req, res) {
         console.error("Error getting best streak: ", error);
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
->>>>>>> cfae70b08d6dd5068b19ce598807c61cb9ef7081
 }
