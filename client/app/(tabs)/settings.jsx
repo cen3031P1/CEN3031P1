@@ -21,6 +21,7 @@ export default function SettingScreen() {
 	const [deletePassword, setDeletePassword] = useState('');
 	const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
 	const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+	const [privacyStatus, setPrivacyStatus] = useState(false);
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// LEADERBOARD VISIBILITY TOGGLE
@@ -34,7 +35,11 @@ export default function SettingScreen() {
 
 			try {
 				// Get current visibility setting for this user
-				const response = await api.get(`/api/leaderboard/visibility/${user.username}`);
+				const response = await api.get(`/api/leaderboard/visibility/${user.username}`, {
+					headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+				});
 
 				setVisibleOnLeaderboard(response.data.visibleOnLeaderboard !== false);
 			} catch (error) {
@@ -59,6 +64,10 @@ export default function SettingScreen() {
 			await api.patch('/api/leaderboard/visibility', {
 				userName: user.username,
 				visibleOnLeaderboard: newVisibility,
+			}, {
+				headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
 			});
 			setVisibleOnLeaderboard(newVisibility);
 			setPrivacyStatus(prev => !prev);
@@ -103,6 +112,10 @@ export default function SettingScreen() {
 		try {
 			const response = await api.patch(`/api/user/${user.username}/profile-pic`, {
 				profilePic: `data:image/webp;base64,${manipulated.base64}`,
+			}, {
+				headers: {
+          			'Authorization': `Bearer ${user.token}`
+        }
 			});
 
 			// Update user profile pic in auth context
@@ -142,6 +155,9 @@ export default function SettingScreen() {
 		try {
 			const response = await api.delete(`/api/user/${user.username}`, {
 				data: { password: deletePassword },
+				headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
 			});
 
 			if (response?.data?.code === 'WRONG_PASSWORD') {

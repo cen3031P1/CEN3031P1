@@ -24,7 +24,11 @@ export default function FriendsScreen() {
   async function loadFriends() {
     console.log("loading friends for:", user.username)
     try {
-      const response = await api.get(`/api/friends/${user.username}`) // GET request to fetch friends!!
+      const response = await api.get(`/api/friends/${user.username}`, {
+        headers: {
+          "Authorization": `Bearer ${user.token}`
+        }
+      }) // GET request to fetch friends!!
       console.log("friends response:", response.data)
       setFriends(response.data.friends)
     } catch (error) {
@@ -42,7 +46,10 @@ export default function FriendsScreen() {
     try {
       const response = await api.post('/api/addfriend', {
         userName: user.username,
-        friendUsername
+        friendUsername,
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
       })
 
       if (response.data.code === "FRIEND_ADDED") {
@@ -87,6 +94,9 @@ export default function FriendsScreen() {
         params: {
           userName: user.username,
           friendUsername
+        },
+        headers: {
+          'Authorization': `Bearer ${user.token}`
         }
       })
 

@@ -29,9 +29,21 @@ export const AuthContext = createContext()
 export const authReducer = (state, action) => {
     switch(action.type) {
         case 'LOGIN':
-            return {user: action.payload}
+            return {
+                ...state,
+                user: action.payload,
+                loading: false}
         case 'LOGOUT': 
-            return {user: null}
+            return {
+                ...state,
+                user: null, 
+                loading: false}
+        case 'RESTORE_USER':
+            return{
+                ...state,
+                user: action.payload,
+                loading: false
+            }
         default:
             return state
     }
@@ -39,7 +51,8 @@ export const authReducer = (state, action) => {
 
 export const AuthContextProvider = ({children}) => {
     const [state, dispatch] = useReducer(authReducer, {
-        user: null
+        user: null,
+        loading: true
     })
 
     // check if user is logged in on app start
@@ -48,10 +61,19 @@ export const AuthContextProvider = ({children}) => {
             try {
                 const stored = await AsyncStorage.getItem('user')
                 if (stored) {
-                    dispatch({type: 'LOGIN', payload: JSON.parse(stored)})
+                    dispatch({type: 'RESTORE_USER', payload: JSON.parse(stored)})
+                } else {
+                    dispatch ({
+                        type: 'RESTORE_USER',
+                        payload: null
+                    })
                 }
             } catch (error) {
                 console.error("Failed to load user from storage: ", error)
+                dispatch({
+                    type: "RESTORE_USER",
+                    payload: null
+                })
             } 
         }
 

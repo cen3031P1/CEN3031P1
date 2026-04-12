@@ -28,7 +28,7 @@ import {
     uploadProfilePic,
     deleteAccount
 } from './controller.js';
-import mongoose from 'mongoose';
+import requireAuth from './middleware/requireAuth.js';
 
 const router = express.Router();
 
@@ -40,6 +40,9 @@ router.get('/', (req, res) => {
 router.post('/login', login);
 
 router.post('/signup', signUp);
+
+router.use(requireAuth)
+
 
 // Add friends
 router.post('/addfriend', addFriend);

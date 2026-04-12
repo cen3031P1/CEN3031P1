@@ -22,6 +22,12 @@ export default function HomeScreen() {
 	const { user } = useAuthContext();
 	console.log('user:', user);
 
+	// useEffect(() => {
+	// 		if (!user) {
+	// 			router.replace('/');
+	// 		}
+	// 	}, [user]);
+
   return (
 	<View style={styles.container}>
 	<TitleComp style = {{fontSize: 40}}>MY PROFILE</TitleComp> 

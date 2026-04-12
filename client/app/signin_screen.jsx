@@ -8,11 +8,24 @@ import Input from './components/Input.jsx';
 import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
+import useAuthContext from './hook/useAuthContext.jsx';
 
 
 export default function SigninScreen() {
 
     const {signup, totalFailure, signUpFail, signUpPass} = useSignin();
+    const { user } = useAuthContext();
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [cpassword, setCpassword] = useState('');
+    const [invalid_Cred, setInvalid_Cred] = useState('');
+
+    // useEffect(() => {
+    //     if (user) {
+    //         router.replace('/(tabs)');
+    //     }
+    // }, [user]);
     //server request
     async function signinVerification(){
         try {
@@ -83,11 +96,6 @@ export default function SigninScreen() {
         router.replace('/');
     }
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [cpassword, setCpassword] = useState('');
-    const [invalid_Cred, setInvalid_Cred] = useState('');
-    
     return (    
         <View style = {{flex : 1}}>
         

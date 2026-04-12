@@ -30,6 +30,9 @@ export default function LeaderboardScreen() {
       const response = await api.get('/api/leaderboard/', {
         params: {
           sortBy
+        },
+        headers: {
+          'Authorization': `Bearer ${user.token}`
         }
       })
       setLeaderboard(response.data.leaderboard)
