@@ -8,7 +8,7 @@ import Input from './components/Input.jsx';
 import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
-import { ScrollView } from 'react-native-web';
+// import { ScrollView } from 'react-native-web';
 
 
 export default function SigninScreen() {
