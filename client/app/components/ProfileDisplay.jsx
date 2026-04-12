@@ -1,7 +1,7 @@
 import fonts from '../theme/fonts';
 import colors from '../theme/colors';
 import react from 'react';
-import { Text,StyleSheet, Pressable,View} from 'react-native';
+import { Text,StyleSheet, Pressable,View, Image} from 'react-native';
 import AppText from './AppText';
 
 //mainly for displaying goal and streak and maybe badges
@@ -21,27 +21,23 @@ export default function ProfileDisplay({imgsrc,base_numval,optimal_numval,onPres
             }
             
 
-            {type !== 'log' &&
+                
+            {type === 'goal' &&
                 <View style = {styles.subdisplay}>
-                    {type === 'goal' &&
-                        <>
-                            <AppText style ={styles.textdisplay}> Current Goal: </AppText>
-                            <AppText style ={styles.textdisplay}>{base_numval}</AppText>
-                            <AppText style ={styles.textdisplay}> Goal Status: </AppText>
-                            <AppText style ={styles.textdisplay}>{optimal_numval}</AppText>
-                        </>
-                    }
-                    {type === 'streak' &&
-                        <>
-                            <AppText style ={styles.textdisplay}>current Streak: </AppText>
-                            <AppText style ={styles.textdisplay}>{base_numval}</AppText>
-                            <AppText style ={styles.textdisplay}>Best Streak: </AppText>
-                            <AppText style ={styles.textdisplay}>{optimal_numval}</AppText>
-                        </>
-                    }
-
+                    <AppText style ={[styles.numdisplay, [base_numval > optimal_numval ? {color: 'green'} : {color: 'red'}], [optimal_numval === 0 ? {fontSize: 50,paddingTop: 10} : {fontSize: 30}], {paddingBottom: 10, fontWeight: 'bold'}]}>{optimal_numval}</AppText>
+                    {optimal_numval !== 0 && (
+                        <AppText style = {styles.textdisplay}>{base_numval > optimal_numval ? 'You\'ve reached your goal!' : 'Keep going!'}</AppText>
+                    )}
                 </View>
             }
+
+            {type === 'streak' &&
+                <View style = {styles.subdisplay}>
+                    <Image source={imgsrc} style={{width: 105, height: 100, resizeMode: 'cover'}} />
+                    <AppText style ={[styles.numdisplay, {fontSize: 40, fontWeight: 'bold',position: 'absolute'}, [base_numval < 5 ? {top: '30%'} : {top: '55%'}] ]}>{base_numval}</AppText>
+                </View>
+            }
+                
 
             {type === 'log'&&
                 <View style = {styles.subdisplay}>
@@ -66,22 +62,25 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         borderWidth: 5,
         borderColor: colors.primary,
-        alignItems: 'center',
-        fontSize: 25,
-        flexDirection: 'column',
+        overflow: 'hidden',
     },
     subdisplay:{
+        flex: 1,
+        alignItems: 'center',
         justifyContent: 'center',
-        alignContent: 'center',
-        flexDirection: 'column'
-    },
-    titlebox:{
-
+        paddingHorizontal: 10,
     },
     textdisplay: {
-        fontSize: 10,
-        marginTop: 18,
+        width: '110%',
+        fontSize: 12,
+        marginTop: 10,
         textAlign: 'center',
         color: colors.regularText,
+    },
+    numdisplay: {
+        fontSize: 20,
+        color: colors.regularText,
+        includeFontPadding: false,
+        textAlign: 'center',
     }
 })

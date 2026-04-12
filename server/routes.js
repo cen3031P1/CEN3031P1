@@ -26,7 +26,14 @@ import {
     getLeaderboardVisibility, 
     setLeaderboardVisibility, 
     uploadProfilePic,
+<<<<<<< HEAD
     deleteAccount
+=======
+    deleteAccount,
+    getPoints,
+    getStreak,
+    getBestStreak
+>>>>>>> cfae70b08d6dd5068b19ce598807c61cb9ef7081
 } from './controller.js';
 import requireAuth from './middleware/requireAuth.js';
 
@@ -68,4 +75,17 @@ router.patch('/user/:userName/profile-pic', uploadProfilePic);
 // Delete account
 router.delete('/user/:userName', deleteAccount);
 
+<<<<<<< HEAD
+=======
+// Get Points
+router.get('/user/:userName/points', getPoints);
+
+// Get Streak
+router.get('/user/:userName/streak', getStreak);
+
+// Get Best Streak
+router.get('/user/:userName/best-streak', getBestStreak);
+
+
+>>>>>>> cfae70b08d6dd5068b19ce598807c61cb9ef7081
 export default router;

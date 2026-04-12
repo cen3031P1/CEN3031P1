@@ -2,12 +2,13 @@ import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ScrollView
 import { useEffect, useState } from 'react';
 import useAuthContext from '../hook/useAuthContext.jsx';
 import SettingButton from '../components/SettingButton.jsx';
-import { CircleUserRound, Crosshair, Dumbbell, Eye, HatGlasses, SquareArrowRightExit, Target, Trash } from 'lucide-react-native';
+import { CircleUserRound, Crosshair, Dumbbell, Eye, HatGlasses, NotebookPenIcon, SquareArrowRightExit, Target, Trash } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import api from '../../api.js';
+import SettingModal from '../components/setting_modal.jsx';
 
 // user can modify profile picture, account deletion, setting gym and goal, and toggling privacy mode
 // set pfp, set gym, and logout can just happen instantly, i can create a popup for the user to input the goal and maybe to confirm deletion.
@@ -23,6 +24,14 @@ export default function SettingScreen() {
 	const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 	const [privacyStatus, setPrivacyStatus] = useState(false);
 
+	const [showBioModal, setShowBioModal] = useState(false);
+	const [showGymModal, setShowGymModal] = useState(false);
+	const [showGoalModal, setShowGoalModal] = useState(false);
+
+	const [bio, setBio] = useState('');
+	const [gym, setGym] = useState([0,0]);
+	const [goal, setGoal] = useState('');
+	const [goal_value, setGoalValue] = useState(0);
 	////////////////////////////////////////////////////////////////////////////////////
 	// LEADERBOARD VISIBILITY TOGGLE
 
@@ -112,10 +121,6 @@ export default function SettingScreen() {
 		try {
 			const response = await api.patch(`/api/user/${user.username}/profile-pic`, {
 				profilePic: `data:image/webp;base64,${manipulated.base64}`,
-			}, {
-				headers: {
-          			'Authorization': `Bearer ${user.token}`
-        }
 			});
 
 			// Update user profile pic in auth context
@@ -129,17 +134,18 @@ export default function SettingScreen() {
 			Alert.alert('Upload Failed', 'Could not upload profile picture. Please try again.');
 		}
 	}
+
 	async function handleDelete(){
 		setDeletePassword('');
 		setDeleteErrorMessage('');
 		setShowDeleteModal(true);
 	}
 
-
 	//////////////////////////////////////////////////////////////////////////////////
 	// ACCOUNT DELETION
 
 	async function handleConfirmDeleteAccount() {
+		console.log("Attempting to delete account for user:", user?.username);
 		if (!user?.username || isDeletingAccount) {
 			return;
 		}
@@ -148,16 +154,12 @@ export default function SettingScreen() {
 			setDeleteErrorMessage('Invalid password!');
 			return;
 		}
-
 		setDeleteErrorMessage('');
 		setIsDeletingAccount(true);
 
 		try {
 			const response = await api.delete(`/api/user/${user.username}`, {
 				data: { password: deletePassword },
-				headers: {
-          'Authorization': `Bearer ${user.token}`
-        }
 			});
 
 			if (response?.data?.code === 'WRONG_PASSWORD') {
@@ -190,12 +192,21 @@ export default function SettingScreen() {
 		}
 	}
 
-	async function handleGym(){
-		console.log("nothing yet");
+	const handleGoalvalue = (text) => {
+		const numericText = text.replace(/[^0-9]/g, '');
+		setGoal(numericText);
 	}
 
+	async function handleGym(){
+		setShowGymModal(true);
+	}
 	async function handleGoal(){
-		console.log("nothing yet");
+		setGoal('');
+		setShowGoalModal(true);
+	}
+	async function handleBio(){
+		setBio('');
+		setShowBioModal(true);
 	}
 
 	
@@ -216,9 +227,6 @@ export default function SettingScreen() {
 	async function handleLogout(){
 		setShowLogoutModal(true);
 	}
-	// async function handlePrivacy(){
-	// 	setPrivacyStatus(prev => !prev);
-	// }
 
 	const [isAdmin,setisAdmin] = useState(false)
 
@@ -227,6 +235,7 @@ export default function SettingScreen() {
 		<View style={styles.container}>
 			<SettingButton onPress={() => handleTogglePrivacyMode()} Icon = {HatGlasses} isPrivacy = 'true' PrivateOn = {!visibleOnLeaderboard}>Toggle Privacy</SettingButton>
 			<SettingButton onPress={() => handleSetProfilePicture()} Icon = {CircleUserRound}>Set Profile Picture</SettingButton>
+			<SettingButton onPress={() => handleBio()} Icon = {NotebookPenIcon}>Set Bio</SettingButton>
 			<SettingButton onPress={() => handleGym()} Icon = {Dumbbell}>Set Gym</SettingButton>
 			<SettingButton onPress={() => handleGoal()} Icon = {Target}>Set Goal</SettingButton>
 			<SettingButton onPress={() => handleDelete()} Icon = {Trash}>Delete Account</SettingButton>
@@ -237,10 +246,8 @@ export default function SettingScreen() {
 
 		</View>
 
-
 		{/* DELETE ACCOUNT CONFIRMATION MODAL */}
-
-		<Modal
+		{/* <Modal
 			animationType='fade'
 			transparent={true}
 			visible={showDeleteModal}
@@ -295,7 +302,7 @@ export default function SettingScreen() {
 
 						<Pressable
 							style={[styles.deleteButton, isDeletingAccount && styles.disabledButton]}
-							onPress={handleConfirmDeleteAccount}
+							onPress={async () => {handleConfirmDeleteAccount();}}
 							disabled={isDeletingAccount}
 						>
 							<Text style={styles.deleteButtonText}>{isDeletingAccount ? 'Deleting...' : 'Delete'}</Text>
@@ -303,51 +310,95 @@ export default function SettingScreen() {
 					</View>
 				</View>
 			</View>
-		</Modal>
+		</Modal> */}
 
-		{/* LOGOUT CONFIRMATION MODAL */}
 
-		<Modal
-			animationType='fade'
-			transparent={true}
-			visible={showLogoutModal}
+		<SettingModal
+			type='delete'
+			title='Delete Account'
+			subtext1='This action is permanent. Your profile and stats will be deleted.'
+			subtext2='Are you sure you want to continue?'
+			visible={showDeleteModal}
 			onRequestClose={() => {
-				setShowLogoutModal(false);
+				if (!isDeletingAccount) {
+					setShowDeleteModal(false);
+				}
 			}}
-		>
-			<View style={styles.modalBackdrop}>
-				<View style={styles.modalCard}>
-					<Text style={styles.modalTitle}>Log Out</Text>
-					<Text style={styles.modalBody}>
-						You will need to log in again to access your account.
-					</Text>
-					<Text style={styles.modalBody}>
-						Do you want to continue?
-					</Text>
+			onPress_cancel={() => {setShowDeleteModal(false)}}
+			onPress_perform={() => {
+				console.log("Attempting to delete account for user:", user?.username);
+				handleConfirmDeleteAccount();
+			}}
+			isdeleting = {!isDeletingAccount}
+			deleteErrorMessage = {deleteErrorMessage}
+			value={deletePassword}
+			onChangeText={setDeletePassword}
+		/>
 
-					<View style={styles.modalActions}>
-						<Pressable
-							style={styles.cancelButton}
-							onPress={() => setShowLogoutModal(false)}
-						>
-							<Text style={styles.cancelButtonText}>Cancel</Text>
-						</Pressable>
+		<SettingModal
+			type='logout'
+			title='Log Out'
+			subtext1='You will need to log in again to access your account.'
+			subtext2='Do you want to continue?'
+			action= 'Log Out'
+			visible={showLogoutModal}
+			onRequestClose={() => {setShowLogoutModal(false)}}
+			onPress_cancel={() => {setShowLogoutModal(false)}}
+			onPress_perform={async () => {	
+				setShowLogoutModal(false);
+				await performLogout();
+			}}
+		/>
 
-						<Pressable
-							style={styles.logoutButton}
-							onPress={async () => {
-								setShowLogoutModal(false);
-								await performLogout();
-							}}
-						>
-							<Text style={styles.logoutButtonText}>Logout</Text>
-						</Pressable>
-					</View>
-				</View>
-			</View>
-		</Modal>
+		<SettingModal
+			type='bio'
+			title='Set Bio'
+			subtext1='Write a short bio to display on your profile.'
+			subtext2='This can be changed at any time.'
+			action= 'Set Bio'
+			visible={showBioModal}
+			onRequestClose={() => {setShowBioModal(false)}}
+			onPress_cancel={() => {setShowBioModal(false)}}
+			onPress_perform={async () => {	
+				setShowBioModal(false);
+				console.log("New bio:", bio);
+			}}
+			onChangeText={(text) => setBio(text)}
+		/>
+
+		<SettingModal
+			type='gym'
+			title='Set Gym'
+			subtext1='This setting with calibrate your current location as your gym.'
+			subtext2='This can be changed at any time.'
+			action= 'Set Gym'
+			visible={showGymModal}
+			onRequestClose={() => {setShowGymModal(false)}}
+			onPress_cancel={() => {setShowGymModal(false)}}
+			onPress_perform={async () => {	
+				setShowGymModal(false);
+				console.log("New gym:", gym);
+			}}
+		/>
+		
+		<SettingModal
+			type='goal'
+			title='Set Goal'
+			subtext1='Enter your fitness goal in terms of streaks. For example, "1000".'
+			subtext2='This can be changed at any time.'
+			action= 'Set Goal'
+			visible={showGoalModal}
+			onRequestClose={() => {setShowGoalModal(false)}}
+			onPress_cancel={() => {setShowGoalModal(false)}}
+			value = {goal}
+			onPress_perform={async () => {	
+				setShowGoalModal(false);
+				console.log("New goal:", goal);
+			}}
+			onChangeText={(text) => handleGoalvalue(text)}
+		/>
+
 	</ScrollView>
-
   );
 }
 
@@ -368,7 +419,7 @@ const styles = StyleSheet.create({
 	modalCard: {
 		width: '100%',
 		maxWidth: 420,
-		backgroundColor: '#e4e9f5',
+		backgroundColor: 'lightgrey',
 		borderRadius: 10,
 		padding: 18,
 		borderWidth: 1,

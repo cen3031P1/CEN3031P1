@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         color: colors.primary,
         textShadowColor: colors.secondary,
         textShadowOffset: { width: 2.5, height: 2.5 },
-        textShadowRadius: 0,
+        textShadowRadius: 1,
         textAlign: 'center',
     }
 });
