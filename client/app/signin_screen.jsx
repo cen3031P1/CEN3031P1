@@ -9,11 +9,22 @@ import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
 import { ScrollView } from 'react-native-web';
-
+import { useAuthContext} from './hook/useAuthContext.jsx';
 
 export default function SigninScreen() {
-
+    const { user } = useAuthContext();
     const {signup, totalFailure, signUpFail, signUpPass} = useSignin();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [cpassword, setCpassword] = useState('');
+    const [invalid_Cred, setInvalid_Cred] = useState('');
+
+    useEffect(() => {
+        if (user) {
+            router.replace('/(tabs)');
+        }
+    }, [user]);
+
     //server request
     async function signinVerification(){
         try {
@@ -83,11 +94,6 @@ export default function SigninScreen() {
     function handleBack(){
         router.replace('/');
     }
-
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [cpassword, setCpassword] = useState('');
-    const [invalid_Cred, setInvalid_Cred] = useState('');
     
     return (    
         

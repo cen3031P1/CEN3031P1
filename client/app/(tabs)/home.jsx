@@ -5,7 +5,7 @@ import TitleComp from '../components/Titles.jsx';
 import ProfileDisplay from '../components/ProfileDisplay.jsx';
 import colors from '../theme/colors.jsx';
 import AppText from '../components/AppText.jsx';
-import useAuthContext from '../hook/useAuthContext.jsx';
+import {useAuthContext} from '../hook/useAuthContext.jsx';
 import api from '../../api.js';
 
 // will display profile picture
@@ -19,7 +19,6 @@ async function handleLog(){
 }
 
 export default function HomeScreen() {
-
 	const { user } = useAuthContext();
 	console.log('user:', user);
 
@@ -35,9 +34,22 @@ export default function HomeScreen() {
 		}
 	}, [user]);
 
+
+	useEffect(() => {
+		if (!user) {
+			router.replace('/');
+		}
+	}, [user]);
+
 	async function fetchUserData() {
 		try {
-			const response = await api.get(`/api/user/${user.username}/points`);
+			const response = await api.get(`/api/user/${user.username}/points`,
+				{
+					headers: {
+						'Authorization': `Bearer ${user.token}`
+					}
+				}
+			);
 			setPoints(response.data.points);
 		}
 		catch (error) {
@@ -45,7 +57,13 @@ export default function HomeScreen() {
 		}
 
 		try {
-			const response = await api.get(`/api/user/${user.username}/streak`);
+			const response = await api.get(`/api/user/${user.username}/streak`,
+				{
+					headers: {
+						'Authorization': `Bearer ${user.token}`
+					}
+				}
+			);
 			setStreak(response.data.streak);
 		}
 		catch (error) {
@@ -53,7 +71,13 @@ export default function HomeScreen() {
 		}
 
 		try {
-			const response = await api.get(`/api/user/${user.username}/best-streak`);
+			const response = await api.get(`/api/user/${user.username}/best-streak`,
+				{
+					headers: {
+						'Authorization': `Bearer ${user.token}`
+					}
+				}
+			);
 			setBestStreak(response.data.bestStreak);
 		}
 		catch (error) {

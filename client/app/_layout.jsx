@@ -1,9 +1,10 @@
-import {Stack, router} from 'expo-router';
+import {Stack} from 'expo-router';
 import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
-import { AuthContextProvider } from './context/AuthContext';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
+import {AuthContextProvider, useAuthContext} from './hook/useAuthContext';
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -22,12 +23,28 @@ export default function RootLayout() {
     return (
         <ThemeProvider value={DefaultTheme}>
             <AuthContextProvider>
-                <Stack screenOptions = {{headerShown: false}}> 
+                <RootNavigator/>
+
+                {/* <Stack screenOptions = {{headerShown: false}}> 
                     <Stack.Screen name='index'/> 
                     <Stack.Screen name='signin_screen'/> 
                     <Stack.Screen name="(tabs)"/>
-                </Stack>
+                </Stack> */}
+
             </AuthContextProvider>
         </ThemeProvider>
+    );
+}
+
+function RootNavigator() {
+    const {user, loading} = useAuthContext();
+
+
+   return (
+        <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="signin_screen" />
+            <Stack.Screen name="(tabs)" />
+        </Stack>
     );
 }
