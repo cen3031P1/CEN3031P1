@@ -14,7 +14,8 @@ export default function ProfileDisplay({imgsrc,base_numval,optimal_numval,onPres
                     <AppText style = {{color : colors.buttonText, padding: 10,paddingTop: 14}}>{children}</AppText>
                 </View>
             }
-            {type === 'log' &&
+            
+            {(type === 'log') &&
                 <Pressable onPress={onPress} style ={{backgroundColor: colors.secondary, width: '100%', alignItems: 'center',justifyContent: 'center', borderColor: colors.primary, borderBottomWidth:5,borderTopStartRadius: 15, borderTopEndRadius: 15}}>
                     <AppText style = {{color : colors.buttonText, padding: 10,paddingTop: 14}}>{children}</AppText>
                 </Pressable>
@@ -61,6 +62,7 @@ const styles = StyleSheet.create({
         maxHeight: 200,
         borderRadius: 20,
         borderWidth: 5,
+        backgroundColor: colors.background,
         borderColor: colors.primary,
         overflow: 'hidden',
     },

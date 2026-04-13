@@ -10,10 +10,10 @@ export default function Input({style, isPassword = false, ...props}){
     const[hidePassword, setHidePassword] = useState(true);
 
     return (
-        <View style = {styles.container}>
+        <View style = {[styles.container, style]}>
             <TextInput 
                 {...props}
-                style = {[styles.input, style]}
+                style = {[styles.input]}
                 secureTextEntry = {isPassword ? hidePassword : false}        
                 />
                 
@@ -38,7 +38,7 @@ export default function Input({style, isPassword = false, ...props}){
 const styles = StyleSheet.create({
     container: {
         height: '10%',
-        width: '60%',
+        width: '100%',
         minWidth: 250,
         borderWidth : 2,
         borderRadius: 7,

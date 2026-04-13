@@ -114,12 +114,10 @@ export default function HomeScreen() {
 				? { uri: user.profilePic }
 				: require('../assets/images/defaultpfp.png')
 			}
-
 			style = {styles.Profile}
 			/>
 			<AppText style ={{fontSize: 14}}>{user?.username}</AppText>
-			<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey'}}>BIO - asdasdasdasdasd</AppText>
-
+			<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 10}}>BIO - asdasdasdasdasd</AppText>
 
 				<View style = {styles.featureBoxContainer}>
 

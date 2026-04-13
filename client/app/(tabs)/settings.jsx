@@ -10,6 +10,7 @@ import { router } from 'expo-router';
 import api from '../../api.js';
 import SettingModal from '../components/setting_modal.jsx';
 
+
 // user can modify profile picture, account deletion, setting gym and goal, and toggling privacy mode
 // set pfp, set gym, and logout can just happen instantly, i can create a popup for the user to input the goal and maybe to confirm deletion.
 // maybe admin can do the same + modify a users or their own stats?
@@ -31,6 +32,14 @@ export default function SettingScreen() {
 	const [deletePassword, setDeletePassword] = useState('');
 	const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
 	const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+
+	useEffect(() => {
+		if (!user) {
+			router.replace('/');
+		}
+	}, [user]);
+
+
 	////////////////////////////////////////////////////////////////////////////////////
 	// LEADERBOARD VISIBILITY TOGGLE
 
@@ -118,12 +127,16 @@ export default function SettingScreen() {
 
 		// Upload the image to the server
 		try {
-			const response = await api.patch(`/api/user/${user.username}/profile-pic`, {
-				profilePic: `data:image/webp;base64,${manipulated.base64}`,
-				headers: {
-					'Authorization': `Bearer ${user.token}`
+			const response = await api.patch(`/api/user/${user.username}/profile-pic`, 
+				{
+				profilePic: `data:image/webp;base64,${manipulated.base64}`
+				},
+				{
+					headers: {
+						'Authorization': `Bearer ${user.token}`
+					}
 				}
-			});
+			);
 
 			// Update user profile pic in auth context
 			const updatedUser = {...user, profilePic: response.data.profilePic};
