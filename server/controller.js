@@ -281,8 +281,7 @@ export async function deleteAccount(req, res) {
     }
 }
 
-//get points
-export async function getPoints(req, res) {
+export async function fetchProfileData(req, res) {
     try {
         const {userName} = req.params;
         const user = await User.findOne({userName});
@@ -291,43 +290,9 @@ export async function getPoints(req, res) {
             return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
         }
 
-        res.status(200).json({msg: "Points retrieved successfully", code: "POINTS_RETRIEVED", points: user.points});
+        res.status(200).json({msg: "Profile data retrieved successfully", code: "PROFILE_DATA_RETRIEVED",profilePic: user.profilePic, points: user.points, streak: user.streak, bestStreak: user.bestStreak});
     } catch (error) {
-        console.error("Error getting points: ", error);
-        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
-    }
-}
-
-//get streak
-export async function getStreak(req, res) {
-    try {
-        const {userName} = req.params;
-        const user = await User.findOne({userName});
-        
-        if (!user) {
-            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
-        }
-
-        res.status(200).json({msg: "Streak retrieved successfully", code: "STREAK_RETRIEVED", streak: user.streak});
-    } catch (error) {
-        console.error("Error getting streak: ", error);
-        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
-    }
-}
-
-//get best streak
-export async function getBestStreak(req, res) {
-    try {
-        const {userName} = req.params;
-        const user = await User.findOne({userName});
-        
-        if (!user) {
-            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
-        }
-
-        res.status(200).json({msg: "Best streak retrieved successfully", code: "BEST_STREAK_RETRIEVED", bestStreak: user.bestStreak});
-    } catch (error) {
-        console.error("Error getting best streak: ", error);
+        console.error("Error fetching profile data: ", error);
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }

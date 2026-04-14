@@ -130,7 +130,6 @@ export default function FriendsScreen() {
 		<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
 			<View style={{alignItems: 'center', padding: 20, width: '100%'}}>
-				
 
 				<View style={{ width: '100%', backgroundColor: colors.background, padding: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, gap: 15, marginBottom:5 }}>
 
@@ -173,7 +172,6 @@ export default function FriendsScreen() {
 						ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: 'gray', fontFamily: fonts.general}}>No friends found. Add some friends to see them here!</Text>}
 					/>
 				</View>
-
 
 			</View>
 

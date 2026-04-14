@@ -39,7 +39,6 @@ export const useLogin = () => {
             })
 
             const json = response.data 
-
             await AsyncStorage.setItem('user', JSON.stringify(json))
 
             dispatch({type: "LOGIN", payload: json})

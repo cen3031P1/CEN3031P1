@@ -54,8 +54,8 @@ export default function LeaderboardScreen() {
 
 					<TitleComp style={{ marginBottom: 20, fontSize: 28}}>Global Leaderboard</TitleComp>
 					<View style={{ flexDirection: 'row', gap: 10, marginBottom: 20, justifyContent: 'center', width: '100%' }}>
-						<ButtonComp style={{ width: '50%' }} onPress={() => setSortBy('points')}>Points</ButtonComp>
-						<ButtonComp style={{ width: '50%' }} onPress={() => setSortBy('bestStreak')}>Best Streak</ButtonComp>
+						<ButtonComp style={{ width: 150 }} onPress={() => setSortBy('points')}>Points</ButtonComp>
+						<ButtonComp style={{ width: 150 }} onPress={() => setSortBy('bestStreak')}>Best Streak</ButtonComp>
 					</View>
 
 				</View>

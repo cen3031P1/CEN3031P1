@@ -20,16 +20,14 @@ async function handleLog(){
 
 export default function HomeScreen() {
 	const { user } = useAuthContext();
-	console.log('user:', user);
 
-	const [points, setPoints] = useState(0);
+
 	const [streak, setStreak] = useState(0);
 	const [bestStreak, setBestStreak] = useState(0);
 	const [streakimage, setStreakImage] = useState("");
 
 	useEffect(() => {
 		if (user) {
-			console.log("User is authenticated, fetching user data...");
 			fetchUserData()
 		}
 	}, [user]);
@@ -43,21 +41,7 @@ export default function HomeScreen() {
 
 	async function fetchUserData() {
 		try {
-			const response = await api.get(`/api/user/${user.username}/points`,
-				{
-					headers: {
-						'Authorization': `Bearer ${user.token}`
-					}
-				}
-			);
-			setPoints(response.data.points);
-		}
-		catch (error) {
-			console.error("Error fetching user data:", error);
-		}
-
-		try {
-			const response = await api.get(`/api/user/${user.username}/streak`,
+			const response = await api.get(`/api/user/${user.username}/fetchProfileData`,
 				{
 					headers: {
 						'Authorization': `Bearer ${user.token}`
@@ -65,20 +49,9 @@ export default function HomeScreen() {
 				}
 			);
 			setStreak(response.data.streak);
-		}
-		catch (error) {
-			console.error("Error fetching user data:", error);
-		}
-
-		try {
-			const response = await api.get(`/api/user/${user.username}/best-streak`,
-				{
-					headers: {
-						'Authorization': `Bearer ${user.token}`
-					}
-				}
-			);
 			setBestStreak(response.data.bestStreak);
+			user.profilePic = response.data.profilePic;
+
 		}
 		catch (error) {
 			console.error("Error fetching user data:", error);
@@ -106,21 +79,23 @@ export default function HomeScreen() {
   return (	
 	<ScrollView>
 		<View style = {styles.container}>
-			<TitleComp style = {{fontSize: 36}}>MY PROFILE</TitleComp> 
-			
-			<Image
-			source={
-				user?.profilePic
-				? { uri: user.profilePic }
-				: require('../assets/images/defaultpfp.png')
-			}
-			style = {styles.Profile}
-			/>
-			<AppText style ={{fontSize: 14}}>{user?.username}</AppText>
-			<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 10}}>BIO - asdasdasdasdasd</AppText>
+			<View style= {{width: '100%', backgroundColor: colors.background, borderRadius: 10, alignItems: 'center',justifyContent: 'center',borderWidth: 5, borderColor: colors.primary}}>
+			<TitleComp style = {{fontSize: 30, margin: 20, marginBottom: 25}}>MY PROFILE</TitleComp>
+				
+				<Image
+				source={
+					user?.profilePic
+					? { uri: user.profilePic }
+					: require('../assets/images/defaultpfp.png')
+				}
+				style = {styles.Profile}
+				/>
+				<AppText style ={{fontSize: 14, margin: 15}}>{user?.username}</AppText>
+				<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 15, marginTop: 10}}>BIO - asdasdasdasdasd</AppText>
+			</View>
+
 
 				<View style = {styles.featureBoxContainer}>
-
 					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={2}>GOAL</ProfileDisplay>
 					<ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
 					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} onPress={handleLog} >LOG</ProfileDisplay>
@@ -135,7 +110,7 @@ const styles = StyleSheet.create({
 	container: {	
 		alignItems: 'center',
 		padding: 12,
-		gap: 15,
+		gap: 8,
 	},
 	Profile: {
 		height: 120, 
