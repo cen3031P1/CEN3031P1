@@ -1,6 +1,6 @@
 import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ScrollView, Alert, Platform, Modal} from 'react-native';
 import { useEffect, useState } from 'react';
-import useAuthContext from '../hook/useAuthContext.jsx';
+import {useAuthContext} from '../hook/useAuthContext.jsx';
 import SettingButton from '../components/SettingButton.jsx';
 import { CircleUserRound, Crosshair, Dumbbell, Eye, HatGlasses, NotebookPenIcon, SquareArrowRightExit, Target, Trash } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import api from '../../api.js';
 import SettingModal from '../components/setting_modal.jsx';
+
 
 // user can modify profile picture, account deletion, setting gym and goal, and toggling privacy mode
 // set pfp, set gym, and logout can just happen instantly, i can create a popup for the user to input the goal and maybe to confirm deletion.
@@ -24,13 +25,21 @@ export default function SettingScreen() {
 	const [showGymModal, setShowGymModal] = useState(false);
 	const [showGoalModal, setShowGoalModal] = useState(false);
 
-	const [deletePassword, setDeletePassword] = useState('');
+	
 	const [bio, setBio] = useState('');
 	const [gym, setGym] = useState([0,0]);
 	const [goal, setGoal] = useState('');
-	const [goal_value, setGoalValue] = useState(0);
+	const [deletePassword, setDeletePassword] = useState('');
 	const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
 	const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+
+	useEffect(() => {
+		if (!user) {
+			router.replace('/');
+		}
+	}, [user]);
+
+
 	////////////////////////////////////////////////////////////////////////////////////
 	// LEADERBOARD VISIBILITY TOGGLE
 
@@ -43,7 +52,11 @@ export default function SettingScreen() {
 
 			try {
 				// Get current visibility setting for this user
-				const response = await api.get(`/api/leaderboard/visibility/${user.username}`);
+				const response = await api.get(`/api/leaderboard/visibility/${user.username}`, {
+					headers: {
+						'Authorization': `Bearer ${user.token}`
+					}
+				});
 
 				setVisibleOnLeaderboard(response.data.visibleOnLeaderboard !== false);
 			} catch (error) {
@@ -68,6 +81,10 @@ export default function SettingScreen() {
 			await api.patch('/api/leaderboard/visibility', {
 				userName: user.username,
 				visibleOnLeaderboard: newVisibility,
+			}, {
+				headers: {
+					'Authorization': `Bearer ${user.token}`
+				}
 			});
 			setVisibleOnLeaderboard(newVisibility);
 		} catch (error) {
@@ -110,9 +127,16 @@ export default function SettingScreen() {
 
 		// Upload the image to the server
 		try {
-			const response = await api.patch(`/api/user/${user.username}/profile-pic`, {
-				profilePic: `data:image/webp;base64,${manipulated.base64}`,
-			});
+			const response = await api.patch(`/api/user/${user.username}/profile-pic`, 
+				{
+				profilePic: `data:image/webp;base64,${manipulated.base64}`
+				},
+				{
+					headers: {
+						'Authorization': `Bearer ${user.token}`
+					}
+				}
+			);
 
 			// Update user profile pic in auth context
 			const updatedUser = {...user, profilePic: response.data.profilePic};
@@ -151,6 +175,9 @@ export default function SettingScreen() {
 		try {
 			const response = await api.delete(`/api/user/${user.username}`, {
 				data: { password: deletePassword },
+				headers: {
+					'Authorization': `Bearer ${user.token}`
+				}
 			});
 
 			if (response?.data?.code === 'WRONG_PASSWORD') {
@@ -208,7 +235,7 @@ export default function SettingScreen() {
 		try {
 			await AsyncStorage.removeItem('user');
 			dispatch({ type: 'LOGOUT' });
-			router.replace('/');
+			router.replace('/home');
 		} catch (error) {
 			console.error('Error logging out:', error);
 			Alert.alert('Logout failed', 'Could not log out. Please try again.');

@@ -14,7 +14,8 @@ export default function ProfileDisplay({imgsrc,base_numval,optimal_numval,onPres
                     <AppText style = {{color : colors.buttonText, padding: 10,paddingTop: 14}}>{children}</AppText>
                 </View>
             }
-            {type === 'log' &&
+            
+            {(type === 'log') &&
                 <Pressable onPress={onPress} style ={{backgroundColor: colors.secondary, width: '100%', alignItems: 'center',justifyContent: 'center', borderColor: colors.primary, borderBottomWidth:5,borderTopStartRadius: 15, borderTopEndRadius: 15}}>
                     <AppText style = {{color : colors.buttonText, padding: 10,paddingTop: 14}}>{children}</AppText>
                 </Pressable>
@@ -24,7 +25,7 @@ export default function ProfileDisplay({imgsrc,base_numval,optimal_numval,onPres
                 
             {type === 'goal' &&
                 <View style = {styles.subdisplay}>
-                    <AppText style ={[styles.numdisplay, [base_numval > optimal_numval ? {color: 'green'} : {color: 'red'}], [optimal_numval === 0 ? {fontSize: 50,paddingTop: 10} : {fontSize: 30}], {paddingBottom: 10, fontWeight: 'bold'}]}>{optimal_numval}</AppText>
+                    <AppText style ={[styles.numdisplay, [base_numval > optimal_numval ? {color: 'green'} : {color: 'red'}], [optimal_numval === 0 ? {fontSize: 50} : {fontSize: 30}], { fontWeight: 'bold'}]}>{optimal_numval}</AppText>
                     {optimal_numval !== 0 && (
                         <AppText style = {styles.textdisplay}>{base_numval > optimal_numval ? 'You\'ve reached your goal!' : 'Keep going!'}</AppText>
                     )}
@@ -61,6 +62,7 @@ const styles = StyleSheet.create({
         maxHeight: 200,
         borderRadius: 20,
         borderWidth: 5,
+        backgroundColor: colors.background,
         borderColor: colors.primary,
         overflow: 'hidden',
     },

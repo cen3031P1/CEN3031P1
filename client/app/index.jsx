@@ -8,12 +8,14 @@ import Input from './components/Input.jsx';
 import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
-import useAuthContext from './hook/useAuthContext.jsx';
+import {useAuthContext} from './hook/useAuthContext.jsx';
 
 export default function LoginScreen() {
     const {doLogin, totalFailure, loginFail, loginPass} = useLogin()
-    
     const { user } = useAuthContext();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [invalid_Cred, setInvalid_Cred] = useState('');
 
     useEffect(() => {
         if (user) {
@@ -52,13 +54,8 @@ export default function LoginScreen() {
         router.replace('/signin_screen');
     }  
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [invalid_Cred, setInvalid_Cred] = useState('');
-
     return (    
         
-
         // <View style = {{flex : 1}}>
         
             <LinearGradient
