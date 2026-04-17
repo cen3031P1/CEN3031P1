@@ -4,6 +4,7 @@ import { Tabs,Redirect} from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect } from 'react';
 import {useAuthContext} from '../hook/useAuthContext';
+import colors from '../theme/colors';
 
 export default function TabLayout() {
   const colorscheme = useColorScheme();
@@ -18,8 +19,8 @@ export default function TabLayout() {
   return (
     <Tabs
     screenOptions = {{
-      tabBarActiveTintColor: '#FFA500',
-      tabBarInactiveTintColor: '#1E90FF',
+      tabBarActiveTintColor: colors.primary,
+      tabBarInactiveTintColor: colors.secondary,
       headerShown: false,
       tabBarStyle: {
         height: '6.5%'

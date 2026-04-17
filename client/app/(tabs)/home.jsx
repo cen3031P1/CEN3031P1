@@ -24,7 +24,6 @@ export default function HomeScreen() {
 
 	const [streak, setStreak] = useState(0);
 	const [bestStreak, setBestStreak] = useState(0);
-	const [streakimage, setStreakImage] = useState("");
 
 	useEffect(() => {
 		if (user) {
@@ -48,6 +47,7 @@ export default function HomeScreen() {
 					}
 				}
 			);
+			
 			setStreak(response.data.streak);
 			setBestStreak(response.data.bestStreak);
 			user.profilePic = response.data.profilePic;
@@ -58,29 +58,25 @@ export default function HomeScreen() {
 		}
 	}
 
-	useEffect(() => {
-		if (streak >= 20) {
-			setStreakImage(require('../assets/images/streak20.png'));
-		}
-		else if (streak >= 15) {
-			setStreakImage(require('../assets/images/streak15.png'));
-		}
-		else if (streak >= 10) {
-			setStreakImage(require('../assets/images/streak10.png'));
-		} 
-		else if (streak >= 5) {
-			setStreakImage(require('../assets/images/streak5.png'));
-		}
-		else {
-			setStreakImage(null);
-		}
-	}, [streak]);
+	const streakimage = 
+		streak >= 20 ? require('../assets/images/streak20.png') :
+		streak >= 15 ? require('../assets/images/streak15.png') :
+		streak >= 10 ? require('../assets/images/streak10.png') :
+		streak >= 5 ? require('../assets/images/streak5.png') :
+		null;
+	
+	const min_bestStreak = 
+		bestStreak >= 20 ? 4 :
+		bestStreak >= 15 ? 3 :
+		bestStreak >= 10 ? 2 :
+		bestStreak >= 5 ? 1 :
+		0;
 
   return (	
 	<ScrollView>
 		<View style = {styles.container}>
-			<View style= {{width: '100%', backgroundColor: colors.background, borderRadius: 10, alignItems: 'center',justifyContent: 'center',borderWidth: 5, borderColor: colors.primary}}>
-			<TitleComp style = {{fontSize: 30, margin: 20, marginBottom: 25}}>MY PROFILE</TitleComp>
+			<View style= {{width: '100%', backgroundColor: colors.background, borderRadius: 20, alignItems: 'center',justifyContent: 'center',borderWidth: 5, borderColor: colors.primary, WrapText: true}}>
+				<TitleComp style = {{fontSize: 30, margin: 20, marginBottom: 25}}>MY PROFILE</TitleComp>
 				
 				<Image
 				source={
@@ -91,7 +87,7 @@ export default function HomeScreen() {
 				style = {styles.Profile}
 				/>
 				<AppText style ={{fontSize: 14, margin: 15}}>{user?.username}</AppText>
-				<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 15, marginTop: 10}}>BIO - asdasdasdasdasd</AppText>
+				<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 15, marginTop: 10, WrapText: true, marginHorizontal: 20}}>BIO - asd aasd asd asd asd asd asd asd asda sda sdas dasd asd asdas dad as asdasd asd asd asdasdasd  asdasda sd </AppText>
 			</View>
 
 
@@ -99,7 +95,7 @@ export default function HomeScreen() {
 					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={2}>GOAL</ProfileDisplay>
 					<ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
 					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} onPress={handleLog} >LOG</ProfileDisplay>
-					<ProfileDisplay type='badges' style = {{width: '100%', aspectRatio: 0, height: '50%'}} >BADGES</ProfileDisplay>
+					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay>
 				</View>
 		</View>
 	</ScrollView>
@@ -110,7 +106,7 @@ const styles = StyleSheet.create({
 	container: {	
 		alignItems: 'center',
 		padding: 12,
-		gap: 8,
+		gap: 10,
 	},
 	Profile: {
 		height: 120, 
@@ -122,6 +118,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		justifyContent: 'center',
-		gap: 8,
+		gap:10
 	},
 });

@@ -2,7 +2,7 @@ import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ScrollView
 import { useEffect, useState } from 'react';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import SettingButton from '../components/SettingButton.jsx';
-import { CircleUserRound, Crosshair, Dumbbell, Eye, HatGlasses, NotebookPenIcon, SquareArrowRightExit, Target, Trash } from 'lucide-react-native';
+import { CircleUserRound, Cog, Crosshair, Dumbbell, Eye, HatGlasses, NotebookPenIcon, SquareArrowRightExit, Target, Trash } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,6 +18,7 @@ import SettingModal from '../components/setting_modal.jsx';
 export default function SettingScreen() {
 	const { user, dispatch } = useAuthContext();
 	const [visibleOnLeaderboard, setVisibleOnLeaderboard] = useState(true); // setVisibleOnLeaderboard updates visibleOnLeaderboard
+	const [isAdmin,setisAdmin] = useState(false)
 
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -28,10 +29,11 @@ export default function SettingScreen() {
 	
 	const [bio, setBio] = useState('');
 	const [gym, setGym] = useState([0,0]);
-	const [goal, setGoal] = useState('');
+	const [goal, setGoal] = useState(2);
 	const [deletePassword, setDeletePassword] = useState('');
 	const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
 	const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+	const [streak, setStreak] = useState(5);
 
 	useEffect(() => {
 		if (!user) {
@@ -227,6 +229,9 @@ export default function SettingScreen() {
 		setShowBioModal(true);
 	}
 
+	async function handleStreak(){
+		console.log("Attempting asdasd");
+	}
 	
 	/////////////////////////////////////////////////////////////////////////////////
 	// LOGOUT
@@ -246,7 +251,7 @@ export default function SettingScreen() {
 		setShowLogoutModal(true);
 	}
 
-	const [isAdmin,setisAdmin] = useState(false)
+	
 
 	return (
 	<ScrollView>
@@ -261,76 +266,9 @@ export default function SettingScreen() {
 
 
 			{/* maybe admins have exclusive settings */}
-			{isAdmin && <SettingButton onPress={() => handleDelete} Icon = {Eye} isPrivacy = 'true'>Set Goal</SettingButton>}
+			{true && <SettingButton onPress={() => handleStreak()} Icon = {Cog}>Set Streak</SettingButton>}
 
 		</View>
-
-		{/* DELETE ACCOUNT CONFIRMATION MODAL */}
-		{/* <Modal
-			animationType='fade'
-			transparent={true}
-			visible={showDeleteModal}
-			onRequestClose={() => {
-				if (!isDeletingAccount) {
-					setShowDeleteModal(false);
-				}
-			}}
-		>
-			<View style={styles.modalBackdrop}>
-				<View style={styles.modalCard}>
-					<Text style={styles.modalTitle}>Delete Account</Text>
-					<Text style={styles.modalBody}>
-						This action is permanent. Your profile and stats will be deleted.
-					</Text>
-					<Text style={styles.modalBody}>
-						Are you sure you want to continue?
-					</Text>
-
-					<TextInput
-						style={styles.modalInput}
-						placeholder='Enter YOUR account password to confirm'
-						secureTextEntry
-						autoCapitalize='none'
-						autoCorrect={false}
-						editable={!isDeletingAccount}
-						value={deletePassword}
-						onChangeText={(text) => {
-							setDeletePassword(text);
-							if (deleteErrorMessage) {
-								setDeleteErrorMessage('');
-							}
-						}}
-					/>
-
-					{!!deleteErrorMessage && (
-						<Text style={styles.modalErrorText}>{deleteErrorMessage}</Text>
-					)}
-
-					<View style={styles.modalActions}>
-						<Pressable
-							style={styles.cancelButton}
-							onPress={() => {
-								setShowDeleteModal(false);
-								setDeletePassword('');
-								setDeleteErrorMessage('');
-							}}
-							disabled={isDeletingAccount}
-						>
-							<Text style={styles.cancelButtonText}>Cancel</Text>
-						</Pressable>
-
-						<Pressable
-							style={[styles.deleteButton, isDeletingAccount && styles.disabledButton]}
-							onPress={async () => {handleConfirmDeleteAccount();}}
-							disabled={isDeletingAccount}
-						>
-							<Text style={styles.deleteButtonText}>{isDeletingAccount ? 'Deleting...' : 'Delete'}</Text>
-						</Pressable>
-					</View>
-				</View>
-			</View>
-		</Modal> */}
-
 
 		<SettingModal
 			type='delete'
