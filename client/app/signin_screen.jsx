@@ -103,20 +103,17 @@ export default function SigninScreen() {
             <ScrollView contentContainerStyle={{flexGrow: 1}}>
                 <View style={styles.overlay}>
 
-                    <View style = {{marginBottom: 30, width: '90%', justifyContent: 'center', alignItems: 'center'}}>
-                        <Image source={require('./assets/images/gfit_logo.png')}
-                        style = {{
-                            height: 300, 
-                            width: '90%', 
-                            marginTop: 20, 
-                            maxWidth: 500,
-                            resizeMode: 'contain'
-                            }}/>
-                        
-                        <View>
-                            <TitleComp>GATOR FIT</TitleComp>
-                        </View>
+                <View style = {{marginBottom: 10, height: '25%', alignItems: 'center'}}>
+                    <Image source={require('./assets/images/gfit_logo.png')}
+                    style = {{
+                        height: '100%',
+                        resizeMode: 'contain'
+                        }}/>
+                    
+                    <View>
+                        <TitleComp>GATOR FIT</TitleComp>
                     </View>
+                </View>
 
                     <View style ={styles.textbox}>
 
@@ -162,12 +159,12 @@ export default function SigninScreen() {
     );
 }
 
+
 const styles = StyleSheet.create({
     overlay: {
         flex : 1,
         backgroundColor: 'rgba(255,255,255,.4)',
         alignItems: 'center',
-        gap: 12,
     },
     failtext: {
         color: 'red',
@@ -178,10 +175,12 @@ const styles = StyleSheet.create({
     textbox: {
         backgroundColor: 'white',
         paddingHorizontal: 20,
-        paddingVertical: 12,
+        marginTop: 100,
         borderRadius: 10,
         width: '85%',
-        height: '45%',
+        maxWidth: 700,
+        maxHeight: 350,
+        height: '55%',
         gap: 15,
         justifyContent: 'center',
         alignItems: 'center',

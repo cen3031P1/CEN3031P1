@@ -1,5 +1,5 @@
-import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { router} from 'expo-router';
+import { useEffect, useState, useCallback} from 'react';
 import { View, ScrollView, StyleSheet, Image} from 'react-native';
 import TitleComp from '../components/Titles.jsx';
 import ProfileDisplay from '../components/ProfileDisplay.jsx';
@@ -7,6 +7,7 @@ import colors from '../theme/colors.jsx';
 import AppText from '../components/AppText.jsx';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import api from '../../api.js';
+import { useFocusEffect } from '@react-navigation/native';
 
 // will display profile picture
 // log button
@@ -21,22 +22,25 @@ async function handleLog(){
 export default function HomeScreen() {
 	const { user } = useAuthContext();
 
-
 	const [streak, setStreak] = useState(0);
 	const [bestStreak, setBestStreak] = useState(0);
-
-	useEffect(() => {
-		if (user) {
-			fetchUserData()
-		}
-	}, [user]);
-
+	const [goal, setGoal] = useState(0);
+	const [profilePic, setProfilePic] = useState(null);
+	const [bio, setBio] = useState('');
 
 	useEffect(() => {
 		if (!user) {
 			router.replace('/');
 		}
 	}, [user]);
+
+	useFocusEffect(
+		useCallback(() => {
+			if (user) {
+				fetchUserData()
+			}
+		}, [user])
+	);
 
 	async function fetchUserData() {
 		try {
@@ -47,11 +51,12 @@ export default function HomeScreen() {
 					}
 				}
 			);
-			
+
+			setGoal(response.data.goal);
 			setStreak(response.data.streak);
 			setBestStreak(response.data.bestStreak);
-			user.profilePic = response.data.profilePic;
-
+			setProfilePic(response.data.profilePic);
+			setBio(response.data.bio);
 		}
 		catch (error) {
 			console.error("Error fetching user data:", error);
@@ -73,26 +78,26 @@ export default function HomeScreen() {
 		0;
 
   return (	
-	<ScrollView>
+	<ScrollView contentContainerStyle={{ paddingBottom: 120}}>
 		<View style = {styles.container}>
 			<View style= {{width: '100%', backgroundColor: colors.background, borderRadius: 20, alignItems: 'center',justifyContent: 'center',borderWidth: 5, borderColor: colors.primary, WrapText: true}}>
 				<TitleComp style = {{fontSize: 30, margin: 20, marginBottom: 25}}>MY PROFILE</TitleComp>
 				
 				<Image
 				source={
-					user?.profilePic
-					? { uri: user.profilePic }
+					profilePic
+					? { uri: profilePic }
 					: require('../assets/images/defaultpfp.png')
 				}
 				style = {styles.Profile}
 				/>
 				<AppText style ={{fontSize: 14, margin: 15}}>{user?.username}</AppText>
-				<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 15, marginTop: 10, WrapText: true, marginHorizontal: 20}}>BIO - asd aasd asd asd asd asd asd asd asda sda sdas dasd asd asdas dad as asdasd asd asd asdasdasd  asdasda sd </AppText>
+				<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 15, marginTop: 10, WrapText: true, marginHorizontal: 20}}>{bio}</AppText>
 			</View>
 
 
 				<View style = {styles.featureBoxContainer}>
-					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={2}>GOAL</ProfileDisplay>
+					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={goal}>GOAL</ProfileDisplay>
 					<ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
 					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} onPress={handleLog} >LOG</ProfileDisplay>
 					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay>

@@ -290,9 +290,129 @@ export async function fetchProfileData(req, res) {
             return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
         }
 
-        res.status(200).json({msg: "Profile data retrieved successfully", code: "PROFILE_DATA_RETRIEVED",profilePic: user.profilePic, points: user.points, streak: user.streak, bestStreak: user.bestStreak});
+        res.status(200).json({msg: "Profile data retrieved successfully", code: "PROFILE_DATA_RETRIEVED",profilePic: user.profilePic, goal: user.goal, streak: user.streak, bestStreak: user.bestStreak, bio: user.bio});
     } catch (error) {
         console.error("Error fetching profile data: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+export async function getRole(req, res) {
+    try {
+        const {userName} = req.params;
+        const user = await User.findOne({userName});
+        
+        if (!user) {
+            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
+        }
+
+        res.status(200).json({msg: "Role retrieved successfully", code: "ROLE_RETRIEVED", role: user.role});
+    } catch (error) {
+        console.error("Error fetching user role: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+export async function makeAdmin(req, res) {
+    try {
+        const {userName,otherUser} = req.body;
+        const user = await User.findOne({userName: otherUser}); 
+
+        if (!user) {
+            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
+        }
+
+        if (otherUser === userName) {
+            return res.status(400).json({msg: "You cannot change your own role", code: "CANNOT_MODIFY_SELF"});
+        }
+
+        if (user.role === "admin") {
+            return res.status(400).json({msg: "User is already an admin", code: "USER_ALREADY_ADMIN"});
+        }
+        
+        user.role = "admin";
+        await user.save();
+        
+        res.status(200).json({msg: "Role updated successfully", code: "ROLE_UPDATED", role: user.role});
+    } catch (error) {
+        console.error("Error updating user role: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+export async function setGoal(req, res) {
+    try {
+        const {userName} = req.params;
+        const {goal} = req.body;
+
+        const user = await User.findOne({userName});
+        
+        if (!user) {
+            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
+        }
+
+        if (goal > 999999) {
+            return res.status(400).json({msg: "Goal must be less than 999999", code: "GOAL_TOO_HIGH"});
+        }
+
+        user.goal = goal;
+        await user.save();
+
+        return res.status(200).json({msg: "Goal set successfully", code: "GOAL_SET"});
+    }
+    catch (error) {
+        console.error("Error setting goal: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+export async function setBio(req, res) {
+    try {
+        const {userName} = req.params;
+        const {bio} = req.body;
+        const user = await User.findOne({userName});
+
+        if (!user) {
+            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
+        }
+
+        if (bio.length > 150) {
+            return res.status(400).json({msg: "Bio must be less than 150 characters", code: "BIO_TOO_LONG"});
+        }
+
+        user.bio = bio;
+        await user.save();
+
+        return res.status(200).json({msg: "Bio set successfully", code: "BIO_SET"});
+    }
+    catch (error) {
+        console.error("Error setting bio: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+export async function setStreak(req, res) {
+    try {
+        const {userName} = req.params;
+        const {streak} = req.body;
+
+        const user = await User.findOne({userName});
+        
+        if (!user) {
+            return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
+        }
+
+        if (streak > 9999) {
+            return res.status(400).json({msg: "Streak must be less than 9999", code: "STREAK_TOO_HIGH"});
+        }
+
+        user.streak = streak;
+        await user.save();
+
+        return res.status(200).json({msg: "Streak set successfully", code: "STREAK_SET"});
+    }
+    catch (error) {
+        console.error("Error setting streak: ", error);
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }

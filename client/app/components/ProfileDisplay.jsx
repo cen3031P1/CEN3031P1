@@ -1,7 +1,7 @@
 import fonts from '../theme/fonts';
 import colors from '../theme/colors';
 import react from 'react';
-import { Text,StyleSheet, Pressable,View, Image} from 'react-native';
+import { Text,StyleSheet, Pressable,View, Image, Platform} from 'react-native';
 import AppText from './AppText';
 
 const all_badges =[
@@ -27,8 +27,6 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
                     <AppText style = {{color : colors.buttonText, padding: 10,paddingTop: 14}}>{children}</AppText>
                 </Pressable>
             }
-            
-
                 
             {type === 'goal' &&
                 <View style = {styles.subdisplay}>
@@ -46,7 +44,6 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
                 </View>
             }
                 
-
             {type === 'log'&&
                 <View style = {styles.subdisplay}>
                     <AppText style ={styles.textdisplay}> description of point allocation</AppText>
