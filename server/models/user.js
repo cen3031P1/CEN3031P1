@@ -69,6 +69,11 @@ const userSchema = new mongoose.Schema({
     friends: {
         type: [String],
         required: true,
+    },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
     }
 }, {collection: "users"})
 

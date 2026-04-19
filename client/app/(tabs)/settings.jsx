@@ -18,9 +18,10 @@ import SettingModal from '../components/setting_modal.jsx';
 export default function SettingScreen() {
 	const { user, dispatch } = useAuthContext();
 	const [visibleOnLeaderboard, setVisibleOnLeaderboard] = useState(true); // setVisibleOnLeaderboard updates visibleOnLeaderboard
-
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
+	const [privacyStatus, setPrivacyStatus] = useState(false);
+
 	const [showBioModal, setShowBioModal] = useState(false);
 	const [showGymModal, setShowGymModal] = useState(false);
 	const [showGoalModal, setShowGoalModal] = useState(false);
@@ -87,12 +88,12 @@ export default function SettingScreen() {
 				}
 			});
 			setVisibleOnLeaderboard(newVisibility);
+			setPrivacyStatus(prev => !prev);
 		} catch (error) {
 			console.error('Error updating privacy mode:', error);
 			Alert.alert('Update failed', 'Could not update your leaderboard privacy mode.');
 		}
 	}
-
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// PROFILE PICTURE UPLOAD
@@ -259,9 +260,8 @@ export default function SettingScreen() {
 			<SettingButton onPress={() => handleDelete()} Icon = {Trash}>Delete Account</SettingButton>
 			<SettingButton onPress={() => handleLogout()} Icon = {SquareArrowRightExit}>Logout</SettingButton>
 
-
 			{/* maybe admins have exclusive settings */}
-			{isAdmin && <SettingButton onPress={() => handleDelete} Icon = {Eye} isPrivacy = 'true'>Set Goal</SettingButton>}
+			{isAdmin && <SettingButton onPress={() => handleDelete()} Icon = {Eye} isPrivacy = 'true'>Set Goal</SettingButton>}
 
 		</View>
 
