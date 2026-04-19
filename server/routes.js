@@ -29,7 +29,9 @@ import {
     deleteAccount,
     getPoints,
     getStreak,
-    getBestStreak
+    getBestStreak,
+    getAllUsers,
+    deleteUserByName
 } from './controller.js';
 import requireAuth from './middleware/requireAuth.js';
 import adminAuth from './middleware/adminAuth.js';
@@ -82,6 +84,11 @@ router.get('/user/:userName/streak', getStreak);
 router.get('/user/:userName/best-streak', getBestStreak);
 
 router.use(adminAuth)
+
+router.get('/allUsers', getAllUsers);
+
+router.delete('/delUser/:userName', deleteUserByName)
+
 
 
 export default router;

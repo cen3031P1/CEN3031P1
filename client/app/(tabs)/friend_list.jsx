@@ -47,6 +47,8 @@ export default function FriendsScreen() {
       const response = await api.post('/api/addfriend', {
         userName: user.username,
         friendUsername,
+      },
+      {
         headers: {
           'Authorization': `Bearer ${user.token}`
         }
