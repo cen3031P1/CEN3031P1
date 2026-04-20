@@ -30,7 +30,8 @@ export default function SigninScreen() {
             const response = await fetch('ip+port/signin',{
                 method: 'POST',
                 headers: {
-                    'info-type' :'signinInfo'
+                    'info-type' :'signinInfo',
+                    'Authorization': `Bearer ${user.token}`
                 },
                 body: JSON. stringify({username,password}),
             }

@@ -33,10 +33,14 @@ import {
     setGoal,
     setBio,
     setStreak,
+    getPoints,
+    getStreak,
+    getBestStreak,
     getAllUsers,
     deleteUserByName
 } from './controller.js';
 import requireAuth from './middleware/requireAuth.js';
+import adminAuth from './middleware/adminAuth.js';
 
 const router = express.Router();
 

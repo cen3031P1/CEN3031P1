@@ -436,7 +436,7 @@ export async function deleteUserByName(req, res){
         if(!deleted){
             return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"})
         }
- 
+
         await User.updateMany(
             {friends: userName},
             {$pull: {friends: userName}}

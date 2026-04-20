@@ -22,6 +22,8 @@ export default function SettingScreen() {
 
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
+	const [privacyStatus, setPrivacyStatus] = useState(false);
+
 	const [showBioModal, setShowBioModal] = useState(false);
 	const [showGymModal, setShowGymModal] = useState(false);
 	const [showGoalModal, setShowGoalModal] = useState(false);
@@ -114,12 +116,12 @@ export default function SettingScreen() {
 				}
 			});
 			setVisibleOnLeaderboard(newVisibility);
+			setPrivacyStatus(prev => !prev);
 		} catch (error) {
 			console.error('Error updating privacy mode:', error);
 			Alert.alert('Update failed', 'Could not update your leaderboard privacy mode.');
 		}
 	}
-
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// PROFILE PICTURE UPLOAD
@@ -393,7 +395,6 @@ export default function SettingScreen() {
 			<SettingButton onPress={() => handleGoal()} Icon = {Target}>Set Goal</SettingButton>
 			<SettingButton onPress={() => handleDelete()} Icon = {Trash}>Delete Account</SettingButton>
 			<SettingButton onPress={() => handleLogout()} Icon = {SquareArrowRightExit}>Logout</SettingButton>
-
 
 			{/* maybe admins have exclusive settings */}
 			{isAdmin && <SettingButton onPress={() => handleMakeAdmin()} Icon = {Cog}>Make Admin</SettingButton>}
