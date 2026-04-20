@@ -9,12 +9,6 @@ import {AuthContextProvider, useAuthContext} from './hook/useAuthContext';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-    
-    useEffect(() => {
-        if (loaded || error) {
-        SplashScreen.hideAsync();
-        }
-    }, [loaded, error]);
 
     return (
         <ThemeProvider value={DefaultTheme}>
