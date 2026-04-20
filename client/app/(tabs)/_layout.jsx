@@ -7,7 +7,6 @@ import {useAuthContext} from '../hook/useAuthContext';
 import colors from '../theme/colors';
 
 export default function TabLayout() {
-  const colorscheme = useColorScheme();
   const { user } = useAuthContext();
 
   useEffect(() => {
@@ -15,6 +14,12 @@ export default function TabLayout() {
       <Redirect href="/" />;
     }
   }, [user]);
+
+  useEffect(() => {
+    if(!user){
+      router.replace('/signin_screen')
+    }
+  },[user]);
 
   return (
     <Tabs

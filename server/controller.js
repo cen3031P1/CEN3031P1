@@ -416,3 +416,35 @@ export async function setStreak(req, res) {
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }
+
+export async function getAllUsers(req, res){
+    try{
+        const allUsers = await User.find({})
+        return allUsers
+    } catch (err){
+        console.error("Error returning all users", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"})
+    }
+}
+
+export async function deleteUserByName(req, res){
+    try{
+        const {username} = req.params
+
+        const deleted = await User.findOneAndDelete({username})
+
+        if(!deleted){
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"})
+        }
+ 
+        await User.updateMany(
+            {friends: userName},
+            {$pull: {friends: userName}}
+        );
+
+        res.status(200).json({msg: "User deleted", code: "ACCOUNT_DELETED"})
+    } catch (err) {
+        console.error("Error deleting user", err)
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
