@@ -15,11 +15,11 @@ export default function TabLayout() {
     }
   }, [user]);
 
-  useEffect(() => {
-    if(!user){
-      router.replace('/signin_screen')
-    }
-  },[user]);
+  // useEffect(() => {
+  //   if(!user){
+  //     router.replace('/signin_screen')
+  //   }
+  // },[user]);
 
   return (
     <Tabs
