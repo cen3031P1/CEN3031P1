@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Text,StyleSheet, Pressable,Modal,View, TextInput} from 'react-native';
 import { X } from 'lucide-react-native';
 
-export default function SettingModal({onPress_cancel, onPress_perform, onChangeText, type, title, subtext1, subtext2, action,visible, isdeleting = false, deleteErrorMessage = false, value, style, ...props}){
+export default function SettingModal({onPress_cancel, onPress_perform, onChangeText, type, title, subtext1, subtext2, action,visible, isdeleting = false, errorMessage, value, style, ...props}){
     const [showpassword, setShowPassword] = useState(true)
 
     return(
@@ -26,7 +26,7 @@ export default function SettingModal({onPress_cancel, onPress_perform, onChangeT
                         </Text>
                     </View>
 
-                    
+                    {errorMessage ? <Text style={styles.modalErrorText}>{errorMessage}</Text> : null}
 
                     {type === 'delete' &&
                     <TextInput
@@ -40,14 +40,20 @@ export default function SettingModal({onPress_cancel, onPress_perform, onChangeT
                         onChangeText={onChangeText}
                     />}
 
-                    {type === 'delete' && !!deleteErrorMessage && (
-                        <Text style={styles.modalErrorText}>{deleteErrorMessage}</Text>
-                    )}
-
-                    {(type === 'bio' || type === 'goal') &&
+                    {(type === 'bio' || type === 'goal' || type === 'streak') &&
                     <TextInput
                         style={styles.modalInput}
                         placeholder= {'Change your ' + type.toLowerCase()}
+                        autoCapitalize='none'
+                        autoCorrect={false}
+                        value={value}
+                        onChangeText={onChangeText}
+                    />}
+
+                    {(type === 'make admin') &&
+                    <TextInput
+                        style={styles.modalInput}
+                        placeholder= {'Username'}
                         autoCapitalize='none'
                         autoCorrect={false}
                         value={value}

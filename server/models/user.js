@@ -41,6 +41,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    goal: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     points: {
         type: Number,
         required: true,
@@ -73,7 +78,13 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: ['user', 'admin'],
-        default: 'user'
+        required: true,
+        default: "user",
+    }, 
+    bio: {
+        type: String,
+        required: false,
+        default: 'Bio Not Set',
     }
 }, {collection: "users"})
 
@@ -147,7 +158,7 @@ userSchema.statics.signup = async function(userName, password) {
     const hash = await bcrypt.hash(password, salt);
 
     //adds user to db
-    const user = await this.create({userName, password: hash, points: 0, gymLat: 0, gymLon: 0, streak: 0, bestStreak: 0, visibleOnLeaderboard: true, friends: []});
+    const user = await this.create({userName, password: hash, points: 0, gymLat: 0, gymLon: 0, streak: 0, bestStreak: 0, goal: 0, visibleOnLeaderboard: true, friends: [], role: "user", bio: "Bio Not Set"});
 
     return user;
 }

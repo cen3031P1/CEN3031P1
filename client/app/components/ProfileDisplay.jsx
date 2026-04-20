@@ -1,12 +1,19 @@
 import fonts from '../theme/fonts';
 import colors from '../theme/colors';
 import react from 'react';
-import { Text,StyleSheet, Pressable,View, Image} from 'react-native';
+import { Text,StyleSheet, Pressable,View, Image, Platform} from 'react-native';
 import AppText from './AppText';
 
-//mainly for displaying goal and streak and maybe badges
+const all_badges =[
+   {key: 5, img: require('../assets/images/5.png')},
+   {key: 10, img: require('../assets/images/10.png')},
+   {key: 15, img: require('../assets/images/15.png')},
+   {key: 20, img: require('../assets/images/20.png')},
+]
 
-export default function ProfileDisplay({imgsrc,base_numval,optimal_numval,onPress,type,children,style,...props}){
+export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,optimal_numval,onPress,type,children,style,...props}){
+    const badges = all_badges.filter(badge => badge.key <= min_bestStreak);
+
     return(
         <View style = {[styles.display,style]}>
             {type !== 'log' &&
@@ -20,8 +27,6 @@ export default function ProfileDisplay({imgsrc,base_numval,optimal_numval,onPres
                     <AppText style = {{color : colors.buttonText, padding: 10,paddingTop: 14}}>{children}</AppText>
                 </Pressable>
             }
-            
-
                 
             {type === 'goal' &&
                 <View style = {styles.subdisplay}>
@@ -39,7 +44,6 @@ export default function ProfileDisplay({imgsrc,base_numval,optimal_numval,onPres
                 </View>
             }
                 
-
             {type === 'log'&&
                 <View style = {styles.subdisplay}>
                     <AppText style ={styles.textdisplay}> description of point allocation</AppText>
@@ -47,8 +51,10 @@ export default function ProfileDisplay({imgsrc,base_numval,optimal_numval,onPres
             }
 
             {type === 'badges'&&
-                <View style = {styles.subdisplay}>
-                    <AppText style ={styles.textdisplay}> images of badges maybe based off the highest streak? </AppText>
+                <View style = {styles.badgecontainer}>
+                    {badges.map((badge) => (
+                        <Image key={badge.key} source={badge.img} style={{width: 70, height: 120, resizeMode: 'contain', margin: 5}} />
+                    ))}
                 </View>
             }
         </View>
@@ -84,5 +90,10 @@ const styles = StyleSheet.create({
         color: colors.regularText,
         includeFontPadding: false,
         textAlign: 'center',
+    },
+    badgecontainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
     }
 })

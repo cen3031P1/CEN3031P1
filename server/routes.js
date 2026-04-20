@@ -28,6 +28,11 @@ import {
     uploadProfilePic,
     deleteAccount,
     fetchProfileData,
+    getRole,
+    makeAdmin,
+    setGoal,
+    setBio,
+    setStreak,
     getPoints,
     getStreak,
     getBestStreak,
@@ -77,12 +82,25 @@ router.delete('/user/:userName', deleteAccount);
 //gets profile pic, points, streak, and best streak
 router.get('/user/:userName/fetchProfileData', fetchProfileData);
 
+//get user role (admin or user)
+router.get('/user/:userName/getRole', getRole);
+
+//set goal
+router.patch('/user/:userName/setGoal', setGoal);
+
+//set bio
+router.patch('/user/:userName/setBio', setBio);
+
 router.use(adminAuth)
 
 router.get('/allUsers', getAllUsers);
 
 router.delete('/delUser/:userName', deleteUserByName)
 
+//make another user an admin
+router.patch('/user/makeAdmin', makeAdmin);
 
+//set streak
+router.patch('/user/:userName/setStreak', setStreak);
 
 export default router;

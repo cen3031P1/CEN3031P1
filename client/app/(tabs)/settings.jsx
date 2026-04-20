@@ -2,7 +2,7 @@ import { View, Text, Button, TextInput, StyleSheet, Pressable, Image, ScrollView
 import { useEffect, useState } from 'react';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import SettingButton from '../components/SettingButton.jsx';
-import { CircleUserRound, Crosshair, Dumbbell, Eye, HatGlasses, NotebookPenIcon, SquareArrowRightExit, Target, Trash } from 'lucide-react-native';
+import { CircleUserRound, Cog, Crosshair, Dumbbell, Eye, HatGlasses, NotebookPenIcon, SquareArrowRightExit, Target, Trash } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,6 +18,8 @@ import SettingModal from '../components/setting_modal.jsx';
 export default function SettingScreen() {
 	const { user, dispatch } = useAuthContext();
 	const [visibleOnLeaderboard, setVisibleOnLeaderboard] = useState(true); // setVisibleOnLeaderboard updates visibleOnLeaderboard
+	const [isAdmin,setisAdmin] = useState(false)
+
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
 	const [privacyStatus, setPrivacyStatus] = useState(false);
@@ -25,14 +27,26 @@ export default function SettingScreen() {
 	const [showBioModal, setShowBioModal] = useState(false);
 	const [showGymModal, setShowGymModal] = useState(false);
 	const [showGoalModal, setShowGoalModal] = useState(false);
+	const [showAdminModal, setShowAdminModal] = useState(false);
+	const [showStreakModal, setShowStreakModal] = useState(false);
 
-	
 	const [bio, setBio] = useState('');
+	const [bioErrorMessage, setBioErrorMessage] = useState('');
+
 	const [gym, setGym] = useState([0,0]);
-	const [goal, setGoal] = useState('');
+
+	const [goal, setGoal] = useState(0);
+	const [goalErrorMessage, setGoalErrorMessage] = useState('');
+
 	const [deletePassword, setDeletePassword] = useState('');
 	const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
 	const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+
+	const [streak, setStreak] = useState(0);
+	const [streakErrorMessage, setStreakErrorMessage] = useState('');
+
+	const [otherUser, setotherUser] = useState('');
+	const [otherUserErrorMessage, setOtherUserErrorMessage] = useState('');
 
 	useEffect(() => {
 		if (!user) {
@@ -40,6 +54,19 @@ export default function SettingScreen() {
 		}
 	}, [user]);
 
+	async function getUserRole() {
+		try	{
+			const response = await api.get(`/api/user/${user.username}/getRole`,
+			{
+				headers: {
+					'Authorization': `Bearer ${user.token}`
+				}
+			});
+			setisAdmin(response.data.role === 'admin');
+		} catch (error) {
+			console.error("Error fetching user role:", error);
+		}
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// LEADERBOARD VISIBILITY TOGGLE
@@ -65,6 +92,7 @@ export default function SettingScreen() {
 			}
 		}
 
+		getUserRole();
 		loadVisibility();
 	}, [user]);
 
@@ -211,24 +239,133 @@ export default function SettingScreen() {
 		}
 	}
 
-	const handleGoalvalue = (text) => {
-		const numericText = text.replace(/[^0-9]/g, '');
-		setGoal(numericText);
+	//////////////////////////////////////////////////////////////////////////////////
+	// MAKING ADMIN
+
+	async function handleMakeAdmin(){
+		setotherUser('');
+		setOtherUserErrorMessage('');
+		setShowAdminModal(true);
 	}
+
+	async function performMakeAdmin() {
+		try {
+			const response = await api.patch(`/api/user/makeAdmin`, {
+				otherUser: otherUser,
+				userName: user.username
+				}, {
+				headers: {
+					'Authorization': `Bearer ${user.token}`
+				}
+			});
+			setShowAdminModal(false);
+		} catch (error) {
+			if (error?.response?.data?.code === 'USER_NOT_FOUND') {
+				setOtherUserErrorMessage('User not found.');
+			} else if (error?.response?.data?.code === 'CANNOT_MODIFY_SELF') {
+				setOtherUserErrorMessage('You cannot change your own role.');
+			} else if (error?.response?.data?.code === 'USER_ALREADY_ADMIN') {
+				setOtherUserErrorMessage('User is already an admin.');
+			} else {
+				setOtherUserErrorMessage('Could not update user role. Please try again.');
+			}
+		}
+	}
+
 
 	async function handleGym(){
 		setShowGymModal(true);
 	}
+
+	//////////////////////////////////////////////////////////////////////////////////
+	// SETTING BIO GOAL STREAK
+
 	async function handleGoal(){
 		setGoal('');
 		setShowGoalModal(true);
+	}
+
+	async function performSetGoal(){
+		try {
+			const response = await api.patch(`/api/user/${user.username}/setGoal`, {
+				goal: goal,
+				}, {
+				headers: {
+					'Authorization': `Bearer ${user.token}`
+				}
+			});
+
+			setShowGoalModal(false);
+		} catch (error) {
+			if (error?.response?.data?.code === 'GOAL_TOO_HIGH') {
+				setGoalErrorMessage('Goal must be less than 999999.');
+			} else if (error?.response?.data?.code === 'USER_NOT_FOUND') {
+				setGoalErrorMessage('User not found. Please log in again.');
+			} else {
+				setGoalErrorMessage('Could not set goal. Please try again.');
+			}
+		}
+	}
+
+	const handleGoalvalue = (text) => {
+		const numericText = text.replace(/[^0-9]/g, '');
+		setGoal(numericText);
 	}
 	async function handleBio(){
 		setBio('');
 		setShowBioModal(true);
 	}
 
-	
+	async function performSetBio(){
+		try {
+			const response = await api.patch(`/api/user/${user.username}/setBio`, {
+				bio: bio,
+				}, {
+				headers: {
+					'Authorization': `Bearer ${user.token}`
+				}
+			});
+			setShowBioModal(false);
+		} catch (error) {
+			if (error?.response?.data?.code === 'USER_NOT_FOUND') {
+				setBioErrorMessage('User not found. Please log in again.');
+			} else if (error?.response?.data?.code === 'BIO_TOO_LONG') {
+				setBioErrorMessage('Bio must be less than 150 characters.');
+			} else {
+				setBioErrorMessage('Could not set bio. Please try again.');
+			}
+		}
+	}
+		
+	const handleStreakvalue = (text) => {
+		const numericText = text.replace(/[^0-9]/g, '');
+		setStreak(numericText);
+	}
+
+	async function handleSetStreak(){
+		setStreak('');
+		setShowStreakModal(true);
+	}
+
+	async function performSetStreak(){
+		try {
+			const response = await api.patch(`/api/user/${user.username}/setStreak`, {
+				streak: streak,
+				}, {
+				headers: {
+					'Authorization': `Bearer ${user.token}`
+				}
+			});
+			setShowStreakModal(false);
+		} catch (error) {
+			if (error?.response?.data?.code === 'USER_NOT_FOUND') {
+				setStreakErrorMessage('User not found. Please log in again.');
+			} else if (error?.response?.data?.code === 'STREAK_TOO_HIGH') {
+				setStreakErrorMessage('Streak must be a number between 0 and 999999.');
+			}
+		}
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////
 	// LOGOUT
 
@@ -247,7 +384,6 @@ export default function SettingScreen() {
 		setShowLogoutModal(true);
 	}
 
-	const [isAdmin,setisAdmin] = useState(false)
 
 	return (
 	<ScrollView>
@@ -261,76 +397,10 @@ export default function SettingScreen() {
 			<SettingButton onPress={() => handleLogout()} Icon = {SquareArrowRightExit}>Logout</SettingButton>
 
 			{/* maybe admins have exclusive settings */}
-			{isAdmin && <SettingButton onPress={() => handleDelete()} Icon = {Eye} isPrivacy = 'true'>Set Goal</SettingButton>}
+			{isAdmin && <SettingButton onPress={() => handleMakeAdmin()} Icon = {Cog}>Make Admin</SettingButton>}
+			{isAdmin && <SettingButton onPress={() => handleSetStreak()} Icon = {Cog}>Set Streak</SettingButton>}
 
 		</View>
-
-		{/* DELETE ACCOUNT CONFIRMATION MODAL */}
-		{/* <Modal
-			animationType='fade'
-			transparent={true}
-			visible={showDeleteModal}
-			onRequestClose={() => {
-				if (!isDeletingAccount) {
-					setShowDeleteModal(false);
-				}
-			}}
-		>
-			<View style={styles.modalBackdrop}>
-				<View style={styles.modalCard}>
-					<Text style={styles.modalTitle}>Delete Account</Text>
-					<Text style={styles.modalBody}>
-						This action is permanent. Your profile and stats will be deleted.
-					</Text>
-					<Text style={styles.modalBody}>
-						Are you sure you want to continue?
-					</Text>
-
-					<TextInput
-						style={styles.modalInput}
-						placeholder='Enter YOUR account password to confirm'
-						secureTextEntry
-						autoCapitalize='none'
-						autoCorrect={false}
-						editable={!isDeletingAccount}
-						value={deletePassword}
-						onChangeText={(text) => {
-							setDeletePassword(text);
-							if (deleteErrorMessage) {
-								setDeleteErrorMessage('');
-							}
-						}}
-					/>
-
-					{!!deleteErrorMessage && (
-						<Text style={styles.modalErrorText}>{deleteErrorMessage}</Text>
-					)}
-
-					<View style={styles.modalActions}>
-						<Pressable
-							style={styles.cancelButton}
-							onPress={() => {
-								setShowDeleteModal(false);
-								setDeletePassword('');
-								setDeleteErrorMessage('');
-							}}
-							disabled={isDeletingAccount}
-						>
-							<Text style={styles.cancelButtonText}>Cancel</Text>
-						</Pressable>
-
-						<Pressable
-							style={[styles.deleteButton, isDeletingAccount && styles.disabledButton]}
-							onPress={async () => {handleConfirmDeleteAccount();}}
-							disabled={isDeletingAccount}
-						>
-							<Text style={styles.deleteButtonText}>{isDeletingAccount ? 'Deleting...' : 'Delete'}</Text>
-						</Pressable>
-					</View>
-				</View>
-			</View>
-		</Modal> */}
-
 
 		<SettingModal
 			type='delete'
@@ -349,7 +419,7 @@ export default function SettingScreen() {
 				handleConfirmDeleteAccount();
 			}}
 			isdeleting = {!isDeletingAccount}
-			deleteErrorMessage = {deleteErrorMessage}
+			errorMessage = {deleteErrorMessage}
 			value={deletePassword}
 			onChangeText={setDeletePassword}
 		/>
@@ -376,11 +446,11 @@ export default function SettingScreen() {
 			subtext2='This can be changed at any time.'
 			action= 'Set Bio'
 			visible={showBioModal}
+			errorMessage={bioErrorMessage}
 			onRequestClose={() => {setShowBioModal(false)}}
 			onPress_cancel={() => {setShowBioModal(false)}}
 			onPress_perform={async () => {	
-				setShowBioModal(false);
-				console.log("New bio:", bio);
+				await performSetBio();
 			}}
 			onChangeText={(text) => setBio(text)}
 		/>
@@ -407,14 +477,48 @@ export default function SettingScreen() {
 			subtext2='This can be changed at any time.'
 			action= 'Set Goal'
 			visible={showGoalModal}
+			errorMessage={goalErrorMessage}
 			onRequestClose={() => {setShowGoalModal(false)}}
 			onPress_cancel={() => {setShowGoalModal(false)}}
 			value = {goal}
 			onPress_perform={async () => {	
-				setShowGoalModal(false);
-				console.log("New goal:", goal);
+				performSetGoal();
 			}}
 			onChangeText={(text) => handleGoalvalue(text)}
+		/>
+
+		<SettingModal
+			type='make admin'
+			title='Make Admin'
+			subtext1='Enter the username of the user you want to make an admin.'
+			subtext2='This action is not reversible yet.'
+			action= 'Make Admin'
+			visible={showAdminModal}
+			errorMessage={otherUserErrorMessage}
+			onRequestClose={() => {setShowAdminModal(false)}}
+			onPress_cancel={() => {setShowAdminModal(false)}}
+			value = {otherUser}
+			onPress_perform={async () => {	
+				performMakeAdmin(otherUser);
+			}}
+			onChangeText={(text) => setotherUser(text)}
+		/>
+
+		<SettingModal
+			type='streak'
+			title='Set Streak'
+			subtext1='Enter your desired streak'
+			subtext2='This has to be less than 9999.'
+			action= 'Set Streak'
+			visible={showStreakModal}
+			errorMessage={streakErrorMessage}
+			onRequestClose={() => {setShowStreakModal(false)}}
+			onPress_cancel={() => {setShowStreakModal(false)}}
+			value = {streak}
+			onPress_perform={async () => {	
+				performSetStreak();
+			}}
+			onChangeText={(text) => handleStreakvalue(text)}
 		/>
 
 	</ScrollView>
@@ -427,99 +531,5 @@ const styles = StyleSheet.create({
 		margin: 25,
 		alignItems: 'center',
 		gap: 10,
-	},
-	modalBackdrop: {
-		flex: 1,
-		backgroundColor: 'rgba(0, 0, 0, 0.35)',
-		justifyContent: 'center',
-		alignItems: 'center',
-		padding: 20,
-	},
-	modalCard: {
-		width: '100%',
-		maxWidth: 420,
-		backgroundColor: 'lightgrey',
-		borderRadius: 10,
-		padding: 18,
-		borderWidth: 1,
-		borderColor: '#cdd7eb',
-	},
-	modalTitle: {
-		fontSize: 24,
-		fontWeight: '800',
-		marginBottom: 10,
-		textAlign: 'center',
-	},
-	modalBody: {
-		fontSize: 15,
-		textAlign: 'center',
-		marginBottom: 8,
-		color: '#333',
-	},
-	modalInput: {
-		height: 44,
-		borderWidth: 1,
-		borderColor: '#9da8bf',
-		borderRadius: 6,
-		paddingHorizontal: 12,
-		backgroundColor: '#fff',
-		marginTop: 4,
-	},
-	modalErrorText: {
-		marginTop: 8,
-		textAlign: 'center',
-		color: '#b42318',
-		fontSize: 14,
-		fontWeight: '700',
-	},
-	modalActions: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		gap: 10,
-		marginTop: 14,
-	},
-	cancelButton: {
-		flex: 1,
-		height: 42,
-		borderRadius: 6,
-		borderWidth: 1,
-		borderColor: '#9da8bf',
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: '#f4f6fb',
-	},
-	deleteButton: {
-		flex: 1,
-		height: 42,
-		borderRadius: 6,
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: '#d43f3a',
-	},
-	cancelButtonText: {
-		fontSize: 15,
-		fontWeight: '700',
-		color: '#27364d',
-	},
-	deleteButtonText: {
-		fontSize: 15,
-		fontWeight: '700',
-		color: '#fff',
-	},
-	logoutButton: {
-		flex: 1,
-		height: 42,
-		borderRadius: 6,
-		alignItems: 'center',
-		justifyContent: 'center',
-		backgroundColor: '#355fa3',
-	},
-	logoutButtonText: {
-		fontSize: 15,
-		fontWeight: '700',
-		color: '#fff',
-	},
-	disabledButton: {
-		opacity: 0.7,
-	},
+	}
 })

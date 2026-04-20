@@ -1,5 +1,5 @@
-import { router } from 'expo-router';
-import { use, useEffect, useState } from 'react';
+import { router} from 'expo-router';
+import { useEffect, useState, useCallback} from 'react';
 import { View, ScrollView, StyleSheet, Image} from 'react-native';
 import TitleComp from '../components/Titles.jsx';
 import ProfileDisplay from '../components/ProfileDisplay.jsx';
@@ -7,6 +7,7 @@ import colors from '../theme/colors.jsx';
 import AppText from '../components/AppText.jsx';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import api from '../../api.js';
+import { useFocusEffect } from '@react-navigation/native';
 
 // will display profile picture
 // log button
@@ -21,23 +22,25 @@ async function handleLog(){
 export default function HomeScreen() {
 	const { user } = useAuthContext();
 
-
 	const [streak, setStreak] = useState(0);
 	const [bestStreak, setBestStreak] = useState(0);
-	const [streakimage, setStreakImage] = useState("");
-
-	useEffect(() => {
-		if (user) {
-			fetchUserData()
-		}
-	}, [user]);
-
+	const [goal, setGoal] = useState(0);
+	const [profilePic, setProfilePic] = useState(null);
+	const [bio, setBio] = useState('');
 
 	useEffect(() => {
 		if (!user) {
 			router.replace('/');
 		}
 	}, [user]);
+
+	useFocusEffect(
+		useCallback(() => {
+			if (user) {
+				fetchUserData()
+			}
+		}, [user])
+	);
 
 	async function fetchUserData() {
 		try {
@@ -48,58 +51,56 @@ export default function HomeScreen() {
 					}
 				}
 			);
+
+			setGoal(response.data.goal);
 			setStreak(response.data.streak);
 			setBestStreak(response.data.bestStreak);
-			user.profilePic = response.data.profilePic;
-
+			setProfilePic(response.data.profilePic);
+			setBio(response.data.bio);
 		}
 		catch (error) {
 			console.error("Error fetching user data:", error);
 		}
 	}
 
-	useEffect(() => {
-		if (streak >= 20) {
-			setStreakImage(require('../assets/images/streak20.png'));
-		}
-		else if (streak >= 15) {
-			setStreakImage(require('../assets/images/streak15.png'));
-		}
-		else if (streak >= 10) {
-			setStreakImage(require('../assets/images/streak10.png'));
-		} 
-		else if (streak >= 5) {
-			setStreakImage(require('../assets/images/streak5.png'));
-		}
-		else {
-			setStreakImage(null);
-		}
-	}, [streak]);
+	const streakimage = 
+		streak >= 20 ? require('../assets/images/streak20.png') :
+		streak >= 15 ? require('../assets/images/streak15.png') :
+		streak >= 10 ? require('../assets/images/streak10.png') :
+		streak >= 5 ? require('../assets/images/streak5.png') :
+		null;
+	
+	const min_bestStreak = 
+		bestStreak >= 20 ? 4 :
+		bestStreak >= 15 ? 3 :
+		bestStreak >= 10 ? 2 :
+		bestStreak >= 5 ? 1 :
+		0;
 
   return (	
-	<ScrollView>
+	<ScrollView contentContainerStyle={{ paddingBottom: 120}}>
 		<View style = {styles.container}>
-			<View style= {{width: '100%', backgroundColor: colors.background, borderRadius: 10, alignItems: 'center',justifyContent: 'center',borderWidth: 5, borderColor: colors.primary}}>
-			<TitleComp style = {{fontSize: 30, margin: 20, marginBottom: 25}}>MY PROFILE</TitleComp>
+			<View style= {{width: '100%', backgroundColor: colors.background, borderRadius: 20, alignItems: 'center',justifyContent: 'center',borderWidth: 5, borderColor: colors.primary, WrapText: true}}>
+				<TitleComp style = {{fontSize: 30, margin: 20, marginBottom: 25}}>MY PROFILE</TitleComp>
 				
 				<Image
 				source={
-					user?.profilePic
-					? { uri: user.profilePic }
+					profilePic
+					? { uri: profilePic }
 					: require('../assets/images/defaultpfp.png')
 				}
 				style = {styles.Profile}
 				/>
 				<AppText style ={{fontSize: 14, margin: 15}}>{user?.username}</AppText>
-				<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 15, marginTop: 10}}>BIO - asdasdasdasdasd</AppText>
+				<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 15, marginTop: 10, WrapText: true, marginHorizontal: 20}}>{bio}</AppText>
 			</View>
 
 
 				<View style = {styles.featureBoxContainer}>
-					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={2}>GOAL</ProfileDisplay>
+					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={goal}>GOAL</ProfileDisplay>
 					<ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
 					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} onPress={handleLog} >LOG</ProfileDisplay>
-					<ProfileDisplay type='badges' style = {{width: '100%', aspectRatio: 0, height: '50%'}} >BADGES</ProfileDisplay>
+					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay>
 				</View>
 		</View>
 	</ScrollView>
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
 	container: {	
 		alignItems: 'center',
 		padding: 12,
-		gap: 8,
+		gap: 10,
 	},
 	Profile: {
 		height: 120, 
@@ -122,6 +123,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		justifyContent: 'center',
-		gap: 8,
+		gap:10
 	},
 });

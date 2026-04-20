@@ -4,9 +4,9 @@ import { Tabs,Redirect} from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect } from 'react';
 import {useAuthContext} from '../hook/useAuthContext';
+import colors from '../theme/colors';
 
 export default function TabLayout() {
-  const colorscheme = useColorScheme();
   const { user } = useAuthContext();
 
   useEffect(() => {
@@ -19,14 +19,13 @@ export default function TabLayout() {
     if(!user){
       router.replace('/signin_screen')
     }
-  },[user] )
+  },[user]);
 
-  
   return (
     <Tabs
     screenOptions = {{
-      tabBarActiveTintColor: '#FFA500',
-      tabBarInactiveTintColor: '#1E90FF',
+      tabBarActiveTintColor: colors.primary,
+      tabBarInactiveTintColor: colors.secondary,
       headerShown: false,
       tabBarStyle: {
         height: '6.5%'
