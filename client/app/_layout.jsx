@@ -9,7 +9,17 @@ import {AuthContextProvider, useAuthContext} from './hook/useAuthContext';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+    
+    const [loaded, error] = useFonts({
+        'PressStart2P-Regular': require('./assets/PressStart2P-Regular.ttf')
+    });
 
+    useEffect(() => {
+        if (loaded || error) {
+        SplashScreen.hideAsync();
+        }
+    }, [loaded, error]);
+    
     return (
         <ThemeProvider value={DefaultTheme}>
             <AuthContextProvider>
