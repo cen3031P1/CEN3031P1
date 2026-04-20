@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Appearance, useColorScheme, Image} from 'react-native';
-import { Tabs,Redirect} from 'expo-router';
+import { Tabs,Redirect, router} from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect } from 'react';
 import {useAuthContext} from '../hook/useAuthContext';
