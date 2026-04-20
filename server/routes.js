@@ -33,9 +33,9 @@ import {
     setGoal,
     setBio,
     setStreak,
-    getPoints,
-    getStreak,
-    getBestStreak,
+    // getPoints,
+    // getStreak,
+    // getBestStreak,
     getAllUsers,
     deleteUserByName
 } from './controller.js';

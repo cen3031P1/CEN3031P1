@@ -55,7 +55,13 @@ export default function SettingScreen() {
 	}, [user]);
 
 	async function getUserRole() {
+
+		if (!user?.username) {
+			return;
+		}
+
 		try	{
+			
 			const response = await api.get(`/api/user/${user.username}/getRole`,
 			{
 				headers: {

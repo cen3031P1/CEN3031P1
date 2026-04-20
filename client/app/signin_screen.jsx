@@ -20,7 +20,7 @@ export default function SigninScreen() {
 
     useEffect(() => {
         if (user) {
-            router.replace('/(tabs)');
+            router.replace('/(tabs)/home');
         }
     }, [user]);
 

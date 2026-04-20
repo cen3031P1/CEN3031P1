@@ -43,6 +43,10 @@ export default function HomeScreen() {
 	);
 
 	async function fetchUserData() {
+		if (!user?.username) {
+			return;
+		}
+
 		try {
 			const response = await api.get(`/api/user/${user.username}/fetchProfileData`,
 				{
