@@ -448,3 +448,17 @@ export async function deleteUserByName(req, res){
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 }
+
+export async function saveLocation(req, res){
+    console.log("attempting to save location")
+    const { userName, latitude, longitude } = req.body;
+
+    try {
+        const user = await User.saveGymLocation(userName, latitude, longitude);
+        res.status(200).json({ message: "Gym location saved", user });
+        console.log("location saved")
+    } catch (err) {
+        res.status(400).json({ error: err.message, code: err.code });
+        console.log("location not saved:", err, err.code)
+    }
+}

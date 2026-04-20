@@ -162,6 +162,34 @@ userSchema.statics.signup = async function(userName, password) {
 
     return user;
 }
+userSchema.statics.saveGymLocation = async function(userName, gymLat, gymLon) {
+    console.log("attempting save in schema")
+    if (!userName) {
+        const err = new Error("Username must be provided");
+        err.code = "MISSING_FIELDS";
+        throw err;
+    }
+
+    if (gymLat === undefined || gymLon === undefined) {
+        const err = new Error("Latitude and longitude must be provided");
+        err.code = "MISSING_FIELDS";
+        throw err;
+    }
+
+    const user = await this.findOneAndUpdate(
+        { userName },
+        { gymLat, gymLon },
+        { new: true }
+    );
+
+    if (!user) {
+        const err = new Error("User not found");
+        err.code = "USER_NOT_FOUND";
+        throw err;
+    }
+
+    return user;
+}
 
 const User = mongoose.model('User', userSchema);
 

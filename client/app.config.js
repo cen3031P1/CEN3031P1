@@ -2,8 +2,8 @@ import 'dotenv/config'
 
 export default {
   "expo": {
-    "name": "client",
-    "slug": "client",
+    "name": "gator-fit",
+    "slug": "gator-fit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./app/assets/images/gfit_logo.png",
@@ -15,12 +15,10 @@ export default {
     },
     "ios": {
       "bundleIdentifier": "com.csilva1.client",
-      "googleMapsApiKey": process.env.GOOGLE_API_KEY,
       "supportsTablet": true
     },
     "android": {
       "package": "com.csilva1.client",
-      "googleMapsApiKey": process.env.GOOGLE_API_KEY,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE"
       }
@@ -30,9 +28,17 @@ export default {
     },
     "plugins": [
       "expo-font",
-      "expo-dev-client"
+      "expo-dev-client",
+      [
+        "react-native-maps",
+        {
+          "androidGoogleMapsApiKey": process.env.GOOGLE_API_KEY,
+          "iosGoogleMapsApiKey": process.env.GOOGLE_API_KEY
+        }
+      ]
     ],
     "extra": {
+    "googleMapsApiKey": process.env.GOOGLE_API_KEY,
       "eas": {
         "projectId": "5c5f0b40-474a-4da5-9653-01f6a1ebf98b"
       }

@@ -5,31 +5,32 @@
     Exported Functions:
     router - this is the router that will be used in the server.js file to define the routes for the server.
 
-    Imports: 
+    Imports:
     express
 
     signUp - see controller.js for more details
 
     login - see controller.js for more details
 
-    
+
 */
 
 import express from 'express';
-import { 
-    signUp, 
-    login, 
-    addFriend, 
+import {
+    signUp,
+    login,
+    addFriend,
     getFriends,
-    removeFriend,  
-    getLeaderboard,  
-    getLeaderboardVisibility, 
-    setLeaderboardVisibility, 
+    removeFriend,
+    getLeaderboard,
+    getLeaderboardVisibility,
+    setLeaderboardVisibility,
     uploadProfilePic,
     deleteAccount,
     fetchProfileData,
     getRole,
     makeAdmin,
+    saveLocation,
     setGoal,
     setBio,
     setStreak,
@@ -49,6 +50,7 @@ router.get('/', (req, res) => {
     res.send("hi");
 })
 
+router.post('/locations', saveLocation);
 router.post('/login', login);
 
 router.post('/signup', signUp);

@@ -17,9 +17,9 @@ export default function SigninScreen() {
     const [password, setPassword] = useState('');
     const [cpassword, setCpassword] = useState('');
     const [invalid_Cred, setInvalid_Cred] = useState('');
-
+    const [isSigningUp, setIsSigningUp] = useState(false)
     useEffect(() => {
-        if (user) {
+        if (user && !isSigningUp) {
             router.replace('/(tabs)/home');
         }
     }, [user]);
@@ -52,10 +52,12 @@ export default function SigninScreen() {
             setInvalid_Cred('Passwords do not match');
             return; 
         }
+
+        setIsSigningUp(true)
         
         const success = await signup(username, password);
-        if (success){router.replace('/(tabs)/home')};
-        
+        if (success){router.replace('/map')}
+        else {setIsSigningUp(false)}
     }
     useEffect(() => {
         /*

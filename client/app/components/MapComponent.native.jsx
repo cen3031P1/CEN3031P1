@@ -1,8 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import axios from 'axios';
+import {useAuthContext} from '../hook/useAuthContext.jsx';
+import { router } from 'expo-router';
 
 const GOOGLE_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 const API_BASE = process.env.EXPO_PUBLIC_API_URL;
@@ -10,6 +12,18 @@ const API_BASE = process.env.EXPO_PUBLIC_API_URL;
 export default function MapComponent() {
   const mapRef = useRef(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
+    const { user } = useAuthContext();
+
+    const [markers, setMarkers] = useState([]);
+
+    const handleMapPress = (event) => {
+      const { latitude, longitude } = event.nativeEvent.coordinate;
+      setMarkers(prev => [...prev, { latitude, longitude }]);
+    };
+
+    useEffect(() =>{
+        Alert.alert('Find your gym and save it!');
+        }, [])
 
   const handleLocationSelect = (data, details) => {
     const location = {
@@ -30,8 +44,21 @@ export default function MapComponent() {
   const saveLocation = async () => {
     if (!selectedLocation) return;
     try {
-      await axios.post(`${API_BASE}/api/locations`, selectedLocation);
-      Alert.alert('Saved!', `${selectedLocation.name} has been saved.`);
+      await axios.post(`${API_BASE}/api/locations`, {
+          userName: user.username,
+          latitude: selectedLocation.latitude,
+          longitude: selectedLocation.longitude
+          });
+      Alert.alert(
+          'Saved!',
+          `${selectedLocation.name} has been saved as your gym.`,
+          [
+              {
+                  text: 'OK',
+                  onPress: () => router.replace('/(tabs)/home')
+              }
+          ]
+      );
     } catch (err) {
       Alert.alert('Error', 'Could not save location');
     }
@@ -42,6 +69,8 @@ export default function MapComponent() {
       <MapView
         ref={mapRef}
         style={styles.map}
+        provider={PROVIDER_GOOGLE}
+        onPress = {handleMapPress}
         initialRegion={{
           latitude: 29.6516,
           longitude: -82.3248,
@@ -58,14 +87,30 @@ export default function MapComponent() {
             title={selectedLocation.name}
           />
         )}
+        {markers.map((marker, index) => (
+            <Marker
+              key={index}
+              coordinate={marker}
+              pinColor="red"
+            />
+          ))}
       </MapView>
 
-      {/* Search bar on top of map */}
       <GooglePlacesAutocomplete
         placeholder="Search for a location..."
         fetchDetails={true}
-        onPress={handleLocationSelect}
+        onPress={(data, details) => {
+//             console.log("data:", data)
+//             console.log("details:", details)
+            handleLocationSelect(data, details);
+
+            }}
+        onFail={(error) => console.error('Places error:', error)}
+          onNotFound={() => console.warn('No results found')}
         query={{ key: GOOGLE_API_KEY, language: 'en' }}
+        minLength= {2}
+        debounce = {300}
+        enabledPoweredByContainer = {false}
         styles={{
           container: styles.searchContainer,
           textInput: styles.searchInput,
