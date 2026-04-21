@@ -30,7 +30,10 @@ import {
     fetchProfileData,
     getRole,
     makeAdmin,
-    saveLocation,
+    saveGymLocation,
+    saveCurrLocation,
+    getCurrLocation,
+    getGymLocation,
     setGoal,
     setBio,
     setStreak,
@@ -50,7 +53,10 @@ router.get('/', (req, res) => {
     res.send("hi");
 })
 
-router.post('/locations', saveLocation);
+router.get('/gym-location', getGymLocation)
+router.post('/curr-location', saveCurrLocation)
+router.get('/user-location', getCurrLocation)
+router.post('/locations', saveGymLocation);
 router.post('/login', login);
 
 router.post('/signup', signUp);

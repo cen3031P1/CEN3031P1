@@ -9,6 +9,8 @@ import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
 import { useAuthContext} from './hook/useAuthContext.jsx';
+import * as Location from 'expo-location'
+
 
 export default function SigninScreen() {
     const { user } = useAuthContext();
@@ -44,7 +46,18 @@ export default function SigninScreen() {
             return false;
         }
     }
-    
+
+    async function getLocation(){
+        const {status} = await Location.requestForegroundPermissionsAsync()
+
+        if(status != 'granted'){
+            Alert.alert('Permission denied', 'Location access is required')
+            return
+        }
+
+    const location = await Location.getCurrentPositionAsync({})
+
+    }
     
     async function handleSignup(username,password,cpassword){
         

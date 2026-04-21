@@ -5,6 +5,8 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import axios from 'axios';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import { router } from 'expo-router';
+import api from '../../api.js'
+
 
 const GOOGLE_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 const API_BASE = process.env.EXPO_PUBLIC_API_URL;
@@ -13,17 +15,31 @@ export default function MapComponent() {
   const mapRef = useRef(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
     const { user } = useAuthContext();
-
+    const [currLocation, setCurrLocation] = useState({})
     const [markers, setMarkers] = useState([]);
+
+    const getCurrLocation = async () => {
+        const loc = await api.get('/user-location', {
+            params: { username: user.userName }
+        });
+        return loc.data;
+    };
+
 
     const handleMapPress = (event) => {
       const { latitude, longitude } = event.nativeEvent.coordinate;
       setMarkers(prev => [...prev, { latitude, longitude }]);
     };
 
-    useEffect(() =>{
-        Alert.alert('Find your gym and save it!');
-        }, [])
+    useEffect(() => {
+        const fetchLocation = async () => {
+            Alert.alert('Find your gym and save it!');
+            const loc = await getCurrLocation();
+            setCurrLocation(loc);
+        };
+
+        fetchLocation();
+    }, []);
 
   const handleLocationSelect = (data, details) => {
     const location = {
@@ -44,7 +60,7 @@ export default function MapComponent() {
   const saveLocation = async () => {
     if (!selectedLocation) return;
     try {
-      await axios.post(`${API_BASE}/api/locations`, {
+      await api.post(`/api/locations`, {
           userName: user.username,
           latitude: selectedLocation.latitude,
           longitude: selectedLocation.longitude
@@ -72,8 +88,8 @@ export default function MapComponent() {
         provider={PROVIDER_GOOGLE}
         onPress = {handleMapPress}
         initialRegion={{
-          latitude: 29.6516,
-          longitude: -82.3248,
+          latitude: currLocation?.latitude ?? 29.6516,
+          longitude: currLocation?.longitude ?? -82.3248,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
@@ -100,8 +116,6 @@ export default function MapComponent() {
         placeholder="Search for a location..."
         fetchDetails={true}
         onPress={(data, details) => {
-//             console.log("data:", data)
-//             console.log("details:", details)
             handleLocationSelect(data, details);
 
             }}
