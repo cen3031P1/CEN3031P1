@@ -43,8 +43,8 @@ import {
     getAllUsers,
     deleteUserByName
 } from './controller.js';
-//import requireAuth from './middleware/requireAuth.js';
-//import adminAuth from './middleware/adminAuth.js';
+import requireAuth from './middleware/requireAuth.js';
+import adminAuth from './middleware/adminAuth.js';
 
 const router = express.Router();
 
@@ -54,15 +54,16 @@ router.get('/', (req, res) => {
 })
 
 router.get('/user-location', getCurrLocation);
+router.get('/gym-location', getGymLocation)
+router.post('/curr-location', saveCurrLocation)
+router.post('/locations', saveGymLocation);
 
 router.post('/login', login);
 
 router.post('/signup', signUp);
 
-//router.use(requireAuth)
-router.get('/gym-location', getGymLocation)
-router.post('/curr-location', saveCurrLocation)
-router.post('/locations', saveGymLocation);
+router.use(requireAuth)
+
 // Add friends
 router.post('/addfriend', addFriend);
 
@@ -99,7 +100,7 @@ router.patch('/user/:userName/setGoal', setGoal);
 //set bio
 router.patch('/user/:userName/setBio', setBio);
 
-//router.use(adminAuth)
+router.use(adminAuth)
 
 router.get('/allUsers', getAllUsers);
 
