@@ -21,20 +21,21 @@ export default function SigninScreen() {
      const [isSigningUp, setIsSigningUp] = useState(false)
 
     useEffect(() => {
-        if (user $$ !isSigningUp) {
+        if (user && !isSigningUp) {
             router.replace('/(tabs)/home');
         }
     }, [user]);
 
-    async function getLocation(){
-        const {status} = await Location.requestForegroundPermissionsAsync()
+//     async function getLocation(){
+//         const {status} = await Location.requestForegroundPermissionsAsync()
+//
+//         if(status != 'granted'){
+//             Alert.alert('Permission denied', 'Location access is required')
+//             return
+//         }
+//     }
 
-        if(status != 'granted'){
-            Alert.alert('Permission denied', 'Location access is required')
-            return
-        }
-
-    const location = await Location.getCurrentPositionAsync({})
+//     const location = await Location.getCurrentPositionAsync({})
 
     //server request
     async function signinVerification(){
@@ -205,5 +206,5 @@ const styles = StyleSheet.create({
         gap: 20,
         width: '65%',
         justifyContent: 'center',
-    },
+    }
 })
