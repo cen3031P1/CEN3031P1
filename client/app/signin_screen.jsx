@@ -54,9 +54,10 @@ export default function SigninScreen() {
         }
 
         const success = await signup(username, password);
-        if (success){router.replace('/(tabs)/home')};
-
+        if (success){router.replace('/map')}
+        else{setIsSigningUp(false)}
     }
+
     useEffect(() => {
         /*
             useEffect probably not best for this?
