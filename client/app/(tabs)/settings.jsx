@@ -472,7 +472,7 @@ export default function SettingScreen() {
 			onPress_cancel={() => {setShowGymModal(false)}}
 			onPress_perform={async () => {	
 				setShowGymModal(false);
-				console.log("New gym:", gym);
+				router.replace('/map')
 			}}
 		/>
 		

@@ -85,7 +85,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false,
         default: 'Bio Not Set',
+    },
+    currLat: {
+        type: Number,
+        required: true,
+    },
+    currLon: {
+        type: Number,
+        required: true,
     }
+
 }, {collection: "users"})
 
 //keep all usernames unique and indexed for searching
@@ -159,6 +168,63 @@ userSchema.statics.signup = async function(userName, password) {
 
     //adds user to db
     const user = await this.create({userName, password: hash, points: 0, gymLat: 0, gymLon: 0, streak: 0, bestStreak: 0, goal: 0, visibleOnLeaderboard: true, friends: [], role: "user", bio: "Bio Not Set"});
+
+    return user;
+}
+userSchema.statics.saveGymLocation = async function(userName, gymLat, gymLon) {
+
+    if (!userName) {
+        const err = new Error("Username must be provided");
+        err.code = "MISSING_FIELDS";
+        throw err;
+    }
+
+    if (gymLat === undefined || gymLon === undefined) {
+        const err = new Error("Latitude and longitude must be provided");
+        err.code = "MISSING_FIELDS";
+        throw err;
+    }
+
+    const user = await this.findOneAndUpdate(
+        { userName },
+        { gymLat, gymLon },
+        { new: true }
+    );
+
+    if (!user) {
+        const err = new Error("User not found");
+        err.code = "USER_NOT_FOUND";
+        throw err;
+    }
+
+    return user;
+}
+
+userSchema.statics.saveCurrLocation = async function(userName, currLat, currLon) {
+
+    if (!userName) {
+        const err = new Error("Username must be provided");
+        err.code = "MISSING_FIELDS";
+        throw err;
+    }
+
+    if (currLat === undefined || currLon === undefined) {
+        const err = new Error("Latitude and longitude must be provided");
+        err.code = "MISSING_FIELDS";
+        throw err;
+    }
+
+    const user = await this.findOneAndUpdate(
+        { userName },
+        { currLat, currLon },
+        { new: true }
+    );
+
+    if (!user) {
+        const err = new Error("User not found");
+        err.code = "USER_NOT_FOUND";
+        throw err;
+    }
 
     return user;
 }

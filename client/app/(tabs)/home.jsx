@@ -8,12 +8,48 @@ import AppText from '../components/AppText.jsx';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import api from '../../api.js';
 import { useFocusEffect } from '@react-navigation/native';
-
+import * as Location from 'expo-location';
+import * as TaskManager from 'expo-task-manager';
 // will display profile picture
 // log button
 // goal
 // streak
 // badges 
+
+const LOCATION_TASK = 'background-location-task';
+
+const getDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371e3; // Earth radius in meters
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = Number(lat2) * Math.PI / 180;
+    const Δφ = (Number(lat2) - lat1) * Math.PI / 180;
+    const Δλ = (Number(lon2) - lon1) * Math.PI / 180;
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+};
+
+TaskManager.defineTask(LOCATION_TASK, async ({ data, error }) => {
+    if (data) {
+        const { latitude, longitude } = data.locations[0].coords;
+        const username = await AsyncStorage.getItem('username');
+        const token = await AsyncStorage.getItem('token');
+
+        const gymLoc = await api.get('/gym-location', {
+            params: { username },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const distance = getDistance(latitude, longitude, gymLoc.data.gymLat, gymLoc.data.gymLon);
+
+        if (distance < 100) {
+//             await api.post('/api/user/update-streak', { username }, {
+//                 headers: { Authorization: `Bearer ${token}` }
+//             });
+        }
+    }
+});
 
 async function handleLog(){
 	console.log("nothing yet");
@@ -27,6 +63,30 @@ export default function HomeScreen() {
 	const [goal, setGoal] = useState(0);
 	const [profilePic, setProfilePic] = useState(null);
 	const [bio, setBio] = useState('');
+
+
+    const startBackgroundTracking = async () => {
+        // Need both foreground and background permission
+        const { status: foreground } = await Location.requestForegroundPermissionsAsync();
+        const { status: background } = await Location.requestBackgroundPermissionsAsync();
+
+        if (foreground !== 'granted' || background !== 'granted') {
+            Alert.alert('Permission denied', 'Background location access is required');
+            return;
+        }
+
+        await Location.startLocationUpdatesAsync(LOCATION_TASK, {
+            accuracy: Location.Accuracy.Balanced,
+            timeInterval: 5 * 60 * 1000,  // check every 5 minutes
+            distanceInterval: 50,          // or every 50 meters, whichever comes first
+            showsBackgroundLocationIndicator: true,
+        });
+    };
+
+    const stopBackgroundTracking = async () => {
+        await Location.stopLocationUpdatesAsync(LOCATION_TASK);
+    };
+
 
 	useEffect(() => {
 		if (!user) {
