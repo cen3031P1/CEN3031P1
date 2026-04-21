@@ -9,6 +9,7 @@ import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
 import { useAuthContext} from './hook/useAuthContext.jsx';
+//import * as Location from 'expo-location'
 
 export default function SigninScreen() {
     const { user } = useAuthContext();
@@ -17,13 +18,24 @@ export default function SigninScreen() {
     const [password, setPassword] = useState('');
     const [cpassword, setCpassword] = useState('');
     const [invalid_Cred, setInvalid_Cred] = useState('');
-
+     const [isSigningUp, setIsSigningUp] = useState(false)
+    
     useEffect(() => {
-        if (user) {
+        if (user $$ !isSigningUp) {
             router.replace('/(tabs)/home');
         }
     }, [user]);
 
+    async function getLocation(){
+        const {status} = await Location.requestForegroundPermissionsAsync()
+
+        if(status != 'granted'){
+            Alert.alert('Permission denied', 'Location access is required')
+            return
+        }
+
+    const location = await Location.getCurrentPositionAsync({})
+    
     //server request
     async function signinVerification(){
         try {
@@ -44,18 +56,18 @@ export default function SigninScreen() {
             return false;
         }
     }
-    
-    
+
+
     async function handleSignup(username,password,cpassword){
-        
+
         if(password !== cpassword){
             setInvalid_Cred('Passwords do not match');
-            return; 
+            return;
         }
-        
+
         const success = await signup(username, password);
-        if (success){router.replace('/(tabs)/home')};
-        
+        if (success){router.replace('/map')}
+        else {setIsSigningUp(false)}
     }
     useEffect(() => {
         /*

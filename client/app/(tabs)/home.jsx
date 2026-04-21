@@ -8,12 +8,15 @@ import AppText from '../components/AppText.jsx';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import api from '../../api.js';
 import { useFocusEffect } from '@react-navigation/native';
+// import * as TaskManager from 'expo-task-manager';
+// import { LOCATION_TASK } from '../tasks/locationTask.js';
+// import * as Location from 'expo-location';
 
 // will display profile picture
 // log button
 // goal
 // streak
-// badges 
+// badges
 
 async function handleLog(){
 	console.log("nothing yet");
@@ -28,6 +31,29 @@ export default function HomeScreen() {
 	const [profilePic, setProfilePic] = useState(null);
 	const [bio, setBio] = useState('');
 
+
+//     const startBackgroundTracking = async () => {
+//         // Need both foreground and background permission
+//         const { status: foreground } = await Location.requestForegroundPermissionsAsync();
+//         const { status: background } = await Location.requestBackgroundPermissionsAsync();
+//
+//         if (foreground !== 'granted' || background !== 'granted') {
+//             Alert.alert('Permission denied', 'Background location access is required');
+//             return;
+//         }
+//
+//         await Location.startLocationUpdatesAsync(LOCATION_TASK, {
+//             accuracy: Location.Accuracy.Balanced,
+//             timeInterval: 5 * 60 * 1000,  // check every 5 minutes
+//             distanceInterval: 50,          // or every 50 meters, whichever comes first
+//             showsBackgroundLocationIndicator: true,
+//         });
+//     };
+//
+//     const stopBackgroundTracking = async () => {
+//         await Location.stopLocationUpdatesAsync(LOCATION_TASK);
+//     };
+	
 	useEffect(() => {
 		if (!user) {
 			router.replace('/');
@@ -67,26 +93,26 @@ export default function HomeScreen() {
 		}
 	}
 
-	const streakimage = 
+	const streakimage =
 		streak >= 20 ? require('../assets/images/streak20.png') :
 		streak >= 15 ? require('../assets/images/streak15.png') :
 		streak >= 10 ? require('../assets/images/streak10.png') :
 		streak >= 5 ? require('../assets/images/streak5.png') :
 		null;
-	
-	const min_bestStreak = 
+
+	const min_bestStreak =
 		bestStreak >= 20 ? 4 :
 		bestStreak >= 15 ? 3 :
 		bestStreak >= 10 ? 2 :
 		bestStreak >= 5 ? 1 :
 		0;
 
-  return (	
-	<ScrollView contentContainerStyle={{ paddingBottom: 120}}>
+  return (
+	<ScrollView contentContainerStyle={{ paddingBottom: '40%'}}>
 		<View style = {styles.container}>
 			<View style= {{width: '100%', backgroundColor: colors.background, borderRadius: 20, alignItems: 'center',justifyContent: 'center',borderWidth: 5, borderColor: colors.primary, WrapText: true}}>
 				<TitleComp style = {{fontSize: 30, margin: 20, marginBottom: 25}}>MY PROFILE</TitleComp>
-				
+
 				<Image
 				source={
 					profilePic
@@ -112,15 +138,17 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-	container: {	
+	container: {
 		alignItems: 'center',
 		padding: 12,
 		gap: 10,
 	},
 	Profile: {
-		height: 120, 
+		height: 120,
 		width: 120,
 		borderRadius: 60,
+		borderWidth: 2,
+		borderColor: 'lightgrey'
 	},
 	featureBoxContainer: {
 		width: '100%',

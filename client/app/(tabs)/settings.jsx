@@ -257,8 +257,8 @@ export default function SettingScreen() {
 	async function performMakeAdmin() {
 		try {
 			const response = await api.patch(`/api/user/makeAdmin`, {
-				otherUser: otherUser,
-				userName: user.username
+				params: {otherUser: otherUser,
+				userName: user.username}
 				}, {
 				headers: {
 					'Authorization': `Bearer ${user.token}`
@@ -342,7 +342,7 @@ export default function SettingScreen() {
 			}
 		}
 	}
-		
+
 	const handleStreakvalue = (text) => {
 		const numericText = text.replace(/[^0-9]/g, '');
 		setStreak(numericText);
@@ -355,7 +355,7 @@ export default function SettingScreen() {
 
 	async function performSetStreak(){
 		try {
-			const response = await api.patch(`/api/user/${user.username}/setStreak`, {
+			const response = await api.patch(`/api/user/${user.userName}/setStreak`, {
 				streak: streak,
 				}, {
 				headers: {
@@ -364,10 +364,11 @@ export default function SettingScreen() {
 			});
 			setShowStreakModal(false);
 		} catch (error) {
+            console.log(error)
 			if (error?.response?.data?.code === 'USER_NOT_FOUND') {
 				setStreakErrorMessage('User not found. Please log in again.');
 			} else if (error?.response?.data?.code === 'STREAK_TOO_HIGH') {
-				setStreakErrorMessage('Streak must be a number between 0 and 999999.');
+				setStreakErrorMessage('Streak must be a number between 0 and 9999.');
 			}
 		}
 	}
@@ -385,7 +386,7 @@ export default function SettingScreen() {
 			Alert.alert('Logout failed', 'Could not log out. Please try again.');
 		}
 	}
-	
+
 	async function handleLogout(){
 		setShowLogoutModal(true);
 	}
@@ -439,7 +440,7 @@ export default function SettingScreen() {
 			visible={showLogoutModal}
 			onRequestClose={() => {setShowLogoutModal(false)}}
 			onPress_cancel={() => {setShowLogoutModal(false)}}
-			onPress_perform={async () => {	
+			onPress_perform={async () => {
 				setShowLogoutModal(false);
 				await performLogout();
 			}}
@@ -455,7 +456,7 @@ export default function SettingScreen() {
 			errorMessage={bioErrorMessage}
 			onRequestClose={() => {setShowBioModal(false)}}
 			onPress_cancel={() => {setShowBioModal(false)}}
-			onPress_perform={async () => {	
+			onPress_perform={async () => {
 				await performSetBio();
 			}}
 			onChangeText={(text) => setBio(text)}
@@ -470,17 +471,17 @@ export default function SettingScreen() {
 			visible={showGymModal}
 			onRequestClose={() => {setShowGymModal(false)}}
 			onPress_cancel={() => {setShowGymModal(false)}}
-			onPress_perform={async () => {	
+			onPress_perform={async () => {
 				setShowGymModal(false);
 				console.log("New gym:", gym);
 			}}
 		/>
-		
+
 		<SettingModal
 			type='goal'
 			title='Set Goal'
 			subtext1='Enter your fitness goal in terms of streaks. For example, "1000".'
-			subtext2='This can be changed at any time.'
+			subtext2='This has to be less than 9999.'
 			action= 'Set Goal'
 			visible={showGoalModal}
 			errorMessage={goalErrorMessage}

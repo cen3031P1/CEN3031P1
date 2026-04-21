@@ -10,7 +10,7 @@ export default function ButtonComp({onPress,children,style,...props}){
         <Pressable
         style = {[styles.button,style]}
         onPress={onPress}
-        > 
+        >
             <AppText style = {{color : colors.buttonText, fontSize: 12}}>{children}</AppText>
         </Pressable>
     )

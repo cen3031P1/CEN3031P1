@@ -26,7 +26,7 @@ import jwt from 'jsonwebtoken';
 //function that creates the JWT token using the user's id
 //and a secret key. Token expires in 2 days.
 function createToken(userId) {
-    return jwt.sign({userId}, process.env.JWT_SECRET, {expiresIn: '2d'})
+    return jwt.sign({_id: userId}, process.env.JWT_SECRET, {expiresIn: '2d'})
 }
 
 
@@ -447,4 +447,63 @@ export async function deleteUserByName(req, res){
         console.error("Error deleting user", err)
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
+}
+
+export async function saveGymLocation(req, res){
+    console.log("attempting to save location")
+    const { userName, latitude, longitude } = req.body;
+
+    try {
+        const user = await User.saveGymLocation(userName, latitude, longitude);
+        res.status(200).json({ message: "Gym location saved", user });
+        console.log("location saved")
+    } catch (err) {
+        res.status(400).json({ error: err.message, code: err.code });
+        console.log("location not saved:", err, err.code)
+    }
+}
+
+export async function saveCurrLocation(req, res){
+    const { userName, latitude, longitude } = req.body;
+
+    try {
+        const user = await User.saveCurrLocation(userName, latitude, longitude);
+        res.status(200).json({ message: "Current location saved", user });
+        console.log("location saved")
+    } catch (err) {
+        res.status(400).json({ error: err.message, code: err.code });
+        console.log("location not saved:", err, err.code)
+    }
+}
+
+export async function getCurrLocation(req, res){
+    try{
+
+        const {userName} = req.body
+        const user = await User.findOne({userName})
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+                res.status(200).json({latitude: user.currLat, longitude: user.currLon});
+    } catch(error){
+        console.error("Error getting current location...", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+
+}
+
+export async function getGymLocation(req, res){
+    try{
+
+        const {username} = req.params
+        const user = await User.findOne({username})
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+                res.status(200).json({latitude: user.gymLat, longitude: user.gymLon});
+    } catch(error){
+        console.error("Error getting gym location...", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+
 }
