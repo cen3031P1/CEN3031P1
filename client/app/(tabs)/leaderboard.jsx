@@ -45,14 +45,14 @@ export default function LeaderboardScreen() {
 			console.error("Error loading global leaderboard:", error)
 		}
 	}
-	
+
 	return (
 		<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 			<View style={{ flex: 1, alignItems: 'center', width: '100%', padding: 20 }}>
 
-				<View style={{ width: '100%', height: 175, backgroundColor: colors.background, padding: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, gap: 15, marginBottom: 5}}>
+				<View style={{ width: '100%', height: 150, backgroundColor: colors.background, padding: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, gap: 15, marginBottom: 5}}>
 
-					<TitleComp style={{ marginBottom: 20, fontSize: 28}}>Global Leaderboard</TitleComp>
+					<TitleComp style={{ fontSize: 28}}>Global Leaderboard</TitleComp>
 					<View style={{ flexDirection: 'row', gap: 10, marginBottom: 20, justifyContent: 'center', width: '100%' }}>
 						<ButtonComp style={{ width: 150 }} onPress={() => setSortBy('points')}>Points</ButtonComp>
 						<ButtonComp style={{ width: 150 }} onPress={() => setSortBy('bestStreak')}>Best Streak</ButtonComp>
@@ -63,9 +63,9 @@ export default function LeaderboardScreen() {
 
 				<View style={{ width: '100%', backgroundColor: colors.background, paddingTop: 10, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary}}>
 					<View style={{ flexDirection: 'row', width: '100%', borderBottomWidth: 5, borderBottomColor: colors.primary, paddingBottom: 10}}>
-						<AppText style={{ width: '25%', fontWeight: 'bold', textAlign: 'center', fontSize: 13 }}>Rank</AppText>
-						<AppText style={{ width: '50%', fontWeight: 'bold', textAlign: 'center', fontSize: 13 }}>Username</AppText>
-						<AppText style={{ width: '25%', fontWeight: 'bold', textAlign: 'center', fontSize: 13 }}>{sortBy === 'points' ? 'Points' : 'Best Streak'}</AppText>
+						<AppText style={{ width: '25%',  textAlign: 'center', fontSize: 13 }}>Rank</AppText>
+						<AppText style={{ width: '50%', textAlign: 'center', fontSize: 13 }}>Username</AppText>
+						<AppText style={{ width: '25%', textAlign: 'center', fontSize: 13 }}>{sortBy === 'points' ? 'Points' : 'Best Streak'}</AppText>
 					</View>
 
 

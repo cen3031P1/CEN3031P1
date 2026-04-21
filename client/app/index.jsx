@@ -71,7 +71,7 @@ export default function LoginScreen() {
                         }}/>
                     
                     <View>
-                        <TitleComp>GATOR FIT</TitleComp>
+                        <TitleComp >GATOR FIT</TitleComp>
                     </View>
                 </View>
                 

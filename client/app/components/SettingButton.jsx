@@ -14,15 +14,15 @@ export default function SettingButton({PrivateOn=false , isPrivacy=false, Icon, 
             style ={[styles.button,style]}
             onPress={onPress}
             >
-                <View style = {{flexDirection: 'row', width: '98%'}}>
+                <View style = {{flexDirection: 'row', width: '80%'}}>
                     <Icon style = {styles.icon}/>
                     <AppText style ={styles.settingText}>{children}</AppText>
                     {!isPrivacy && <X style = {styles.icon}/>}
 
-                    {isPrivacy && 
+                    {isPrivacy &&
                         <View style= {{flexDirection: 'column', alignItems: 'center', height: 30}}>
                             <Text style = {styles.toggletext}>{PrivateOn ? 'ON' : 'OFF'}</Text>
-                            <Ionicons 
+                            <Ionicons
                                 name = 'toggle'
                                 style = {[styles.toggle, {transform: [{scaleX: PrivateOn ? 1 : -1}]}]}
                                 size = {30}
@@ -32,7 +32,7 @@ export default function SettingButton({PrivateOn=false , isPrivacy=false, Icon, 
                     }
                 </View>
 
-            </Pressable> 
+            </Pressable>
         </View>
 
     );
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         width: '105%',
         height: 65,
         justifyContent: 'center',
-        backgroundColor: '#e4e9f5', 
+        backgroundColor: '#e4e9f5',
         alignItems: 'center',
         borderRadius: 5,
     },
@@ -54,21 +54,20 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		alignItems: 'left',
         justifyContent: 'center',
-        
+
     },
     settingText: {
-        paddingLeft: 10,
         paddingTop: 5,
         width: '100%',
         fontSize: 20,
         fontFamily: fonts.settings,
-        // color: colors.primary, 
         fontWeight: '800'
     },
     icon: {
-        paddingLeft: 10,
+        margin: 5,
         width: 35,
         height: 35,
+        marginTop: 7
     },
     toggle:{
         marginTop: -7,

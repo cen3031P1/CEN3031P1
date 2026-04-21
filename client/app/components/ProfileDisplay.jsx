@@ -30,7 +30,7 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
                 
             {type === 'goal' &&
                 <View style = {styles.subdisplay}>
-                    <AppText style ={[styles.numdisplay, [base_numval > optimal_numval ? {color: 'green'} : {color: 'red'}], [optimal_numval === 0 ? {fontSize: 50} : {fontSize: 30}], { fontWeight: 'bold'}]}>{optimal_numval}</AppText>
+                    <AppText style ={[styles.numdisplay, [], [base_numval > optimal_numval ? {color: 'green'} : {color: 'red'}], [optimal_numval === 0 ? {fontSize: 50} : {fontSize: 30}]]}>{optimal_numval}</AppText>
                     {optimal_numval !== 0 && (
                         <AppText style = {styles.textdisplay}>{base_numval > optimal_numval ? 'You\'ve reached your goal!' : 'Keep going!'}</AppText>
                     )}
@@ -40,7 +40,7 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
             {type === 'streak' &&
                 <View style = {styles.subdisplay}>
                     <Image source={imgsrc} style={{width: 105, height: 100, resizeMode: 'cover'}} />
-                    <AppText style ={[styles.numdisplay, {fontSize: 40, fontWeight: 'bold',position: 'absolute'}, [base_numval < 5 ? {top: '30%'} : {top: '55%'}] ]}>{base_numval}</AppText>
+                    <AppText style ={[styles.numdisplay, {fontSize: 35,position: 'absolute'}, [base_numval < 5 ? {top: '30%'} : {top: '55%'}] ]}>{base_numval}</AppText>
                 </View>
             }
                 

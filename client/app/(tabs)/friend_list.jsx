@@ -131,22 +131,22 @@ export default function FriendsScreen() {
 
 			<View style={{alignItems: 'center', padding: 20, width: '100%'}}>
 
-				<View style={{ width: '100%', backgroundColor: colors.background, padding: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, gap: 15, marginBottom:5 }}>
+				<View style={{ width: '100%', backgroundColor: colors.background, paddingHorizontal: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, gap: 15, marginBottom:5 }}>
 
-					<TitleComp style={{ fontSize: 40, fontWeight: 'bold', marginBottom: 10}}>Friends</TitleComp>
-					
+					<TitleComp style={{ fontSize: 40, marginVertical: 15, fontFamily: fonts.general}}>Friends</TitleComp>
+
 					<Input
 						placeholder="Enter friend's username"
 						value={friendUsername}
 						onChangeText={setFriendUsername}
-						style = {{ width: '100%' ,height: 30}}
+						style = {{ width: '100%', height: 35}}
 					/>
 
-					<ButtonComp style = {{ width: '100%'}} onPress={addFriend}>
+					<ButtonComp style = {{ width: '100%', marginBottom: 10}} onPress={addFriend}>
 						Add Friend
 					</ButtonComp>
-					
-					{message !== '' && <Text style={{ fontFamily: fonts.general, textAlign: 'center', color: message.includes('success') ? 'green' : 'red' }}>{message}</Text>}
+
+					{message !== '' && <Text style={{ fontFamily: fonts.general, marginBottom: 10, textAlign: 'center', color: message.includes('success') ? 'green' : 'red' }}>{message}</Text>}
 
 				</View>
 

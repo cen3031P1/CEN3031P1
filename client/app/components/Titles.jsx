@@ -2,19 +2,19 @@ import fonts from '../theme/fonts';
 import colors from '../theme/colors';
 import react from 'react';
 import { Text,StyleSheet} from 'react-native';
+import AppText from './AppText';
 
 export default function TitleComp({children, style }){
     return (
-        <Text style ={[styles.text,style]}>
+        <AppText style = {[styles.text,style]}>
             {children}
-        </Text>
+        </AppText>
     )
 }
 
 const styles = StyleSheet.create({
     text: {
         fontSize: 35,
-        fontWeight: 'bold',
         fontFamily: fonts.headers,
         color: colors.primary,
         textShadowColor: colors.secondary,

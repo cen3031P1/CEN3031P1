@@ -37,20 +37,23 @@ export default function Input({style, isPassword = false, ...props}){
 
 const styles = StyleSheet.create({
     container: {
-        height: '10%',
+        height: '15%',
         width: '100%',
         minWidth: 250,
         borderWidth : 2,
         borderRadius: 7,
         borderColor : colors.border,
         flexDirection: 'row',
+        alignItems: 'center'
     },
     input:{
         flex: 1,
         paddingLeft: 5,
         fontSize: 10,
         height: '100%',
+        textAlignVertical: 'center',
         fontFamily: fonts.general,
+        includeFontPadding: false,
     },
     button:{
         justifyContent: 'flex-end',
@@ -62,6 +65,7 @@ const styles = StyleSheet.create({
         textAlign: 'right'
     },
     icon: {
+        justifyContent: 'center',
         width: '92%',
         height: '92%',
     }
