@@ -167,7 +167,7 @@ userSchema.statics.signup = async function(userName, password) {
     const hash = await bcrypt.hash(password, salt);
 
     //adds user to db
-    const user = await this.create({userName, password: hash, points: 0, gymLat: 0, gymLon: 0, streak: 0, bestStreak: 0, goal: 0, visibleOnLeaderboard: true, friends: [], role: "user", bio: "Bio Not Set"});
+    const user = await this.create({userName, password: hash, points: 0, gymLat: 0, gymLon: 0, currLat: 0, currLon: 0, streak: 0, bestStreak: 0, goal: 0, visibleOnLeaderboard: true, friends: [], role: "user", bio: "Bio Not Set"});
 
     return user;
 }

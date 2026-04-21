@@ -15,27 +15,30 @@ export default function MapComponent() {
   const mapRef = useRef(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
     const { user } = useAuthContext();
-    const [currLocation, setCurrLocation] = useState({})
+//     const [currLocation, setCurrLocation] = useState({})
     const [markers, setMarkers] = useState([]);
 
-const getCurrLocation = async () => {
-    try {
-
-        const loc = await api.get('/api/user-location', {
-            params: { userName: user.username },
-            headers: {
-               'Authorization': `Bearer: ${user.token}`}
-        }
-    );
-        return loc.data;
-    } catch (err) {
-        console.log("====begi=======")
-        console.log(err)
-        console.log('Status:', err.response?.status);
-        console.log('URL hit:', err.config?.url);
-        console.log('Response body:', err.response?.data);
-    }
-};
+// const getCurrLocation = async () => {
+//     try {
+//
+//         const loc = await api.get('/api/user-location', {
+//
+//
+//             params: { userName: user.username },
+//             headers: {
+//                'Authorization': ``}
+//
+//         }
+//     );
+//         return loc.data;
+//     } catch (err) {
+//         console.log("====begi=======")
+//         console.log(err)
+//         console.log('Status:', err.response?.status);
+//         console.log('URL hit:', err.config?.url);
+//         console.log('Response body:', err.response?.data);
+//     }
+// };
 
 
 
@@ -47,12 +50,13 @@ const getCurrLocation = async () => {
     useEffect(() => {
         const fetchLocation = async () => {
             Alert.alert('Find your gym and save it!');
-            const loc = await getCurrLocation();
-            setCurrLocation(loc);
+//             const loc = await getCurrLocation();
+//             setCurrLocation(loc);
         };
 
         fetchLocation();
     }, []);
+
 
   const handleLocationSelect = (data, details) => {
     const location = {
@@ -73,6 +77,9 @@ const getCurrLocation = async () => {
   const saveLocation = async () => {
     if (!selectedLocation) return;
     try {
+        console.log(user.username)
+        console.log(selectedLocation.latitude)
+        console.log(selectedLocation.longitude)
       await api.post(`/api/locations`, {
           userName: user.username,
           latitude: selectedLocation.latitude,
@@ -83,12 +90,18 @@ const getCurrLocation = async () => {
           `${selectedLocation.name} has been saved as your gym.`,
           [
               {
+
                   text: 'OK',
                   onPress: () => router.replace('/(tabs)/home')
               }
           ]
       );
     } catch (err) {
+       console.log("====begi=======")
+               console.log(err)
+               console.log('Status:', err.response?.status);
+               console.log('URL hit:', err.config?.url);
+               console.log('Response body:', err.response?.data);
       Alert.alert('Error', 'Could not save location');
     }
   };
@@ -101,8 +114,10 @@ const getCurrLocation = async () => {
         provider={PROVIDER_GOOGLE}
         onPress = {handleMapPress}
         initialRegion={{
-          latitude: currLocation?.latitude ?? 29.6516,
-          longitude: currLocation?.longitude ?? -82.3248,
+//           latitude: currLocation?.latitude ?? 29.6516,
+//           longitude: currLocation?.longitude ?? -82.3248,
+            latitude: 29.6536,
+            longitude: -82.3248,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
