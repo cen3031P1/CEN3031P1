@@ -82,10 +82,10 @@ export default function HomeScreen() {
 		0;
 
   return (
-	<ScrollView contentContainerStyle={{ paddingBottom: '40%'}}>
+	<ScrollView contentContainerStyle={{ paddingBottom: 200}}>
 		<View style = {styles.container}>
 			<View style= {{width: '100%', backgroundColor: colors.background, borderRadius: 20, alignItems: 'center',justifyContent: 'center',borderWidth: 5, borderColor: colors.primary, WrapText: true}}>
-				<TitleComp style = {{fontSize: 30, margin: 20, marginBottom: 25}}>MY PROFILE</TitleComp>
+				<TitleComp style = {{fontSize: 25, margin: 20, marginBottom: 25, width: '100%'}}>MY PROFILE</TitleComp>
 
 				<Image
 				source={
@@ -95,7 +95,7 @@ export default function HomeScreen() {
 				}
 				style = {styles.Profile}
 				/>
-				<AppText style ={{fontSize: 14, margin: 15}}>{user?.username}</AppText>
+				<AppText style ={{fontSize: 12, margin: 15}}>{user?.username}</AppText>
 				<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 15, marginTop: 10, WrapText: true, marginHorizontal: 20}}>{bio}</AppText>
 			</View>
 

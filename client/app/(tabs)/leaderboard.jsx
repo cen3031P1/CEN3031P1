@@ -47,13 +47,11 @@ export default function LeaderboardScreen() {
 	}
 
 	return (
-		<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-			<View style={{ flex: 1, alignItems: 'center', width: '100%', padding: 20 }}>
+			<View style={{ alignItems: 'center', width: '100%', padding: 20,flex:1}}>
+				<View style={{ width: '100%', backgroundColor: colors.background, paddingHorizontal: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, gap: 15, marginBottom:10 }}>
 
-				<View style={{ width: '100%', height: 150, backgroundColor: colors.background, padding: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, gap: 15, marginBottom: 5}}>
-
-					<TitleComp style={{ fontSize: 28}}>Global Leaderboard</TitleComp>
-					<View style={{ flexDirection: 'row', gap: 10, marginBottom: 20, justifyContent: 'center', width: '100%' }}>
+					<TitleComp style={{ fontSize: 28, marginVertical: 15}}>Global Leaderboard</TitleComp>
+					<View style={{ flexDirection: 'row', gap: 10, justifyContent: 'center', width: '100%', marginBottom: 10}}>
 						<ButtonComp style={{ width: 150 }} onPress={() => setSortBy('points')}>Points</ButtonComp>
 						<ButtonComp style={{ width: 150 }} onPress={() => setSortBy('bestStreak')}>Best Streak</ButtonComp>
 					</View>
@@ -61,29 +59,29 @@ export default function LeaderboardScreen() {
 				</View>
 
 
-				<View style={{ width: '100%', backgroundColor: colors.background, paddingTop: 10, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary}}>
+				<View style={{ width: '100%', height: '80%', backgroundColor: colors.background, paddingTop: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, marginBottom: 15}}>
 					<View style={{ flexDirection: 'row', width: '100%', borderBottomWidth: 5, borderBottomColor: colors.primary, paddingBottom: 10}}>
-						<AppText style={{ width: '25%',  textAlign: 'center', fontSize: 13 }}>Rank</AppText>
-						<AppText style={{ width: '50%', textAlign: 'center', fontSize: 13 }}>Username</AppText>
-						<AppText style={{ width: '25%', textAlign: 'center', fontSize: 13 }}>{sortBy === 'points' ? 'Points' : 'Best Streak'}</AppText>
+						<AppText style={{ width: '25%',  textAlign: 'center', fontSize: 11 }}>Rank</AppText>
+						<AppText style={{ width: '50%', textAlign: 'center', fontSize: 11 }}>Username</AppText>
+						<AppText style={{ width: '25%', textAlign: 'center', fontSize: 11 }}>{sortBy === 'points' ? 'Points' : 'Best Streak'}</AppText>
 					</View>
 
 
 					<FlatList
 						data={leaderboard}
 						keyExtractor={(item) => item._id}
-						style={{ width: '100%'}}
+						style={{ width: '100%', flex: 1}}
+						contentContainerStyle={{paddingBottom: 12}}
 						renderItem={({ item, index }) => (
 							<View style={{ flexDirection: 'row', paddingVertical: 10 }}>
-								<AppText style={{ width: '25%', textAlign: 'center', fontSize: 12 }} >#{index + 1}</AppText>
-								<AppText style={{ width: '50%', textAlign: 'center', fontSize: 12 }} >{item.userName}</AppText>
-								<AppText style={{ width: '25%', textAlign: 'center', fontSize: 12 }} >{sortBy === 'points' ? item.points : item.bestStreak}</AppText>
+								<AppText style={{ width: '25%', textAlign: 'center', fontSize: 10 }} >#{index + 1}</AppText>
+								<AppText style={{ width: '50%', textAlign: 'center', fontSize: 10 }} >{item.userName}</AppText>
+								<AppText style={{ width: '25%', textAlign: 'center', fontSize: 10 }} >{sortBy === 'points' ? item.points : item.bestStreak}</AppText>
 							</View>
 						)}
 					/>
 				</View>
 
 			</View>
-		</ScrollView>
 	);
 }

@@ -392,10 +392,10 @@ export async function setBio(req, res) {
 }
 
 export async function setStreak(req, res) {
+    console.log('SET STREAK CONTROLLER HIT');
     try {
         const {userName} = req.params;
         const {streak} = req.body;
-
         const user = await User.findOne({userName});
         
         if (!user) {
@@ -407,6 +407,9 @@ export async function setStreak(req, res) {
         }
 
         user.streak = streak;
+        if (user.bestStreak < streak){
+            user.bestStreak = streak;
+        }
         await user.save();
 
         return res.status(200).json({msg: "Streak set successfully", code: "STREAK_SET"});

@@ -37,7 +37,7 @@ export default function Input({style, isPassword = false, ...props}){
 
 const styles = StyleSheet.create({
     container: {
-        height: '15%',
+        height: '10%',
         width: '100%',
         minWidth: 250,
         borderWidth : 2,
@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
         fontSize: 10,
         height: '100%',
+        width: '100%',
         textAlignVertical: 'center',
         fontFamily: fonts.general,
         includeFontPadding: false,

@@ -36,8 +36,12 @@ app.use(cors());
 //frontend req should be json
 app.use(express.json());
 
-app.use("/api", router)
+app.use((req, res, next) => {
+  console.log('INCOMING:', req.method, req.originalUrl);
+  next();
+});
 
+app.use("/api", router)
 
 connectDB().then(() => {
   app.listen(PORT, () => {

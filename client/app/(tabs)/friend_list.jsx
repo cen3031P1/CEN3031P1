@@ -127,13 +127,11 @@ export default function FriendsScreen() {
 
 
 	return (
-		<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+			<View style={{alignItems: 'center', padding: 20, width: '100%', height: '100%'}}>
 
-			<View style={{alignItems: 'center', padding: 20, width: '100%'}}>
+				<View style={{ width: '100%', backgroundColor: colors.background, paddingHorizontal: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, gap: 15, marginBottom:10 }}>
 
-				<View style={{ width: '100%', backgroundColor: colors.background, paddingHorizontal: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, gap: 15, marginBottom:5 }}>
-
-					<TitleComp style={{ fontSize: 40, marginVertical: 15, fontFamily: fonts.general}}>Friends</TitleComp>
+					<TitleComp style={{ fontSize: 40, marginVertical: 15}}>Friends</TitleComp>
 
 					<Input
 						placeholder="Enter friend's username"
@@ -150,10 +148,9 @@ export default function FriendsScreen() {
 
 				</View>
 
-				<View style={{ width: '100%', backgroundColor: colors.background, padding: 15, borderRadius: 10, alignItems: 'center', borderWidth: 5, borderColor: colors.primary }}>
+				<View style={{ flex:1,width: '100%', backgroundColor: colors.background, padding: 15, borderRadius: 10, alignItems: 'center', borderWidth: 5, borderColor: colors.primary }}>
 					<FlatList
-						style={{ width: '100%'}}
-						scrollEnabled={false}
+						style={{ width: '100%',flex:1}}
 						data={friends}
 						keyExtractor={(item) => item} // Assuming friends is an array of usernames (strings).
 						// Maybe change this to item._id if we decide to switch to storing friend IDs instead of usernames.
@@ -174,7 +171,5 @@ export default function FriendsScreen() {
 				</View>
 
 			</View>
-
-		</ScrollView>
 	);
 }

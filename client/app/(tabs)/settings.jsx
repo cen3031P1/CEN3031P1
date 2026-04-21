@@ -288,6 +288,7 @@ export default function SettingScreen() {
 
 	async function handleGoal(){
 		setGoal('');
+		setGoalErrorMessage('');
 		setShowGoalModal(true);
 	}
 
@@ -319,6 +320,7 @@ export default function SettingScreen() {
 	}
 	async function handleBio(){
 		setBio('');
+		setBioErrorMessage('');
 		setShowBioModal(true);
 	}
 
@@ -330,6 +332,7 @@ export default function SettingScreen() {
 				headers: {
 					'Authorization': `Bearer ${user.token}`
 				}
+
 			});
 			setShowBioModal(false);
 		} catch (error) {
@@ -350,12 +353,13 @@ export default function SettingScreen() {
 
 	async function handleSetStreak(){
 		setStreak('');
+		setStreakErrorMessage('');
 		setShowStreakModal(true);
 	}
 
 	async function performSetStreak(){
 		try {
-			const response = await api.patch(`/api/user/${user.userName}/setStreak`, {
+			const response = await api.patch(`/api/user/${user.username}/setStreak`, {
 				streak: streak,
 				}, {
 				headers: {
@@ -364,12 +368,17 @@ export default function SettingScreen() {
 			});
 			setShowStreakModal(false);
 		} catch (error) {
-            console.log(error)
-			if (error?.response?.data?.code === 'USER_NOT_FOUND') {
-				setStreakErrorMessage('User not found. Please log in again.');
-			} else if (error?.response?.data?.code === 'STREAK_TOO_HIGH') {
-				setStreakErrorMessage('Streak must be a number between 0 and 9999.');
-			}
+            console.log("====begin====")
+            console.log(process.env.EXPO_PUBLIC_API_URL)
+// 			if (error?.response?.data?.code === 'USER_NOT_FOUND') {
+// 				setStreakErrorMessage('User not found. Please log in again.');
+// 			} else if (error?.response?.data?.code === 'STREAK_TOO_HIGH') {
+// 				setStreakErrorMessage('Streak must be a number between 0 and 9999.');
+// 			}
+            console.log('status:', error?.response?.status);
+            console.log('data:', error?.response?.data);
+            console.log('url:', error?.config?.url);
+            console.log(error);
 		}
 	}
 
@@ -450,7 +459,7 @@ export default function SettingScreen() {
 			type='bio'
 			title='Set Bio'
 			subtext1='Write a short bio to display on your profile.'
-			subtext2='This can be changed at any time.'
+			subtext2='Bio must be less than 150 characters.'
 			action= 'Set Bio'
 			visible={showBioModal}
 			errorMessage={bioErrorMessage}

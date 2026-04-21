@@ -19,7 +19,7 @@ export default function ButtonComp({onPress,children,style,...props}){
 const styles = StyleSheet.create({
     button:{
         width: '80%',
-        height: 40,
+        height: 45,
         backgroundColor: colors.secondary,
         borderRadius: 5,
         borderWidth: 1,

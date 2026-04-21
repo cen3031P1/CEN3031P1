@@ -112,7 +112,7 @@ export default function SigninScreen() {
                         }}/>
                     
                     <View>
-                        <TitleComp>GATOR FIT</TitleComp>
+                        <TitleComp style = {{fontSize: 30}}>GATOR FIT</TitleComp>
                     </View>
                 </View>
 
@@ -123,7 +123,7 @@ export default function SigninScreen() {
                         </View>
 
                         <View style = {{marginBottom: 10, marginTop: 5}}>
-                            <AppText>Sign-Up</AppText>
+                            <AppText style = {{fontSize:15}}>Sign-Up</AppText>
                         </View>
 
                         <Input 
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     },
     failtext: {
         color: 'red',
-        fontSize: '70%',
+        fontSize: 14,
         width: '100%',
         textAlign: 'center'
     },

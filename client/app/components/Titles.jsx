@@ -14,7 +14,7 @@ export default function TitleComp({children, style }){
 
 const styles = StyleSheet.create({
     text: {
-        fontSize: 35,
+        fontSize: 30,
         fontFamily: fonts.headers,
         color: colors.primary,
         textShadowColor: colors.secondary,

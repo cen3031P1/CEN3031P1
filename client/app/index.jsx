@@ -58,7 +58,7 @@ export default function LoginScreen() {
         
         <LinearGradient
         colors = {[colors.bgPrimary,colors.bgSecondary]}
-        style= {{flex:1, height: 'auto'}}
+        style= {{flex:1}}
         >
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
             <View style={styles.overlay}>
@@ -71,7 +71,7 @@ export default function LoginScreen() {
                         }}/>
                     
                     <View>
-                        <TitleComp >GATOR FIT</TitleComp>
+                        <TitleComp style = {{fontSize: 30, width: '110%'}}>GATOR FIT</TitleComp>
                     </View>
                 </View>
                 
@@ -82,7 +82,7 @@ export default function LoginScreen() {
                     </View>
                     
                     <View style = {{marginBottom: 10, marginTop: 10}}>
-                        <AppText>Log-In</AppText>
+                        <AppText style = {{fontSize: 15}}>Log-In</AppText>
                     </View>
 
                     <Input 
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     },
     failtext: {
         color: 'red',
-        fontSize: '70%',
+        fontSize: 10,
         width: '100%',
         textAlign: 'center'
     },
