@@ -368,17 +368,12 @@ export default function SettingScreen() {
 			});
 			setShowStreakModal(false);
 		} catch (error) {
-            console.log("====begin====")
-            console.log(process.env.EXPO_PUBLIC_API_URL)
-// 			if (error?.response?.data?.code === 'USER_NOT_FOUND') {
-// 				setStreakErrorMessage('User not found. Please log in again.');
-// 			} else if (error?.response?.data?.code === 'STREAK_TOO_HIGH') {
-// 				setStreakErrorMessage('Streak must be a number between 0 and 9999.');
-// 			}
-            console.log('status:', error?.response?.status);
-            console.log('data:', error?.response?.data);
-            console.log('url:', error?.config?.url);
-            console.log(error);
+            //somehow getting auth error
+			if (error?.response?.data?.code === 'USER_NOT_FOUND') {
+				setStreakErrorMessage('User not found. Please log in again.');
+			} else if (error?.response?.data?.code === 'STREAK_TOO_HIGH') {
+				setStreakErrorMessage('Streak must be a number between 0 and 9999.');
+			}
 		}
 	}
 
