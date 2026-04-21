@@ -18,12 +18,25 @@ export default function MapComponent() {
     const [currLocation, setCurrLocation] = useState({})
     const [markers, setMarkers] = useState([]);
 
-    const getCurrLocation = async () => {
-        const loc = await api.get('/user-location', {
-            params: { username: user.userName }
-        });
+const getCurrLocation = async () => {
+    try {
+
+        const loc = await api.get('/api/user-location', {
+            params: { userName: user.username },
+            headers: {
+               'Authorization': `Bearer: ${user.token}`}
+        }
+    );
         return loc.data;
-    };
+    } catch (err) {
+        console.log("====begi=======")
+        console.log(err)
+        console.log('Status:', err.response?.status);
+        console.log('URL hit:', err.config?.url);
+        console.log('Response body:', err.response?.data);
+    }
+};
+
 
 
     const handleMapPress = (event) => {

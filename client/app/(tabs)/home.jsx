@@ -8,9 +8,9 @@ import AppText from '../components/AppText.jsx';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import api from '../../api.js';
 import { useFocusEffect } from '@react-navigation/native';
-import * as TaskManager from 'expo-task-manager';
-import { LOCATION_TASK } from '../tasks/locationTask.js';
-import * as Location from 'expo-location';
+// import * as TaskManager from 'expo-task-manager';
+// import { LOCATION_TASK } from '../tasks/locationTask.js';
+// import * as Location from 'expo-location';
 // will display profile picture
 // log button
 // goal
@@ -31,28 +31,28 @@ export default function HomeScreen() {
 	const [profilePic, setProfilePic] = useState(null);
 	const [bio, setBio] = useState('');
 
-
-    const startBackgroundTracking = async () => {
-        // Need both foreground and background permission
-        const { status: foreground } = await Location.requestForegroundPermissionsAsync();
-        const { status: background } = await Location.requestBackgroundPermissionsAsync();
-
-        if (foreground !== 'granted' || background !== 'granted') {
-            Alert.alert('Permission denied', 'Background location access is required');
-            return;
-        }
-
-        await Location.startLocationUpdatesAsync(LOCATION_TASK, {
-            accuracy: Location.Accuracy.Balanced,
-            timeInterval: 5 * 60 * 1000,  // check every 5 minutes
-            distanceInterval: 50,          // or every 50 meters, whichever comes first
-            showsBackgroundLocationIndicator: true,
-        });
-    };
-
-    const stopBackgroundTracking = async () => {
-        await Location.stopLocationUpdatesAsync(LOCATION_TASK);
-    };
+//
+//     const startBackgroundTracking = async () => {
+//         // Need both foreground and background permission
+//         const { status: foreground } = await Location.requestForegroundPermissionsAsync();
+//         const { status: background } = await Location.requestBackgroundPermissionsAsync();
+//
+//         if (foreground !== 'granted' || background !== 'granted') {
+//             Alert.alert('Permission denied', 'Background location access is required');
+//             return;
+//         }
+//
+//         await Location.startLocationUpdatesAsync(LOCATION_TASK, {
+//             accuracy: Location.Accuracy.Balanced,
+//             timeInterval: 5 * 60 * 1000,  // check every 5 minutes
+//             distanceInterval: 50,          // or every 50 meters, whichever comes first
+//             showsBackgroundLocationIndicator: true,
+//         });
+//     };
+//
+//     const stopBackgroundTracking = async () => {
+//         await Location.stopLocationUpdatesAsync(LOCATION_TASK);
+//     };
 
 
 	useEffect(() => {

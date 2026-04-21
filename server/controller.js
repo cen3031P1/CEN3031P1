@@ -26,7 +26,7 @@ import jwt from 'jsonwebtoken';
 //function that creates the JWT token using the user's id
 //and a secret key. Token expires in 2 days.
 function createToken(userId) {
-    return jwt.sign({userId}, process.env.JWT_SECRET, {expiresIn: '2d'})
+    return jwt.sign({_id: userId}, process.env.JWT_SECRET, {expiresIn: '2d'})
 }
 
 
@@ -479,8 +479,8 @@ export async function saveCurrLocation(req, res){
 export async function getCurrLocation(req, res){
     try{
 
-        const {username} = req.params
-        const user = await User.findOne({username})
+        const {userName} = req.body
+        const user = await User.findOne({userName})
         if (!user) {
             return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
         }
