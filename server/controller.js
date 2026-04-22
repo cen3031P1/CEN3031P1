@@ -164,7 +164,8 @@ export async function getLeaderboard(req, res) {
         if (!validFields.includes(sortBy)) {
             return res.status(400).json({msg: "Invalid sort field", code: "INVALID_SORT_FIELD"});
         }
-        const users = await User.find({visibleOnLeaderboard: {$ne: false}}, `userName ${sortBy}`).sort({ [sortBy]: -1 }).limit(50);
+        const users = await User.find({visibleOnLeaderboard: {$ne: false}}, `userName ${sortBy}`).sort({ [sortBy]: -1 }).limit(10);
+        console.log(users)
         res.status(200).json({leaderboard: users});
     } catch (error) {
         console.error("Error getting leaderboard: ", error);

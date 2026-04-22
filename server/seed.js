@@ -30,7 +30,8 @@ async function seedDB() {
                     points: randomIntFromInterval(0, 1000), 
                     gymLat: faker.location.latitude(),
                     gymLon: faker.location.longitude(),
-                    streak: randomIntFromInterval(0, 30), //Days in month
+                    streak: randomIntFromInterval(0, 730), //two years
+                    bestStreak: randomIntFromInterval(0, 730), //two years
                     currLat: faker.location.latitude(),
                     currLon: faker.location.longitude(),
                     friends: [],

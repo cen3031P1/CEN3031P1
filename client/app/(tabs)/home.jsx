@@ -122,7 +122,7 @@ export default function HomeScreen() {
 				style = {styles.Profile}
 				/>
 				<AppText style ={{fontSize: 12, margin: 15}}>{user?.username}</AppText>
-				<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 15, marginTop: 10, WrapText: true, marginHorizontal: 20}}>{bio}</AppText>
+				<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 15, marginTop: 10, WrapText: true, marginHorizontal: 20, width: '95%'}}>{bio}</AppText>
 			</View>
 
 

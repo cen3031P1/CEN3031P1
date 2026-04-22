@@ -15,30 +15,30 @@ export default function MapComponent() {
   const mapRef = useRef(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
     const { user } = useAuthContext();
-//     const [currLocation, setCurrLocation] = useState({})
+    const [currLocation, setCurrLocation] = useState({})
     const [markers, setMarkers] = useState([]);
 
-// const getCurrLocation = async () => {
-//     try {
-//
-//         const loc = await api.get('/api/user-location', {
-//
-//
-//             params: { userName: user.username },
-//             headers: {
-//                'Authorization': ``}
-//
-//         }
-//     );
-//         return loc.data;
-//     } catch (err) {
-//         console.log("====begi=======")
-//         console.log(err)
-//         console.log('Status:', err.response?.status);
-//         console.log('URL hit:', err.config?.url);
-//         console.log('Response body:', err.response?.data);
-//     }
-// };
+const getCurrLocation = async () => {
+    try {
+
+        const loc = await api.get('/api/user-location', {
+
+
+            params: { userName: user.username },
+            headers: {
+               'Authorization': ``}
+
+        }
+    );
+        return loc.data;
+    } catch (err) {
+        console.log("====begi=======")
+        console.log(err)
+        console.log('Status:', err.response?.status);
+        console.log('URL hit:', err.config?.url);
+        console.log('Response body:', err.response?.data);
+    }
+};
 
 
 
