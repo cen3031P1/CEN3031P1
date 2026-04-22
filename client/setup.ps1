@@ -15,4 +15,14 @@ if ($lines -notcontains $newLine.Trim()) {
     Write-Host "Permission already exists, skipping..."
 }
 
+# Install dependencies
+Write-Host "Installing npm dependencies..."
+npm install
+
+# Install special Expo modules that need expo install (not just npm i)
+Write-Host "Installing Expo managed dependencies..."
+npx expo install expo-font
+npx expo install expo-dev-client
+npx expo install react-native-maps
+
 Write-Host "Done!"

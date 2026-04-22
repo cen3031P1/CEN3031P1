@@ -3,7 +3,7 @@ import 'dotenv/config'
 export default {
   "expo": {
     "name": "gator-fit",
-    "slug": "gator-fit",
+    "slug": "client",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./app/assets/images/gfit_logo.png",

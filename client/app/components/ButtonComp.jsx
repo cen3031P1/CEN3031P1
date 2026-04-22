@@ -10,7 +10,7 @@ export default function ButtonComp({onPress,children,style,...props}){
         <Pressable
         style = {[styles.button,style]}
         onPress={onPress}
-        > 
+        >
             <AppText style = {{color : colors.buttonText, fontSize: 12}}>{children}</AppText>
         </Pressable>
     )
@@ -19,7 +19,7 @@ export default function ButtonComp({onPress,children,style,...props}){
 const styles = StyleSheet.create({
     button:{
         width: '80%',
-        height: 40,
+        height: 45,
         backgroundColor: colors.secondary,
         borderRadius: 5,
         borderWidth: 1,

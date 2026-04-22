@@ -18,21 +18,24 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
         <View style = {[styles.display,style]}>
             {type !== 'log' &&
                 <View style ={{backgroundColor: colors.secondary, width: '100%', alignItems: 'center',justifyContent: 'center', borderColor: colors.primary, borderBottomWidth:5,borderTopStartRadius: 15, borderTopEndRadius: 15}}>
-                    <AppText style = {{color : colors.buttonText, padding: 10,paddingTop: 14}}>{children}</AppText>
+                    <AppText style = {{color : colors.buttonText, padding: 10,paddingTop: 14, fontSize: 15, width: '100%', textAlign: 'center'}}>{children}</AppText>
                 </View>
             }
             
             {(type === 'log') &&
                 <Pressable onPress={onPress} style ={{backgroundColor: colors.secondary, width: '100%', alignItems: 'center',justifyContent: 'center', borderColor: colors.primary, borderBottomWidth:5,borderTopStartRadius: 15, borderTopEndRadius: 15}}>
-                    <AppText style = {{color : colors.buttonText, padding: 10,paddingTop: 14}}>{children}</AppText>
+                    <AppText style = {{color : colors.buttonText, padding: 10,paddingTop: 14, fontSize: 15, width: '100%', textAlign: 'center'}}>{children}</AppText>
                 </Pressable>
             }
                 
             {type === 'goal' &&
                 <View style = {styles.subdisplay}>
-                    <AppText style ={[styles.numdisplay, [base_numval > optimal_numval ? {color: 'green'} : {color: 'red'}], [optimal_numval === 0 ? {fontSize: 50} : {fontSize: 30}], { fontWeight: 'bold'}]}>{optimal_numval}</AppText>
+                    <AppText style ={[styles.numdisplay, [], [base_numval > optimal_numval ? {color: 'green'} : {color: 'red'}], [optimal_numval === 0 ? {fontSize: 50} : {fontSize: 30}]]}>{optimal_numval}</AppText>
                     {optimal_numval !== 0 && (
                         <AppText style = {styles.textdisplay}>{base_numval > optimal_numval ? 'You\'ve reached your goal!' : 'Keep going!'}</AppText>
+                    )}
+                    {optimal_numval === 0 && (
+                        <AppText style = {styles.textdisplay}>No goal set</AppText>
                     )}
                 </View>
             }
@@ -40,7 +43,7 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
             {type === 'streak' &&
                 <View style = {styles.subdisplay}>
                     <Image source={imgsrc} style={{width: 105, height: 100, resizeMode: 'cover'}} />
-                    <AppText style ={[styles.numdisplay, {fontSize: 40, fontWeight: 'bold',position: 'absolute'}, [base_numval < 5 ? {top: '30%'} : {top: '55%'}] ]}>{base_numval}</AppText>
+                    <AppText style ={[styles.numdisplay, {fontSize: 25,position: 'absolute'}, [base_numval < 5 ? {top: '40%'} : {top: '55%'}] ]}>{base_numval}</AppText>
                 </View>
             }
                 
@@ -55,6 +58,9 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
                     {badges.map((badge) => (
                         <Image key={badge.key} source={badge.img} style={{width: 70, height: 120, resizeMode: 'contain', margin: 5}} />
                     ))}
+                     {min_bestStreak===0 &&
+                     <AppText style = {styles.textdisplay}>No Badges Yet</AppText>
+                     }
                 </View>
             }
         </View>
@@ -77,6 +83,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingHorizontal: 10,
+        height: '100%',
+        width: '100%'
     },
     textdisplay: {
         width: '110%',

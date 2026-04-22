@@ -14,25 +14,27 @@ export default function SettingButton({PrivateOn=false , isPrivacy=false, Icon, 
             style ={[styles.button,style]}
             onPress={onPress}
             >
-                <View style = {{flexDirection: 'row', width: '98%'}}>
+                <View style = {{flexDirection: 'row', alignItems: 'center',flex :1}}>
                     <Icon style = {styles.icon}/>
-                    <AppText style ={styles.settingText}>{children}</AppText>
-                    {!isPrivacy && <X style = {styles.icon}/>}
-
-                    {isPrivacy && 
-                        <View style= {{flexDirection: 'column', alignItems: 'center', height: 30}}>
-                            <Text style = {styles.toggletext}>{PrivateOn ? 'ON' : 'OFF'}</Text>
-                            <Ionicons 
-                                name = 'toggle'
-                                style = {[styles.toggle, {transform: [{scaleX: PrivateOn ? 1 : -1}]}]}
-                                size = {30}
-                                color = {PrivateOn ? colors.secondary : 'black'}
-                            />
-                        </View>
-                    }
+                    <AppText style ={[styles.settingText,{width: '60%'}]} numberOfLines={1}>{children}</AppText>
                 </View>
 
-            </Pressable> 
+                <View style = {{justifyContent: 'center', alignItems: 'center', height: 30, marginRight:5}}>
+                {!isPrivacy && <X style={styles.endicon}/>}
+
+                {isPrivacy &&
+                    <View style= {{flexDirection: 'column', alignItems: 'center', height: 30}}>
+                        <Text style = {styles.toggletext}>{PrivateOn ? 'ON' : 'OFF'}</Text>
+                        <Ionicons
+                            name = 'toggle'
+                            style = {[styles.toggle, {transform: [{scaleX: PrivateOn ? 1 : -1}]}]}
+                            size = {30}
+                            color = {PrivateOn ? colors.secondary : 'black'}
+                        />
+                    </View>
+                }
+                </View>
+            </Pressable>
         </View>
 
     );
@@ -40,37 +42,42 @@ export default function SettingButton({PrivateOn=false , isPrivacy=false, Icon, 
 
 const styles = StyleSheet.create({
     border:{
-        width: '105%',
-        height: 65,
+        width: '100%',
+        padding: 4,
         justifyContent: 'center',
-        backgroundColor: '#e4e9f5', 
+        backgroundColor: '#e4e9f5',
         alignItems: 'center',
         borderRadius: 5,
     },
     button:{
-		width: '97%',
+		width: '100%',
 		height: 53,
 		backgroundColor: 'lightgrey',
 		borderRadius: 5,
-		alignItems: 'left',
-        justifyContent: 'center',
-        
+		flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     settingText: {
-        paddingLeft: 10,
-        paddingTop: 5,
-        width: '100%',
-        fontSize: 20,
+        fontSize: 18,
+        textAlign: 'left',
         fontFamily: fonts.settings,
-        // color: colors.primary, 
-        fontWeight: '800'
+        fontWeight: '800',
+        marginBottom: 1,
+        flexShrink: 1
     },
     icon: {
-        paddingLeft: 10,
+        margin: 5,
         width: 35,
         height: 35,
+        marginTop: 7,
+    },
+    endicon:{
+        width: 30,
+        height: 30,
     },
     toggle:{
+        flexShrink: 0,
         marginTop: -7,
     },
     toggletext:{

@@ -9,8 +9,7 @@ import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
 import { useAuthContext} from './hook/useAuthContext.jsx';
-import * as Location from 'expo-location'
-
+//import * as Location from 'expo-location'
 
 export default function SigninScreen() {
     const { user } = useAuthContext();
@@ -19,12 +18,24 @@ export default function SigninScreen() {
     const [password, setPassword] = useState('');
     const [cpassword, setCpassword] = useState('');
     const [invalid_Cred, setInvalid_Cred] = useState('');
-    const [isSigningUp, setIsSigningUp] = useState(false)
+     const [isSigningUp, setIsSigningUp] = useState(false)
+
     useEffect(() => {
         if (user && !isSigningUp) {
             router.replace('/(tabs)/home');
         }
     }, [user]);
+
+//     async function getLocation(){
+//         const {status} = await Location.requestForegroundPermissionsAsync()
+//
+//         if(status != 'granted'){
+//             Alert.alert('Permission denied', 'Location access is required')
+//             return
+//         }
+//     }
+
+//     const location = await Location.getCurrentPositionAsync({})
 
     //server request
     async function signinVerification(){
@@ -47,27 +58,14 @@ export default function SigninScreen() {
         }
     }
 
-    async function getLocation(){
-        const {status} = await Location.requestForegroundPermissionsAsync()
 
-        if(status != 'granted'){
-            Alert.alert('Permission denied', 'Location access is required')
-            return
-        }
-
-    const location = await Location.getCurrentPositionAsync({})
-
-    }
-    
     async function handleSignup(username,password,cpassword){
-        
+
         if(password !== cpassword){
             setInvalid_Cred('Passwords do not match');
-            return; 
+            return;
         }
 
-        setIsSigningUp(true)
-        
         const success = await signup(username, password);
         if (success){router.replace('/map')}
         else {setIsSigningUp(false)}
@@ -127,7 +125,7 @@ export default function SigninScreen() {
                         }}/>
                     
                     <View>
-                        <TitleComp>GATOR FIT</TitleComp>
+                        <TitleComp style = {{fontSize: 30}}>GATOR FIT</TitleComp>
                     </View>
                 </View>
 
@@ -138,7 +136,7 @@ export default function SigninScreen() {
                         </View>
 
                         <View style = {{marginBottom: 10, marginTop: 5}}>
-                            <AppText>Sign-Up</AppText>
+                            <AppText style = {{fontSize:15}}>Sign-Up</AppText>
                         </View>
 
                         <Input 
@@ -184,7 +182,7 @@ const styles = StyleSheet.create({
     },
     failtext: {
         color: 'red',
-        fontSize: '70%',
+        fontSize: 14,
         width: '100%',
         textAlign: 'center'
     },
@@ -208,5 +206,5 @@ const styles = StyleSheet.create({
         gap: 20,
         width: '65%',
         justifyContent: 'center',
-    },
+    }
 })

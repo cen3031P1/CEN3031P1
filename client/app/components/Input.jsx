@@ -44,13 +44,17 @@ const styles = StyleSheet.create({
         borderRadius: 7,
         borderColor : colors.border,
         flexDirection: 'row',
+        alignItems: 'center'
     },
     input:{
         flex: 1,
         paddingLeft: 5,
         fontSize: 10,
         height: '100%',
+        width: '100%',
+        textAlignVertical: 'center',
         fontFamily: fonts.general,
+        includeFontPadding: false,
     },
     button:{
         justifyContent: 'flex-end',
@@ -62,6 +66,7 @@ const styles = StyleSheet.create({
         textAlign: 'right'
     },
     icon: {
+        justifyContent: 'center',
         width: '92%',
         height: '92%',
     }

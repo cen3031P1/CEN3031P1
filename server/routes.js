@@ -85,9 +85,6 @@ router.patch('/leaderboard/visibility', setLeaderboardVisibility);
 // Upload profile picture
 router.patch('/user/:userName/profile-pic', uploadProfilePic);
 
-// Delete account
-router.delete('/user/:userName', deleteAccount);
-
 //gets profile pic, points, streak, and best streak
 router.get('/user/:userName/fetchProfileData', fetchProfileData);
 
@@ -100,16 +97,21 @@ router.patch('/user/:userName/setGoal', setGoal);
 //set bio
 router.patch('/user/:userName/setBio', setBio);
 
-router.use(adminAuth)
+// Delete account
+router.delete('/user/:userName', deleteAccount);
+
+//router.use(adminAuth)
 
 router.get('/allUsers', getAllUsers);
+
+//set streak
+router.patch('/user/:userName/setStreak', setStreak);
 
 router.delete('/delUser/:userName', deleteUserByName)
 
 //make another user an admin
 router.patch('/user/makeAdmin', makeAdmin);
 
-//set streak
-router.patch('/user/:userName/setStreak', setStreak);
+
 
 export default router;

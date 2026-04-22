@@ -1,13 +1,11 @@
 import jwt from 'jsonwebtoken'
 import User from '../models/user.js'
 
-
 const requireAuth = async (req, res, next) => {
 
     const {authorization} = req.headers
 
     if(!authorization){
-        console.log("1")
         return res.status(401).json({error: "Auth token required"})
     }
 

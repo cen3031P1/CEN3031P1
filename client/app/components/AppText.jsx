@@ -13,7 +13,10 @@ export default function AppText({children, style }){
 
 const styles = StyleSheet.create({
     text: {
-        fontSize: 25,
+        fontSize: 15,
+        marginBottom: -5,
         fontFamily: fonts.headers,
+        width: '110%',
+        textAlign: 'center'
     }
 });
