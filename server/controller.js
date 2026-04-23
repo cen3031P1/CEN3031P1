@@ -164,7 +164,8 @@ export async function getLeaderboard(req, res) {
         if (!validFields.includes(sortBy)) {
             return res.status(400).json({msg: "Invalid sort field", code: "INVALID_SORT_FIELD"});
         }
-        const users = await User.find({visibleOnLeaderboard: {$ne: false}}, `userName ${sortBy}`).sort({ [sortBy]: -1 }).limit(50);
+        const users = await User.find({visibleOnLeaderboard: {$ne: false}}, `userName ${sortBy}`).sort({ [sortBy]: -1 }).limit(10);
+        console.log(users)
         res.status(200).json({leaderboard: users});
     } catch (error) {
         console.error("Error getting leaderboard: ", error);
@@ -290,7 +291,7 @@ export async function fetchProfileData(req, res) {
             return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
         }
 
-        res.status(200).json({msg: "Profile data retrieved successfully", code: "PROFILE_DATA_RETRIEVED",profilePic: user.profilePic, goal: user.goal, streak: user.streak, bestStreak: user.bestStreak, bio: user.bio});
+        res.status(200).json({msg: "Profile data retrieved successfully", code: "PROFILE_DATA_RETRIEVED",profilePic: user.profilePic, goal: user.goal, streak: user.streak, bestStreak: user.bestStreak, bio: user.bio, points: user.points});
     } catch (error) {
         console.error("Error fetching profile data: ", error);
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
@@ -510,4 +511,76 @@ export async function getGymLocation(req, res){
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 
+}
+
+export async function updateStreakAndPoints(req, res) {
+    try {
+        const {userName} = req.params;
+        const {streak, points} = req.body;
+        const user = await User.findOne({userName});
+
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        user.streak = streak > 9999 ? 9999 : streak;
+        user.points = points > 999999 ? 999999 : points;
+
+        await user.save();
+        res.status(200).json({msg: "Streak and points updated successfully", code: "STREAK_AND_POINTS_UPDATED"});
+    } catch (error) {
+        console.error("Error updating streak and points: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
+}
+
+export async function findFriends(req, res) {
+    const {userName} = req.params;
+    const search = req.query.search;
+    const user = await User.findOne({userName});
+
+    if (!user) {
+        return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+    }
+    if (!search) {
+        return res.status(400).json({msg: "Search query must be provided", code: "MISSING_FIELDS"});
+    }
+
+    console.log("search query: ", search);
+    console.log("Finding friends for user: ", userName);
+    console.log("user.friends:", user.friends);
+    
+    try {
+        const users = await User.aggregate([
+            {$search: {
+                index: 'FindingFriends',
+                autocomplete: {
+                    query: search,
+                    path: 'userName',
+                    }
+                }
+            },
+            {$match: {
+                userName: {
+                    $ne: userName,
+                    $nin: user.friends || []
+                }
+            }},
+            {$limit: 15},
+            {$project: 
+                {
+                    userName: 1,
+                    _id: 1,
+                    profilePic: 1,
+                    bio: 1,
+                    score: {$meta: "searchScore"}
+                }
+            }
+        ]);
+
+        res.status(200).json({ users });
+    } catch (error) {
+        console.error("Error finding friends: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
 }

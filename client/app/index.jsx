@@ -9,6 +9,15 @@ import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
 import {useAuthContext} from './hook/useAuthContext.jsx';
+import {Dimensions} from 'react-native';
+
+
+//universal sizing use Dimensions
+//key: height: height * x -> xvh where x is a number between 0-1
+//key: width: width * x -> xvw where x is a number between 0-1
+
+const {width, height} = Dimensions.get('window')
+
 
 export default function LoginScreen() {
     const {doLogin, totalFailure, loginFail, loginPass} = useLogin()
@@ -16,6 +25,7 @@ export default function LoginScreen() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [invalid_Cred, setInvalid_Cred] = useState('');
+
 
     useEffect(() => {
         if (user) {
@@ -63,15 +73,15 @@ export default function LoginScreen() {
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
             <View style={styles.overlay}>
 
-                <View style = {{marginBottom: 10, height: '25%', alignItems: 'center'}}>
+                <View style = {{marginBottom: 10, height: height*0.25, alignItems: 'center'}}>
                     <Image source={require('./assets/images/gfit_logo.png')}
                     style = {{
-                        height: '100%',
+                        height: height * 0.25,
                         resizeMode: 'contain'
                         }}/>
                     
                     <View>
-                        <TitleComp style = {{fontSize: 30, width: '110%'}}>GATOR FIT</TitleComp>
+                        <TitleComp style = {{fontSize: 30, width: width * 1}}>GATOR FIT</TitleComp>
                     </View>
                 </View>
                 
@@ -82,7 +92,7 @@ export default function LoginScreen() {
                     </View>
                     
                     <View style = {{marginBottom: 10, marginTop: 10}}>
-                        <AppText style = {{fontSize: 15}}>Log-In</AppText>
+                        <AppText style = {{fontSize: 15, width: width*.4}}>Log-In</AppText>
                     </View>
 
                     <Input 
@@ -121,7 +131,7 @@ const styles = StyleSheet.create({
     failtext: {
         color: 'red',
         fontSize: 10,
-        width: '100%',
+        width: width*0.95,
         textAlign: 'center'
     },
     textbox: {
@@ -129,9 +139,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         marginTop: 100,
         borderRadius: 10,
-        width: '85%',
-        maxWidth: 700,
-        height: '55%',
+        width: width * 0.95,
+        height: height * 0.55,
         maxHeight: 350,
         gap: 15,
         justifyContent: 'center',
@@ -142,7 +151,7 @@ const styles = StyleSheet.create({
     buttonrow: {
         flexDirection: 'row',
         gap: 20,
-        width: '65%',
+        width: width * 0.55,
         justifyContent: 'center',
     },
 })

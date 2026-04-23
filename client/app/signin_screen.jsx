@@ -10,6 +10,14 @@ import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
 import { useAuthContext} from './hook/useAuthContext.jsx';
 //import * as Location from 'expo-location'
+import {Dimensions} from 'react-native';
+
+
+//universal sizing use Dimensions
+//key: height: height * x -> xvh where x is a number between 0-1
+//key: width: width * x -> xvw where x is a number between 0-1
+
+const {width, height} = Dimensions.get('window')
 
 export default function SigninScreen() {
     const { user } = useAuthContext();
@@ -112,15 +120,15 @@ export default function SigninScreen() {
             <ScrollView contentContainerStyle={{flexGrow: 1}}>
                 <View style={styles.overlay}>
 
-                <View style = {{marginBottom: 10, height: '25%', alignItems: 'center'}}>
+                <View style = {{marginBottom: 10, height: height*0.25, alignItems: 'center'}}>
                     <Image source={require('./assets/images/gfit_logo.png')}
                     style = {{
-                        height: '100%',
+                        height: height*0.25,
                         resizeMode: 'contain'
                         }}/>
                     
                     <View>
-                        <TitleComp style = {{fontSize: 30}}>GATOR FIT</TitleComp>
+                        <TitleComp style = {{fontSize: 30, width: width*1}}>GATOR FIT</TitleComp>
                     </View>
                 </View>
 
@@ -169,6 +177,41 @@ export default function SigninScreen() {
 }
 
 
+// const styles = StyleSheet.create({
+//     overlay: {
+//         flex : 1,
+//         backgroundColor: 'rgba(255,255,255,.4)',
+//         alignItems: 'center',
+//     },
+//     failtext: {
+//         color: 'red',
+//         fontSize: 14,
+//         width: '100%',
+//         textAlign: 'center'
+//     },
+//     textbox: {
+//         backgroundColor: 'white',
+//         paddingHorizontal: 20,
+//         marginTop: 100,
+//         borderRadius: 10,
+//         width: '85%',
+//         maxWidth: 700,
+//         maxHeight: 350,
+//         height: '55%',
+//         gap: 15,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         borderWidth: 5,
+//         borderColor: colors.primary,
+//     },
+//     buttonrow: {
+//         flexDirection: 'row',
+//         gap: 20,
+//         width: '65%',
+//         justifyContent: 'center',
+//     }
+// })
+
 const styles = StyleSheet.create({
     overlay: {
         flex : 1,
@@ -177,8 +220,8 @@ const styles = StyleSheet.create({
     },
     failtext: {
         color: 'red',
-        fontSize: 14,
-        width: '100%',
+        fontSize: 10,
+        width: width*0.95,
         textAlign: 'center'
     },
     textbox: {
@@ -186,10 +229,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         marginTop: 100,
         borderRadius: 10,
-        width: '85%',
+        width: width * 0.95,
         maxWidth: 700,
+        height: height * 0.55,
         maxHeight: 350,
-        height: '55%',
         gap: 15,
         justifyContent: 'center',
         alignItems: 'center',
@@ -199,7 +242,7 @@ const styles = StyleSheet.create({
     buttonrow: {
         flexDirection: 'row',
         gap: 20,
-        width: '65%',
+        width: width * 0.55,
         justifyContent: 'center',
-    }
+    },
 })

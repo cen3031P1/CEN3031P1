@@ -18,7 +18,7 @@ async function seedDB() {
         try {
             await client.connect();
             console.log("Connected to MongoDB");
-            const collection = client.db("gatorfit").collection("users");
+            const collection = client.db("test").collection("users");
             //collection.drop(); This doesnt seem super safe so Im changing it
             await collection.drop().catch(() => console.log("Collection already dropped"));
             let users = [];
@@ -30,7 +30,10 @@ async function seedDB() {
                     points: randomIntFromInterval(0, 1000), 
                     gymLat: faker.location.latitude(),
                     gymLon: faker.location.longitude(),
-                    streak: randomIntFromInterval(0, 30), //Days in month
+                    streak: randomIntFromInterval(0, 730), //two years
+                    bestStreak: randomIntFromInterval(0, 730), //two years
+                    currLat: faker.location.latitude(),
+                    currLon: faker.location.longitude(),
                     friends: [],
                     visibleOnLeaderboard: faker.datatype.boolean()
                 };

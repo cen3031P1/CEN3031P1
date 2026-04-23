@@ -1,5 +1,5 @@
-import { View, Text, TextInput, Button, FlatList, useWindowDimensions, ScrollView } from 'react-native';
-import { useEffect, useState } from 'react';
+import { View, Text, TextInput, Button, FlatList, ScrollView, Modal} from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
 import api from '../../api.js';
 import { useAuthContext } from '../hook/useAuthContext.jsx';
 import TitleComp from '../components/Titles.jsx';
@@ -8,15 +8,14 @@ import ButtonComp from '../components/ButtonComp.jsx';
 import fonts from '../theme/fonts.jsx';
 import colors from '../theme/colors.jsx';
 import AppText from '../components/AppText.jsx';
-import { router } from 'expo-router';
-
+import { router, useFocusEffect } from 'expo-router';
+import SettingModal from '../components/setting_modal.jsx';
 export default function FriendsScreen() {
 
 	const { user } = useAuthContext()
 	const [friendUsername, setFriendUsername] = useState('')
 	const [message, setMessage] = useState('')
 	const [friends, setFriends] = useState([])
-	const windowWidth = useWindowDimensions().width
 
 	// Load friends when the page is loaded
 	useEffect(() => {
@@ -30,7 +29,15 @@ export default function FriendsScreen() {
 			router.replace('/');
 		}
 	}, [user]);
-	
+
+	useFocusEffect(
+		useCallback(() => {
+			if (user) {
+				loadFriends()
+			}
+		}, [user])
+	);
+
 	// Function to load friends from the server
 	async function loadFriends() {
 		console.log("loading friends for:", user.username)
@@ -45,58 +52,6 @@ export default function FriendsScreen() {
 			setFriends(response.data.friends)
 		} catch (error) {
 			console.error("Error loading friends:", error)
-		}
-	}
-
-	// Function to handle adding a friend
-	async function addFriend() {
-		if (!user) {
-			setMessage('User not authenticated')
-			return
-		}
-
-		try {
-			const response = await api.post('/api/addfriend', {
-				userName: user.username,
-				friendUsername,
-			}, {
-				headers: {
-					'Authorization': `Bearer ${user.token}`
-				}
-			})
-
-			if (response.data.code === "FRIEND_ADDED") {
-				setMessage('Friend added successfully!')
-				setFriendUsername('')
-				loadFriends() // Refresh the friends list after adding a friend
-			} else {
-				setMessage('Failed to add friend: ' + response.data.message)
-			}
-		} catch (error) {
-			if (!error.response) {
-				setMessage('Network error: ' + error.message)
-				return
-			}
-			switch (error.response.data.code) {
-				case "MISSING_FIELDS":
-					setMessage('Please enter a username')
-					break
-				case "CANNOT_ADD_SELF":
-					setMessage('You cannot add yourself as a friend')
-					break
-				case "FRIEND_NOT_FOUND":
-					setMessage('User not found')
-					break
-				case "USER_NOT_FOUND":
-					setMessage('Your account was not found')
-					break
-				case "FRIEND_ALREADY_ADDED":
-					setMessage('You are already friends with this user')
-					break
-				default:
-					setMessage('Something went wrong')
-					break
-			}
 		}
 	}
 
@@ -125,50 +80,41 @@ export default function FriendsScreen() {
 		}
 	}
 
-
 	return (
 			<View style={{alignItems: 'center', padding: 20, width: '100%', height: '100%'}}>
 
-				<View style={{ width: '100%', backgroundColor: colors.background, paddingHorizontal: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, gap: 15, marginBottom:10 }}>
+				<View style={{ width: '100%', backgroundColor: colors.background, paddingHorizontal: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, marginBottom:10 }}>
 
 					<TitleComp style={{ fontSize: 40, marginVertical: 15}}>Friends</TitleComp>
 
-					<Input
-						placeholder="Enter friend's username"
-						value={friendUsername}
-						onChangeText={setFriendUsername}
-						style = {{ width: '100%', height: 35}}
-					/>
-
-					<ButtonComp style = {{ width: '100%', marginBottom: 10}} onPress={addFriend}>
-						Add Friend
+					<ButtonComp style = {{ width: '100%', marginBottom: 10}} onPress={()=> router.replace('(tabs)/other_users')}>
+						Add Friends
 					</ButtonComp>
 
-					{message !== '' && <Text style={{ fontFamily: fonts.general, marginBottom: 10, textAlign: 'center', color: message.includes('success') ? 'green' : 'red' }}>{message}</Text>}
+					{/* {message !== '' && <Text style={{ fontFamily: fonts.general, marginBottom: 10, textAlign: 'center', color: message.includes('success') ? 'green' : 'red' }}>{message}</Text>} */}
 
 				</View>
 
-				<View style={{ flex:1,width: '100%', backgroundColor: colors.background, padding: 15, borderRadius: 10, alignItems: 'center', borderWidth: 5, borderColor: colors.primary }}>
-					<FlatList
-						style={{ width: '100%',flex:1}}
-						data={friends}
-						keyExtractor={(item) => item} // Assuming friends is an array of usernames (strings).
-						// Maybe change this to item._id if we decide to switch to storing friend IDs instead of usernames.
-						renderItem={({ item }) => (
-							<View style={{marginBottom: 5, marginTop: 5, flexDirection: 'row', justifyContent: 'center', borderWidth: 5,backgroundColor: 'lightgrey', borderColor: '#bad0eb', borderRadius: 15, width: '100%', height: 60, alignItems: 'center' }}>
+                    <View style={{ flex:1,width: '100%', backgroundColor: colors.background, padding: 15, borderRadius: 10, alignItems: 'center', borderWidth: 5, borderColor: colors.primary }}>
+                        <FlatList
+                            style={{ width: '100%',flex:1}}
+                            data={friends}
+                            keyExtractor={(item) => item} // Assuming friends is an array of usernames (strings).
+                            // Maybe change this to item._id if we decide to switch to storing friend IDs instead of usernames.
+                            renderItem={({ item }) => (
+                                <View style={{marginBottom: 5, marginTop: 5, flexDirection: 'row', justifyContent: 'center', borderWidth: 5,backgroundColor: 'lightgrey', borderColor: '#bad0eb', borderRadius: 15, width: '100%', height: 60, alignItems: 'center' }}>
 
-								{/* <Text style={{ flex: 1, textAlign: 'left'}}>{item}</Text> */}
-								<AppText style={{ flex: 1, textAlign: 'left', fontSize: 12}}> {item} </AppText>
+                                    <AppText style={{ flex: 1, textAlign: 'left', fontSize: 12}}> {item} </AppText>
 
-								<ButtonComp style = {{ width: '30%', height: 35, marginRight: 10}} onPress={() => removeFriend(item)}>
-									Remove
-								</ButtonComp>
+                                    <ButtonComp style = {{ width: '30%', height: 35, marginRight: 10}} onPress={() => removeFriend(item)}>
+                                        Remove
+                                    </ButtonComp>
 
-							</View>
-						)}
-						ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: 'gray', fontFamily: fonts.general}}>No friends found. Add some friends to see them here!</Text>}
-					/>
-				</View>
+                                </View>
+                            )}
+                            ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: 'gray', fontFamily: fonts.general}}>No friends found. Add some friends to see them here!</Text>}
+                        />
+                    </View>
 
 			</View>
 	);

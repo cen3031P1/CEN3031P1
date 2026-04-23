@@ -76,6 +76,10 @@ export default function TabLayout() {
           />
         )
       }} />
+      <Tabs.Screen name="other_users" options={{
+        title: 'Other Users',
+        href: null,
+      }} />
     </Tabs>
   );
 }

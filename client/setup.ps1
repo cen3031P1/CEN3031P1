@@ -6,6 +6,7 @@ $manifest = "android\app\src\main\AndroidManifest.xml"
 $lines = Get-Content $manifest
 $newLine = '    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>'
 
+
 # Only add if it doesn't already exist
 if ($lines -notcontains $newLine.Trim()) {
     $lines = $lines[0..6] + $newLine + $lines[7..($lines.Length - 1)]

@@ -120,7 +120,6 @@ const getCurrLocation = async () => {
           `${selectedLocation.name} has been saved as your gym.`,
           [
               {
-
                   text: 'OK',
                   onPress: () => router.replace('/(tabs)/home')
               }

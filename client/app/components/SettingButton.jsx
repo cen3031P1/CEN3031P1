@@ -20,7 +20,6 @@ export default function SettingButton({PrivateOn=false , isPrivacy=false, Icon, 
                 </View>
 
                 <View style = {{justifyContent: 'center', alignItems: 'center', height: 30, marginRight:5}}>
-                {!isPrivacy && <X style={styles.endicon}/>}
 
                 {isPrivacy &&
                     <View style= {{flexDirection: 'column', alignItems: 'center', height: 30}}>

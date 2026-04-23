@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Button, useWindowDimensions, ScrollView } from 'react-native';
+import { View, Text, FlatList, Button, ScrollView, Dimensions } from 'react-native';
 import { useEffect, useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import api from '../../api.js';
@@ -9,6 +9,7 @@ import ButtonComp from '../components/ButtonComp.jsx';
 import colors from '../theme/colors.jsx';
 import { router } from 'expo-router';
 
+const {width, height} = Dimensions.get('window')
 
 export default function LeaderboardScreen() {
 	const { user } = useAuthContext()
@@ -45,7 +46,6 @@ export default function LeaderboardScreen() {
 			console.error("Error loading global leaderboard:", error)
 		}
 	}
-
 	return (
 			<View style={{ alignItems: 'center', width: '100%', padding: 20,flex:1}}>
 				<View style={{ width: '100%', backgroundColor: colors.background, paddingHorizontal: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, gap: 15, marginBottom:10 }}>
@@ -59,7 +59,7 @@ export default function LeaderboardScreen() {
 				</View>
 
 
-				<View style={{ width: '100%', height: '80%', backgroundColor: colors.background, paddingTop: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, marginBottom: 15}}>
+				<View style={{ width: '100%', height: height * 0.42, backgroundColor: colors.background, paddingTop: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, marginBottom: 15}}>
 					<View style={{ flexDirection: 'row', width: '100%', borderBottomWidth: 5, borderBottomColor: colors.primary, paddingBottom: 10}}>
 						<AppText style={{ width: '25%',  textAlign: 'center', fontSize: 11 }}>Rank</AppText>
 						<AppText style={{ width: '50%', textAlign: 'center', fontSize: 11 }}>Username</AppText>

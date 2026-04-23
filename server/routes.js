@@ -37,11 +37,10 @@ import {
     setGoal,
     setBio,
     setStreak,
-    // getPoints,
-    // getStreak,
-    // getBestStreak,
     getAllUsers,
-    deleteUserByName
+    deleteUserByName,
+    updateStreakAndPoints,
+    findFriends
 } from './controller.js';
 import requireAuth from './middleware/requireAuth.js';
 import adminAuth from './middleware/adminAuth.js';
@@ -68,6 +67,9 @@ router.post('/addfriend', addFriend);
 
 // Get friends list
 router.get('/friends/:userName', getFriends);
+
+//list of available friends
+router.get('/friends/:userName/match', findFriends);
 
 // Remove friends
 router.delete('/removefriend', removeFriend);
@@ -111,6 +113,6 @@ router.delete('/delUser/:userName', deleteUserByName)
 //make another user an admin
 router.patch('/user/makeAdmin', makeAdmin);
 
-
+router.patch(`/user/:user.username/updateStreakAndPoints`, updateStreakAndPoints);
 
 export default router;

@@ -29,7 +29,7 @@ TaskManager.defineTask(LOCATION_TASK, async ({ data, error }) => {
 
         const gymLoc = await api.get(`/api/${username}/gym-location`,{
             headers: {
-                'Authorization': `Bearer ${user.token}`
+                'Authorization': `Bearer ${token}`
             }
         });
 
@@ -38,6 +38,9 @@ TaskManager.defineTask(LOCATION_TASK, async ({ data, error }) => {
         if (distance < 100) {
         console.log("streak updated")
             await api.post('/api/user/update-streak', { username }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
         }
     }
