@@ -41,5 +41,7 @@ echo "Installing Expo managed dependencies..."
 npx expo install expo-font
 npx expo install expo-dev-client
 npx expo install react-native-maps
+npx expo install expo-task-manager
+npx expo install
 
 echo "Setup done!"
