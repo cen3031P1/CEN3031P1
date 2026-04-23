@@ -8,6 +8,7 @@ import AppText from '../components/AppText.jsx';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import api from '../../api.js';
 import { useFocusEffect } from '@react-navigation/native';
+import { useGymProximity } from '../hook/useGymProximity.jsx';
 
 async function handleLog(){
 	console.log("nothing yet");
@@ -15,45 +16,14 @@ async function handleLog(){
 
 export default function HomeScreen() {
 	const { user } = useAuthContext();
+	//Using new hook to check if user is at gym
+	const atGym = useGymProximity(user);
 
 	const [streak, setStreak] = useState(0);
 	const [bestStreak, setBestStreak] = useState(0);
 	const [goal, setGoal] = useState(0);
 	const [profilePic, setProfilePic] = useState(null);
 	const [bio, setBio] = useState('');
-
-
-
-    const getDistance = (lat1, lon1, lat2, lon2) => {
-        const R = 6371e3;
-        const φ1 = lat1 * Math.PI / 180;
-        const φ2 = Number(lat2) * Math.PI / 180;
-        const Δφ = (Number(lat2) - lat1) * Math.PI / 180;
-        const Δλ = (Number(lon2) - lon1) * Math.PI / 180;
-        const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                  Math.cos(φ1) * Math.cos(φ2) *
-                  Math.sin(Δλ/2) * Math.sin(Δλ/2);
-        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    };
-
-    useEffect(() => {
-        let currLoc = await api.get(`api/${user.username}/user-location`, {
-            headers: {
-                'Authorization': `Bearer ${user.token}`
-            }
-        })
-
-        let gymLoc = await api.get(`api/${user.username}/gym-location`, {
-            headers:{
-                'Authorization': `Bearer ${user.token}`
-            }
-        })
-    //TODO FINISH LOCATION IN HOME WEB
-
-        const distance = Distance(currLoc.data.latitude, currLoc.data.longitude,
-                                    gymLoc.data.latitude, gymLoc.data.longitude)
-
-        }, [])
 
 	useEffect(() => {
 		if (!user) {
@@ -130,7 +100,8 @@ export default function HomeScreen() {
 				<View style = {styles.featureBoxContainer}>
 					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={goal}>GOAL</ProfileDisplay>
 					<ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
-					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} onPress={handleLog} >LOG</ProfileDisplay>
+					//Btw i changed this button to only be there when youre at the gym feel free to change it
+					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} onPress={atGym ? handleLog : null} disabled={!atGym}>LOG</ProfileDisplay>
 					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay>
 				</View>
 		</View>
