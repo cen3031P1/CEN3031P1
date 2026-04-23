@@ -15,7 +15,7 @@ TaskManager.defineTask(LOCATION_TASK, async ({ data, error }) => {
     }
     if (data) {
         const { latitude, longitude } = data.locations[0].coords;
-        console.log('📍 Background location update:', latitude, longitude);
+        console.log('Background location update:', latitude, longitude);
     }
 });
 

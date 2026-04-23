@@ -4,6 +4,8 @@ import react from 'react';
 import { Text,StyleSheet, Pressable,View, Image, Platform} from 'react-native';
 import AppText from './AppText';
 import {Dimensions} from 'react-native';
+import {useAuthContext} from '../hook/useAuthContext.jsx';
+import api from '../../api.js'
 
 const {width, height} = Dimensions.get('window')
 
@@ -16,6 +18,9 @@ const all_badges =[
 
 export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,optimal_numval,onPress,atgym,points=0,time=0,type,children,style,...props}){
     const badges = all_badges.filter(badge => badge.key <= min_bestStreak);
+    const {user} = useAuthContext()
+
+
 
     return(
         <View style = {[styles.display,style]}>
@@ -24,8 +29,8 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
             </View>
 
             {onPress && (
-                <Pressable onPress={onPress} disabled={!onPress} style = {{flex: 1, width: '50%', alignItems: 'center', justifyContent: 'center', backgroundColor: onPress ? colors.primary : 'lightgray'}}>            
-                    <AppText style = {{color: colors.buttonText, fontSize: 12}}>{onPress ? 'Log Gym Session' : 'Log Disabled'}</AppText>
+                <Pressable onPress={onPress} disabled={!onPress} style = {{ width: '100%', alignItems: 'center', justifyContent: 'center', backgroundColor: onPress ? colors.primary : 'lightgray', height: '20%'}}>
+                    <AppText style = {{color: colors.buttonText, fontSize: 12, }}>{onPress ? 'Log Gym Session' : 'Log Disabled'}</AppText>
                 </Pressable>
             )}
 
@@ -48,8 +53,15 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
                 </View>
             }
 
+        {type === 'points' &&
+                        <View style = {styles.subdisplay}>
+                            <Image source={imgsrc} style={{width: width*.25, resizeMode: 'contain'}} />
+                            <AppText style ={[styles.numdisplay, {fontSize: 35,position: 'absolute'}, [base_numval < 5 ? {top: '40%'} : {top: '55%'}] ]}>{base_numval}</AppText>
+                        </View>
+                    }
+
             {type === 'log'&&
-                <View style = {[styles.subdisplay, {justifyContent: 'null', height: height*.5}]}>
+                <View style = {[styles.subdisplay, {justifyContent: 'null'}]}>
                     <AppText style ={[styles.textdisplay,{fontSize: 9, width: width*.85, height: height*.04}]}>You will get points based off the duration you've been at the gym, as well as your streak.</AppText>
                     <AppText style ={[styles.textdisplay,{fontSize: 9, marginBottom: 5, width: width*.85,  height: height*.03}]}>If you are encountering location errors, try setting your gym in the settings menu.</AppText>
                     <View style = {{flexDirection: 'row',justifyContent: 'center', width: width*.85, marginTop: 10}}>
@@ -59,7 +71,7 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
                         </View>
                         <View style = {{flexDirection: 'column', width: width*.4}}>
                             <AppText style ={[styles.textdisplay,{fontSize: 9}]}>Points Gained: </AppText>
-                            <AppText style ={[styles.textdisplay, [points !==0 ? {color: 'green'} : {color: 'red'}],{fontSize: 12}]}>{points !== 0? points : "0"}</AppText>
+                            <AppText style ={[styles.textdisplay, [points !==0 ? {color: 'green'} : {color: 'red'}],{fontSize: 12}]}>{points !== 0? points : '0'}</AppText>
                         </View>
                         <View style = {{flexDirection: 'column', width: width*.3}}>
                             <AppText style ={[styles.textdisplay,{fontSize: 9}]}>Minutes: </AppText>

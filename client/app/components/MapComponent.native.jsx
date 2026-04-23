@@ -49,7 +49,8 @@ export default function MapComponent() {
 
 const getCurrLocation = async () => {
     try {
-        const loc = await api.get(`/api/${user.username}/user-location`, {
+        const userName = user.username
+        const loc = await api.get(`/api/${userName}/user-location`, {
             headers: {
             'Authorization': `Bearer ${user.token}`
             }

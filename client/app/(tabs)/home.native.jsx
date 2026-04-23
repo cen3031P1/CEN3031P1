@@ -1,6 +1,6 @@
 import { router} from 'expo-router';
 import { useEffect, useState, useCallback} from 'react';
-import { View, ScrollView, StyleSheet, Image, Alert, TouchableOpacity, Text} from 'react-native';
+import { View, ScrollView, StyleSheet, Image, Alert, TouchableOpacity, Text, Dimensions} from 'react-native';
 import TitleComp from '../components/Titles.jsx';
 import ProfileDisplay from '../components/ProfileDisplay.jsx';
 import colors from '../theme/colors.jsx';
@@ -10,13 +10,21 @@ import api from '../../api.js';
 import { useFocusEffect } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import { LOCATION_TASK } from '../tasks/locationTask.js';
+import { useGymProximity } from '../hook/useGymProximity.jsx';
+
 
 async function handleLog(){
 	console.log("nothing yet");
 }
 
+const {width, height} = Dimensions.get('window')
+
 export default function HomeScreen() {
 	const { user } = useAuthContext();
+	const { atGym, proxyDispatch } = useGymProximity(user);
+const [pointGain, setPointGain] = useState(0);
+	const [start_time, setStartTime] = useState(null);
+	const [minutes, setMinutes] = useState(0);
 
 	const [streak, setStreak] = useState(0);
 	const [bestStreak, setBestStreak] = useState(0);
@@ -44,6 +52,19 @@ const [isTracking, setIsTracking] = useState(false);
         setIsTracking(true);
         Alert.alert('Tracking started!');
     };
+
+useEffect(() => {
+		if (!atGym && !start_time) { //for just now arriving
+			setStartTime(Date.now());
+		}
+		if (!atGym && start_time) {
+			//left the gym
+			updateStreakAndPoints();
+			setStartTime(null);
+			setMinutes(0);
+			setPointGain(0);
+		}
+	}, [atGym]);
 
     const stopBackgroundTracking = async () => {
         await Location.stopLocationUpdatesAsync(LOCATION_TASK);
@@ -103,7 +124,28 @@ const [isTracking, setIsTracking] = useState(false);
 		bestStreak >= 10 ? 2 :
 		bestStreak >= 5 ? 1 :
 		0;
-
+async function updateStreakAndPoints() {
+		if (pointGain === 0) return; //no points = skip
+		try {
+			//This is how database gets updated
+			await api.patch(`/api/user/${user.username}/updateStreakAndPoints`,{
+					points: points + pointGain,
+					streak: streak + 1,
+				},
+				{ //This is the auth header
+					headers: {
+						'Authorization': `Bearer ${user.token}`
+					}
+				}
+			); //Using prev here since its async... alternative is fetching again ?
+			//prev in this case is just curr points and streak
+			setPoints(prev => prev + pointGain);
+			setStreak(prev => prev + 1);
+		}
+		catch (error) {
+			console.error("Error updating streak and points:", error);
+		}
+	}
   return (
 	<ScrollView contentContainerStyle={{ paddingBottom: 200}}>
 		<View style = {styles.container}>
@@ -122,27 +164,30 @@ const [isTracking, setIsTracking] = useState(false);
 				<AppText style ={{fontSize: 10, textAlign: 'center', color: 'grey', marginBottom: 15, marginTop: 10, WrapText: true, marginHorizontal: 20, width: '95%'}}>{bio}</AppText>
 			</View>
 
-
 				<View style = {styles.featureBoxContainer}>
 					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={goal}>GOAL</ProfileDisplay>
 					<ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
-					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} onPress={handleLog} >LOG</ProfileDisplay>
-					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay>
+{/* 					<ProfileDisplay type='points' base_numval={points} imgsrc={pointsimage}>STREAK</ProfileDisplay> */}
+
+{/* 		<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: 270}} atgym={atGym} onPress={handleLog} >LOG</ProfileDisplay> */}
+                					<ProfileDisplay type='log' atgym={atGym} points={pointGain} time={minutes} style = {{width: '100%', aspectRatio: 0, height: 210}} >LOG</ProfileDisplay>
+
+					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap', marginTop: 0, paddingTop: 0}} >BADGES</ProfileDisplay>
 				</View>
 		</View>
-		<TouchableOpacity
-            onPress={isTracking ? stopBackgroundTracking : startBackgroundTracking}
-            style={{
-                backgroundColor: isTracking ? 'red' : 'green',
-                padding: 12,
-                borderRadius: 8,
-                margin: 10
-            }}
-        >
-            <Text style={{ color: 'white' }}>
-                {isTracking ? 'Stop Tracking' : 'Start Tracking'}
-            </Text>
-        </TouchableOpacity>
+{/* 		<TouchableOpacity */}
+{/*             onPress={isTracking ? stopBackgroundTracking : startBackgroundTracking} */}
+{/*             style={{ */}
+{/*                 backgroundColor: isTracking ? 'red' : 'green', */}
+{/*                 padding: 12, */}
+{/*                 borderRadius: 8, */}
+{/*                 margin: 10 */}
+{/*             }} */}
+{/*         > */}
+{/*             <Text style={{ color: 'white' }}> */}
+{/*                 {isTracking ? 'Stop Tracking' : 'Start Tracking'} */}
+{/*             </Text> */}
+{/*         </TouchableOpacity> */}
 	</ScrollView>
   );
 }

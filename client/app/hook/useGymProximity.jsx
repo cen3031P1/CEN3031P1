@@ -60,7 +60,8 @@ export function useGymProximity(user) {
             return await getCurrentLocationWeb();
         } else {
             //changed this to await backend location?
-            const loc = await Location.getCurrentPositionAsync({});
+            const loc = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.High,});
+            console.log(loc)
                 return {
                     latitude: loc.coords.latitude,
                     longitude: loc.coords.longitude,
@@ -95,7 +96,7 @@ export function useGymProximity(user) {
                 }
 
             } catch (error) {
-                console.error("Error checking gym proximity:", error);
+//                 console.error("Error checking gym proximity:", error);
                 proxyDispatch({ type: 'FAR' });
             }
         }
