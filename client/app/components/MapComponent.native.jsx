@@ -6,8 +6,6 @@ import axios from 'axios';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import { router } from 'expo-router';
 import api from '../../api.js'
-import * as TaskManager from 'expo-task-manager';
-import { LOCATION_TASK } from '../tasks/locationTask.js';
 import * as Location from 'expo-location';
 
 
@@ -21,28 +19,28 @@ export default function MapComponent() {
     const [currLocation, setCurrLocation] = useState({})
     const [markers, setMarkers] = useState([]);
 
+  //I changed this logic and put it in home
+    // const startBackgroundTracking = async () => {
+    //     // Need both foreground and background permission
+    //     const { status: foreground } = await Location.requestForegroundPermissionsAsync();
+    //     const { status: background } = await Location.requestBackgroundPermissionsAsync();
 
-    const startBackgroundTracking = async () => {
-        // Need both foreground and background permission
-        const { status: foreground } = await Location.requestForegroundPermissionsAsync();
-        const { status: background } = await Location.requestBackgroundPermissionsAsync();
+    //     if (foreground !== 'granted' || background !== 'granted') {
+    //         Alert.alert('Permission denied', 'Background location access is required');
+    //         return;
+    //     }
 
-        if (foreground !== 'granted' || background !== 'granted') {
-            Alert.alert('Permission denied', 'Background location access is required');
-            return;
-        }
+    //     await Location.startLocationUpdatesAsync(LOCATION_TASK, {
+    //         accuracy: Location.Accuracy.Balanced,
+    //         timeInterval: 5 * 60 * 1000,  // check every 5 minutes
+    //         distanceInterval: 50,          // or every 50 meters, whichever comes first
+    //         showsBackgroundLocationIndicator: true,
+    //     });
+    // };
 
-        await Location.startLocationUpdatesAsync(LOCATION_TASK, {
-            accuracy: Location.Accuracy.Balanced,
-            timeInterval: 5 * 60 * 1000,  // check every 5 minutes
-            distanceInterval: 50,          // or every 50 meters, whichever comes first
-            showsBackgroundLocationIndicator: true,
-        });
-    };
-
-    const stopBackgroundTracking = async () => {
-        await Location.stopLocationUpdatesAsync(LOCATION_TASK);
-    };
+    // const stopBackgroundTracking = async () => {
+    //     await Location.stopLocationUpdatesAsync(LOCATION_TASK);
+    // };
 
 
 
@@ -59,7 +57,7 @@ const getCurrLocation = async () => {
     );
 
 
-        if(loc.data.latitude == 0 && loc.data.longitude == 0) startBackgroundTracking()
+        //if(loc.data.latitude == 0 && loc.data.longitude == 0) startBackgroundTracking()
 
         return loc.data;
     } catch (err) {
