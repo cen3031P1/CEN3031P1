@@ -11,16 +11,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import * as TaskManager from 'expo-task-manager';
 import { LOCATION_TASK } from '../tasks/locationTask.js';
 import * as Location from 'expo-location';
-
-// will display profile picture
-// log button
-// goal
-// streak
-// badges
-
-async function handleLog(){
-	console.log("nothing yet");
-}
+import {useGymProximity} from '../utils/gymProximity.js';
 
 export default function HomeScreen() {
 	const { user } = useAuthContext();
@@ -34,8 +25,8 @@ export default function HomeScreen() {
 
 	const [start_time, setStartTime] = useState(null);
 	const [minutes, setMinutes] = useState(0);
-	const [atgym, setAtGym] = useState(false);
-// 	const atGym = useGymProximity(user);
+// 	const [atgym, setAtGym] = useState(false);
+	const atGym = useGymProximity(user);
 
 	const [pointGain, setPointGain] = useState(0);
 	const [isTracking, setIsTracking] = useState(false);
