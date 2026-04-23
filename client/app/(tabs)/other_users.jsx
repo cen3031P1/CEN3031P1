@@ -121,10 +121,10 @@ export default function OtherUsersScreen() {
 
   return (
     <View style={{alignItems: 'center', padding: 20, width: '100%', height: '100%'}}>
-        <View style = {{flexDirection: 'center', justifyContent: 'center', alignItems: 'center', width: '100%', backgroundColor: colors.background, borderRadius: 10,borderWidth: 5, borderColor: colors.primary, marginBottom:10 }}>
+        <View style = {{ justifyContent: 'center', alignItems: 'center', width: '100%', backgroundColor: colors.background, borderRadius: 10,borderWidth: 5, borderColor: colors.primary, marginBottom:10 }}>
             <View style = {{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%', marginTop: 10}}>
                 <Pressable style = {{position: 'absolute', left: 10}} onPress={() => router.replace('(tabs)/friend_list')}>
-                    <ArrowLeft strokeWidth={2.5} marginTop={2}></ArrowLeft>
+                    <ArrowLeft strokeWidth={2.5} style= {{marginTop: 2}}></ArrowLeft>
                 </Pressable>
                 <TitleComp style={{fontSize: 20, width: width*.8}}>Other Users</TitleComp>
             </View>
@@ -135,21 +135,21 @@ export default function OtherUsersScreen() {
                 value={finding}
                 onChangeText={(text) => setFinding(text)}
             />
-            {message !== '' && <Text style={{ fontFamily: fonts.general, marginBottom: 10, textAlign: 'center', color: message.includes('success') ? 'green' : 'red' }}>{message}</Text>}
+            {message !== '' ? <Text style={{ fontFamily: fonts.general, marginBottom: 10, textAlign: 'center', color: message.includes('success') ? 'green' : 'red' }}>{message}</Text> : null}
         </View>
 
 
 
         <View style={{ flex:1,width: '100%', backgroundColor: colors.background, padding: 15, borderRadius: 10, alignItems: 'center', borderWidth: 5, borderColor: colors.primary }}>
 
-            {finding && (
-                <AppText style = {{fontSize: 10, marginBottom: 10}}>Search results for "{finding}":</AppText>
-            )}
+            {finding ?
+                <AppText style = {{fontSize: 10, marginBottom: 10}}>Search results for {finding}:</AppText> : null
+            }
 
             <FlatList
                 style={{ width: '100%',flex:1}}
                 data={other_users}
-                keyExtractor={(item) => item.userName} // item is username, bio and profile pic
+                keyExtractor={(item) => item.userName}
                 renderItem={({ item }) => (
                     <View style={styles.friendCard}>
 
@@ -166,7 +166,7 @@ export default function OtherUsersScreen() {
                         <AppText style={{ flex: 1, textAlign: 'left', fontSize: 10, color: 'gray', marginBottom: 10, marginHorizontal: 10}}> Best Streak: {item.bestStreak} </AppText>
                     </View>
                 )}
-                ListEmptyComponent={() => (finding.trim() !== '' && <Text style={{ textAlign: 'center', color: 'gray', fontFamily: fonts.general}}>Theres no one with that Username. Try Again.</Text>)}
+                ListEmptyComponent={() => (finding.trim() !== '' ? <Text style={{ textAlign: 'center', color: 'gray', fontFamily: fonts.general}}>Theres no one with that Username. Try Again.</Text> : null)}
             />
 
         </View>

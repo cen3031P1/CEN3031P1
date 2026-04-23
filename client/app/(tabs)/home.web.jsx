@@ -152,10 +152,16 @@ export default function HomeScreen() {
 
 
 				<View style = {styles.featureBoxContainer}>
-					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={goal}>GOAL</ProfileDisplay>
-					<ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
-					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} points = {pointGain} atGym = {atGym}>LOG</ProfileDisplay>
-					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay>
+{/* 					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={goal}>GOAL</ProfileDisplay> */}
+{/* 					<ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay> */}
+{/* 					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} points = {pointGain} atGym = {atGym}>LOG</ProfileDisplay> */}
+{/* 					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay> */}
+				<ProfileDisplay type='goal' base_numval={streak} optimal_numval={goal}>GOAL</ProfileDisplay>
+                                    <ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
+
+                					<ProfileDisplay type='log' atgym={atGym} points={pointGain} time={minutes} style = {{width: '100%', aspectRatio: 0, height: '45%'}} >LOG</ProfileDisplay>
+                					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay>
+
 				</View>
 		</View>
 	</ScrollView>
