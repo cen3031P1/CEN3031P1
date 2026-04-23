@@ -83,7 +83,7 @@ export function useGymProximity(user) {
             try {
                 const userName = user.username
                 const currLoc = await getCurrentLocation()
-                
+
                 const gymLoc = await api.get(`/api/${userName}/gym-location`, {
                     headers: { 'Authorization': `Bearer ${user.token}` }
                 });
@@ -92,7 +92,7 @@ export function useGymProximity(user) {
                     currLoc.latitude, currLoc.longitude,
                     gymLoc.data.latitude, gymLoc.data.longitude
                 );
-                
+
 //                 console.log("=============================");
 //                 console.log("Current Location:", currLoc);
 //                 console.log("Gym Location:", gymLoc.data);
@@ -116,7 +116,7 @@ export function useGymProximity(user) {
         const interval = setInterval(checkProximity, 10000);
 
         return () => clearInterval(interval);
-        
+
     }, [user]);
 
     return { atGym: state.proxy, proxyDispatch };
