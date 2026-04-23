@@ -118,6 +118,7 @@ const getCurrLocation = async () => {
           `${selectedLocation.name} has been saved as your gym.`,
           [
               {
+
                   text: 'OK',
                   onPress: () => router.replace('/(tabs)/home')
               }
@@ -125,7 +126,6 @@ const getCurrLocation = async () => {
       );
     } catch (err) {
         console.log(err)
-        console.log(err.config)
         Alert.alert('Error', 'Could not save location');
     }
   };

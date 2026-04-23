@@ -59,22 +59,21 @@ export function useGymProximity(user) {
         if (Platform.OS === 'web') {
             return await getCurrentLocationWeb();
         } else {
-            const loc = await api.get('/api//:userName/user-location', {
-                headers: {
-                    'Authorization': `Bearer ${user.token}`
-                    }
-                })
-            return loc.data
-            }
-
+            //changed this to await backend location?
+            const loc = await Location.getCurrentPositionAsync({});
+                return {
+                    latitude: loc.coords.latitude,
+                    longitude: loc.coords.longitude,
+                };
+        }
     }
 
     useEffect(() => {
+        let interval;
         async function checkProximity() {
             try {
                 const userName = user.username
                 const currLoc = await getCurrentLocation()
-
                 const gymLoc = await api.get(`/api/${userName}/gym-location`, {
                     headers: { 'Authorization': `Bearer ${user.token}` }
                 });
@@ -83,6 +82,10 @@ export function useGymProximity(user) {
                     currLoc.latitude, currLoc.longitude,
                     gymLoc.data.latitude, gymLoc.data.longitude
                 );
+
+                console.log("Current Location:", currLoc);
+                console.log("Gym Location:", gymLoc.data);
+                console.log(distance)
 
                 // dispatch based on distance
                 if (distance <= ACCEPTED_DIST) {
@@ -97,7 +100,11 @@ export function useGymProximity(user) {
             }
         }
 
-        if (user?.username) checkProximity();
+        if (user?.username) {
+            checkProximity(); //run immediately
+            interval = setInterval(checkProximity, 10000); //then every min
+        }
+        return () => clearInterval(interval);
     }, [user]);
 
     return { atGym: state.proxy, proxyDispatch };

@@ -470,7 +470,7 @@ export async function saveGymLocation(req, res){
 export async function saveCurrLocation(req, res){
     const {userName} = req.params
     const {latitude, longitude } = req.body;
-
+    console.log("Saving current location for user:", userName, "Latitude:", latitude, "Longitude:", longitude)
     try {
         const user = await User.saveCurrLocation(userName, latitude, longitude);
         res.status(200).json({ message: "Current location saved", user });
@@ -489,7 +489,7 @@ export async function getCurrLocation(req, res){
         if (!user) {
             return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
         }
-                res.status(200).json({latitude: user.currLat, longitude: user.currLon});
+            res.status(200).json({latitude: user.currLat, longitude: user.currLon});
     } catch(error){
         console.error("Error getting current location...", error);
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});

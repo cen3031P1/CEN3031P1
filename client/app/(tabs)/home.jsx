@@ -16,8 +16,6 @@ import { useGymProximity } from '../hook/useGymProximity.jsx';
 
 export default function HomeScreen() {
 	const { user } = useAuthContext();
-	//Using new hook to check if user is at gym
-	const atGym = useGymProximity(user);
 
 	const [streak, setStreak] = useState(0);
 	const [bestStreak, setBestStreak] = useState(0);
@@ -26,28 +24,54 @@ export default function HomeScreen() {
 	const [bio, setBio] = useState('');
 	const [points, setPoints] = useState(0);
 
+	const [start_time, setStartTime] = useState(null);
+	const [minutes, setMinutes] = useState(0);
+	const atGym = useGymProximity(user);
+	const [pointGain, setPointGain] = useState(0);
+	console.log("At gym: ", atGym.atGym);
+// 	const [isTracking, setIsTracking] = useState(false);
 
-//     const startBackgroundTracking = async () => {
-//         // Need both foreground and background permission
-//         const { status: foreground } = await Location.requestForegroundPermissionsAsync();
-//         const { status: background } = await Location.requestBackgroundPermissionsAsync();
-//
-//         if (foreground !== 'granted' || background !== 'granted') {
-//             Alert.alert('Permission denied', 'Background location access is required');
-//             return;
-//         }
-//
-//         await Location.startLocationUpdatesAsync(LOCATION_TASK, {
-//             accuracy: Location.Accuracy.Balanced,
-//             timeInterval: 5 * 60 * 1000,  // check every 5 minutes
-//             distanceInterval: 50,          // or every 50 meters, whichever comes first
-//             showsBackgroundLocationIndicator: true,
-//         });
-//     };
-//
-//     const stopBackgroundTracking = async () => {
-//         await Location.stopLocationUpdatesAsync(LOCATION_TASK);
-//     };
+    // const startBackgroundTracking = async () => {
+    //     // Need both foreground and background permission
+    //     const { status: foreground } = await Location.requestForegroundPermissionsAsync();
+    //     const { status: background } = await Location.requestBackgroundPermissionsAsync();
+
+    //     if (foreground !== 'granted' || background !== 'granted') {
+    //         Alert.alert('Permission denied', 'Background location access is required');
+    //         return;
+    //     }
+    //     await Location.startLocationUpdatesAsync(LOCATION_TASK, {
+    //         accuracy: Location.Accuracy.Balanced,
+    //         timeInterval: 10000,  // check every 10 seconds
+    //         distanceInterval: 50,          // or every 50 meters, whichever comes first
+    //         showsBackgroundLocationIndicator: true,
+    //     });
+	// 	setIsTracking(true);
+	// 	Alert.alert('Tracking started!');
+    // };
+
+	useEffect(() => {
+		if (atGym && !start_time) { //for just now arriving
+			setStartTime(Date.now());
+		}
+		if (!atGym && start_time) {
+			//left the gym
+			UpdateStreakandPoints();
+			setStartTime(null);
+			setMinutes(0);
+			setPointGain(0);
+		}
+	}, [atGym]);
+
+	async function handleLog(){
+		console.log("nothing yet");
+	}
+
+    // const stopBackgroundTracking = async () => {
+    //     await Location.stopLocationUpdatesAsync(LOCATION_TASK);
+    //     setIsTracking(false);
+    //     Alert.alert('Tracking stopped!');
+    // };
 	
 	useEffect(() => {
 		if (!user) {
@@ -64,6 +88,8 @@ export default function HomeScreen() {
 	);
 
 	useEffect(() => {
+        console.log(start_time)
+        console.log(atGym)
 		if (!start_time || !atGym) {
 			return;
 		}
@@ -71,7 +97,7 @@ export default function HomeScreen() {
 			//this is still 10 points per min
 			const elapsed = Math.floor((Date.now() - start_time) / 60000);
 			setMinutes(elapsed);
-			setPointGain(elapsed + bestStreak);
+			setPointGain(elapsed);
 		}, 60000);
 
 		return () => clearInterval(interval);
@@ -91,9 +117,9 @@ export default function HomeScreen() {
 					headers: {
 						'Authorization': `Bearer ${user.token}`}
 				});
-				//This is same as web
-				setPoints(prev => prev + pointGain);
-				setStreak(prev => prev + 1);
+                //This is same as web
+                setPoints(prev => prev + pointGain);
+                setStreak(prev => prev + 1);
 		} catch (error) {
 			console.error("Error updating streak and points:", error);
 		}
@@ -163,7 +189,7 @@ export default function HomeScreen() {
                     <ProfileDisplay type='goal' base_numval={streak} optimal_numval={goal}>GOAL</ProfileDisplay>
                     <ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
 
-					<ProfileDisplay type='log' atgym={atGym} points={pointGain} time={minutes} style = {{width: '100%', aspectRatio: 0, height: '45%'}} >LOG</ProfileDisplay>
+					<ProfileDisplay type='log' atgym={atGym.atGym} points={pointGain} time={minutes} style = {{width: '100%', aspectRatio: 0, height: '45%'}} >LOG</ProfileDisplay>
 					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay>
 				</View>
 		</View>

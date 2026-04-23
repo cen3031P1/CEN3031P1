@@ -22,7 +22,13 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
             <View style ={{backgroundColor: colors.secondary, width: '100%', alignItems: 'center',justifyContent: 'center', borderColor: colors.primary, borderBottomWidth:5,borderTopStartRadius: 15, borderTopEndRadius: 15}}>
                 <AppText style = {{color : colors.buttonText, padding: 10,paddingTop: 14, fontSize: 15, width: '100%', textAlign: 'center'}}>{children}</AppText>
             </View>
-                
+
+            {onPress && (
+                <Pressable onPress={onPress} disabled={!onPress} style = {{flex: 1, width: '50%', alignItems: 'center', justifyContent: 'center', backgroundColor: onPress ? colors.primary : 'lightgray'}}>            
+                    <AppText style = {{color: colors.buttonText, fontSize: 12}}>{onPress ? 'Log Gym Session' : 'Log Disabled'}</AppText>
+                </Pressable>
+            )}
+
             {type === 'goal' &&
                 <View style = {[styles.subdisplay]}>
                     <AppText style ={[styles.numdisplay, [base_numval > optimal_numval ? {color: 'green'} : {color: 'red'}], [optimal_numval === 0 ? {fontSize: 50} : {fontSize: 30}]]}>{optimal_numval}</AppText>
@@ -43,7 +49,7 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
             }
 
             {type === 'log'&&
-                <View style = {[styles.subdisplay, {justifyContent: 'null'}]}>
+                <View style = {[styles.subdisplay, {justifyContent: 'null', height: height*.5}]}>
                     <AppText style ={[styles.textdisplay,{fontSize: 9, width: width*.85, height: height*.04}]}>You will get points based off the duration you've been at the gym, as well as your streak.</AppText>
                     <AppText style ={[styles.textdisplay,{fontSize: 9, marginBottom: 5, width: width*.85,  height: height*.03}]}>If you are encountering location errors, try setting your gym in the settings menu.</AppText>
                     <View style = {{flexDirection: 'row',justifyContent: 'center', width: width*.85, marginTop: 10}}>
