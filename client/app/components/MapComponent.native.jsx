@@ -104,9 +104,6 @@ const getCurrLocation = async () => {
   const saveLocation = async () => {
     if (!selectedLocation) return;
     try {
-        console.log(user.username)
-        console.log(selectedLocation.latitude)
-        console.log(selectedLocation.longitude)
       await api.post(`/api/${user.username}/locations`, {
           latitude: selectedLocation.latitude,
           longitude: selectedLocation.longitude,
@@ -120,6 +117,7 @@ const getCurrLocation = async () => {
           `${selectedLocation.name} has been saved as your gym.`,
           [
               {
+
                   text: 'OK',
                   onPress: () => router.replace('/(tabs)/home')
               }
@@ -186,7 +184,7 @@ const getCurrLocation = async () => {
 
       {selectedLocation && (
         <TouchableOpacity style={styles.saveBtn} onPress={saveLocation}>
-          <Text style={styles.saveBtnText}>💾 Save Location</Text>
+          <Text style={styles.saveBtnText}>Save Location</Text>
         </TouchableOpacity>
       )}
     </View>
