@@ -112,7 +112,7 @@ router.delete('/delUser/:userName', deleteUserByName)
 
 //make another user an admin
 router.patch('/user/makeAdmin', makeAdmin);
-
-router.patch(`/user/:user.username/updateStreakAndPoints`, updateStreakAndPoints);
+//This had a lowercase n but it should be N
+router.patch(`/user/:user.userName/updateStreakAndPoints`, updateStreakAndPoints);
 
 export default router;
