@@ -5,11 +5,10 @@ import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import {AuthContextProvider, useAuthContext} from './hook/useAuthContext';
 
-
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-    
+
     const [loaded, error] = useFonts({
         'PressStart2P-Regular': require('./assets/PressStart2P-Regular.ttf')
     });
@@ -19,7 +18,7 @@ export default function RootLayout() {
         SplashScreen.hideAsync();
         }
     }, [loaded, error]);
-    
+
     return (
         <ThemeProvider value={DefaultTheme}>
             <AuthContextProvider>

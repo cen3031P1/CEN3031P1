@@ -1,6 +1,6 @@
 import { router} from 'expo-router';
 import { useEffect, useState, useCallback} from 'react';
-import { View, ScrollView, StyleSheet, Image} from 'react-native';
+import { View, ScrollView, StyleSheet, Image, Alert, TouchableOpacity, Text} from 'react-native';
 import TitleComp from '../components/Titles.jsx';
 import ProfileDisplay from '../components/ProfileDisplay.jsx';
 import colors from '../theme/colors.jsx';
@@ -8,14 +8,8 @@ import AppText from '../components/AppText.jsx';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import api from '../../api.js';
 import { useFocusEffect } from '@react-navigation/native';
-import * as TaskManager from 'expo-task-manager';
-import { LOCATION_TASK } from '../tasks/locationTask.js';
 import * as Location from 'expo-location';
-// will display profile picture
-// log button
-// goal
-// streak
-// badges
+import { LOCATION_TASK } from '../tasks/locationTask.js';
 
 async function handleLog(){
 	console.log("nothing yet");
@@ -29,29 +23,33 @@ export default function HomeScreen() {
 	const [goal, setGoal] = useState(0);
 	const [profilePic, setProfilePic] = useState(null);
 	const [bio, setBio] = useState('');
+const [isTracking, setIsTracking] = useState(false);
 
+    const startBackgroundTracking = async () => {
+        const { status: foreground } = await Location.requestForegroundPermissionsAsync();
+        const { status: background } = await Location.requestBackgroundPermissionsAsync();
 
-//     const startBackgroundTracking = async () => {
-//         // Need both foreground and background permission
-//         const { status: foreground } = await Location.requestForegroundPermissionsAsync();
-//         const { status: background } = await Location.requestBackgroundPermissionsAsync();
-//
-//         if (foreground !== 'granted' || background !== 'granted') {
-//             Alert.alert('Permission denied', 'Background location access is required');
-//             return;
-//         }
-//
-//         await Location.startLocationUpdatesAsync(LOCATION_TASK, {
-//             accuracy: Location.Accuracy.Balanced,
-//             timeInterval: 5 * 60 * 1000,  // check every 5 minutes
-//             distanceInterval: 50,          // or every 50 meters, whichever comes first
-//             showsBackgroundLocationIndicator: true,
-//         });
-//     };
-//
-//     const stopBackgroundTracking = async () => {
-//         await Location.stopLocationUpdatesAsync(LOCATION_TASK);
-//     };
+        if (foreground !== 'granted' || background !== 'granted') {
+            Alert.alert('Permission denied', 'Background location access is required');
+            return;
+        }
+
+        await Location.startLocationUpdatesAsync(LOCATION_TASK, {
+            accuracy: Location.Accuracy.Balanced,
+            timeInterval: 10000,   // 10 seconds for testing
+            distanceInterval: 0,   // fire regardless of movement
+            showsBackgroundLocationIndicator: true,
+        });
+
+        setIsTracking(true);
+        Alert.alert('Tracking started!');
+    };
+
+    const stopBackgroundTracking = async () => {
+        await Location.stopLocationUpdatesAsync(LOCATION_TASK);
+        setIsTracking(false);
+        Alert.alert('Tracking stopped!');
+    };
 	
 	useEffect(() => {
 		if (!user) {
@@ -132,6 +130,19 @@ export default function HomeScreen() {
 					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay>
 				</View>
 		</View>
+		<TouchableOpacity
+            onPress={isTracking ? stopBackgroundTracking : startBackgroundTracking}
+            style={{
+                backgroundColor: isTracking ? 'red' : 'green',
+                padding: 12,
+                borderRadius: 8,
+                margin: 10
+            }}
+        >
+            <Text style={{ color: 'white' }}>
+                {isTracking ? 'Stop Tracking' : 'Start Tracking'}
+            </Text>
+        </TouchableOpacity>
 	</ScrollView>
   );
 }
