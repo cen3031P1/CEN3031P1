@@ -453,8 +453,8 @@ export async function deleteUserByName(req, res){
 }
 
 export async function saveGymLocation(req, res){
-    console.log("attempting to save location")
-    const { userName, latitude, longitude } = req.body;
+    const {userName} = req.params
+    const { latitude, longitude } = req.body;
 
     try {
         const user = await User.saveGymLocation(userName, latitude, longitude);
@@ -467,7 +467,8 @@ export async function saveGymLocation(req, res){
 }
 
 export async function saveCurrLocation(req, res){
-    const { userName, latitude, longitude } = req.body;
+    const {userName} = req.params
+    const {latitude, longitude } = req.body;
 
     try {
         const user = await User.saveCurrLocation(userName, latitude, longitude);
@@ -482,7 +483,7 @@ export async function saveCurrLocation(req, res){
 export async function getCurrLocation(req, res){
     try{
 
-        const {userName} = req.body
+        const {userName} = req.params
         const user = await User.findOne({userName})
         if (!user) {
             return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
