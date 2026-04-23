@@ -69,8 +69,7 @@ export default function SigninScreen() {
         }
 
         const success = await signup(username, password);
-        if (success){ console.log("routed to map")
-            router.replace('/map')}
+        if (success){router.replace('/map')}
         else {setIsSigningUp(false)}
     }
     useEffect(() => {
@@ -79,7 +78,7 @@ export default function SigninScreen() {
             id recommend a conditional component using totalFailure on if it displays or not
             remains till user tries again maybe thatll reset totalFailure
         */
-        // console.log("display failure message, ask user to try again. Somethings wrong with server")
+//         console.log("display failure message, ask user to try again. Somethings wrong with server")
     }, [totalFailure])
 
     useEffect(() => {

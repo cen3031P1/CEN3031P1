@@ -500,8 +500,8 @@ export async function getCurrLocation(req, res){
 export async function getGymLocation(req, res){
     try{
 
-        const {username} = req.params
-        const user = await User.findOne({username})
+        const {userName} = req.params
+        const user = await User.findOne({userName})
         if (!user) {
             return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
         }
@@ -549,7 +549,7 @@ export async function findFriends(req, res) {
     console.log("search query: ", search);
     console.log("Finding friends for user: ", userName);
     console.log("user.friends:", user.friends);
-    
+
     try {
         const users = await User.aggregate([
             {$search: {
@@ -567,7 +567,7 @@ export async function findFriends(req, res) {
                 }
             }},
             {$limit: 15},
-            {$project: 
+            {$project:
                 {
                     userName: 1,
                     _id: 1,

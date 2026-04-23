@@ -4,11 +4,25 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import {AuthContextProvider, useAuthContext} from './hook/useAuthContext';
+import * as TaskManager from 'expo-task-manager';
+import * as Location from 'expo-location';
+import { LOCATION_TASK } from './tasks/locationTask.js';
+
+TaskManager.defineTask(LOCATION_TASK, async ({ data, error }) => {
+    if (error) {
+        console.error('Task error:', error);
+        return;
+    }
+    if (data) {
+        const { latitude, longitude } = data.locations[0].coords;
+        console.log('📍 Background location update:', latitude, longitude);
+    }
+});
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-
+    
     const [loaded, error] = useFonts({
         'PressStart2P-Regular': require('./assets/PressStart2P-Regular.ttf')
     });
@@ -18,7 +32,7 @@ export default function RootLayout() {
         SplashScreen.hideAsync();
         }
     }, [loaded, error]);
-
+    
     return (
         <ThemeProvider value={DefaultTheme}>
             <AuthContextProvider>

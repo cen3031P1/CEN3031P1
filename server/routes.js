@@ -52,6 +52,7 @@ router.get('/', (req, res) => {
     res.send("hi");
 })
 
+
 router.post('/login', login);
 
 router.post('/signup', signUp);
@@ -62,6 +63,7 @@ router.get('/:userName/user-location', getCurrLocation);
 router.get('/:userName/gym-location', getGymLocation)
 router.post('/:userName/curr-location', saveCurrLocation)
 router.post('/:userName/locations', saveGymLocation);
+
 // Add friends
 router.post('/addfriend', addFriend);
 

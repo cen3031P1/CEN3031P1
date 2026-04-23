@@ -10,18 +10,14 @@ import api from '../../api.js';
 import { useFocusEffect } from '@react-navigation/native';
 import { useGymProximity } from '../hook/useGymProximity.jsx';
 
-// will display profile picture
-// log button
-// goal
-// streak
-// badges
-
 // async function handleLog(){
 // 	console.log("nothing yet");
 // }
 
 export default function HomeScreen() {
 	const { user } = useAuthContext();
+	//Using new hook to check if user is at gym
+	const atGym = useGymProximity(user);
 
 	const [streak, setStreak] = useState(0);
 	const [bestStreak, setBestStreak] = useState(0);
@@ -30,51 +26,28 @@ export default function HomeScreen() {
 	const [bio, setBio] = useState('');
 	const [points, setPoints] = useState(0);
 
-	const [start_time, setStartTime] = useState(null);
-	const [minutes, setMinutes] = useState(0);
-	const atGym = useGymProximity(user);
-	const [pointGain, setPointGain] = useState(0);
 
-// 	const [pointGain, setPointGain] = useState(0);
-// 	const [isTracking, setIsTracking] = useState(false);
-	
-    // const startBackgroundTracking = async () => {
-    //     // Need both foreground and background permission
-    //     const { status: foreground } = await Location.requestForegroundPermissionsAsync();
-    //     const { status: background } = await Location.requestBackgroundPermissionsAsync();
-
-    //     if (foreground !== 'granted' || background !== 'granted') {
-    //         Alert.alert('Permission denied', 'Background location access is required');
-    //         return;
-    //     }
-    //     await Location.startLocationUpdatesAsync(LOCATION_TASK, {
-    //         accuracy: Location.Accuracy.Balanced,
-    //         timeInterval: 10000,  // check every 10 seconds
-    //         distanceInterval: 50,          // or every 50 meters, whichever comes first
-    //         showsBackgroundLocationIndicator: true,
-    //     });
-	// 	setIsTracking(true);
-	// 	Alert.alert('Tracking started!');
-    // };
-
-	useEffect(() => {
-		if (atGym && !start_time) { //for just now arriving
-			setStartTime(Date.now());
-		}
-		if (!atGym && start_time) {
-			//left the gym
-			UpdateStreakandPoints();
-			setStartTime(null);
-			setMinutes(0);
-			setPointGain(0);
-		}
-	}, [atGym]);
-
-    const stopBackgroundTracking = async () => {
-        await Location.stopLocationUpdatesAsync(LOCATION_TASK);
-        setIsTracking(false);
-        Alert.alert('Tracking stopped!');
-    };
+//     const startBackgroundTracking = async () => {
+//         // Need both foreground and background permission
+//         const { status: foreground } = await Location.requestForegroundPermissionsAsync();
+//         const { status: background } = await Location.requestBackgroundPermissionsAsync();
+//
+//         if (foreground !== 'granted' || background !== 'granted') {
+//             Alert.alert('Permission denied', 'Background location access is required');
+//             return;
+//         }
+//
+//         await Location.startLocationUpdatesAsync(LOCATION_TASK, {
+//             accuracy: Location.Accuracy.Balanced,
+//             timeInterval: 5 * 60 * 1000,  // check every 5 minutes
+//             distanceInterval: 50,          // or every 50 meters, whichever comes first
+//             showsBackgroundLocationIndicator: true,
+//         });
+//     };
+//
+//     const stopBackgroundTracking = async () => {
+//         await Location.stopLocationUpdatesAsync(LOCATION_TASK);
+//     };
 	
 	useEffect(() => {
 		if (!user) {
@@ -122,7 +95,7 @@ export default function HomeScreen() {
 				setPoints(prev => prev + pointGain);
 				setStreak(prev => prev + 1);
 		} catch (error) {
-			console.error("Error updating streak and points:", error);	
+			console.error("Error updating streak and points:", error);
 		}
 	}
 

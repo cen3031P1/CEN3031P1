@@ -1,6 +1,6 @@
 import { router} from 'expo-router';
 import { useEffect, useState, useCallback} from 'react';
-import { View, ScrollView, StyleSheet, Image} from 'react-native';
+import { View, ScrollView, StyleSheet, Image, Alert, TouchableOpacity, Text} from 'react-native';
 import TitleComp from '../components/Titles.jsx';
 import ProfileDisplay from '../components/ProfileDisplay.jsx';
 import colors from '../theme/colors.jsx';
@@ -8,53 +8,49 @@ import AppText from '../components/AppText.jsx';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import api from '../../api.js';
 import { useFocusEffect } from '@react-navigation/native';
-import { useGymProximity } from '../hook/useGymProximity.jsx';
+import * as Location from 'expo-location';
+import { LOCATION_TASK } from '../tasks/locationTask.js';
 
-
+async function handleLog(){
+	console.log("nothing yet");
+}
 
 export default function HomeScreen() {
 	const { user } = useAuthContext();
-	//Using new hook to check if user is at gym
-	const { atGym, proxyDispatch } = useGymProximity(user);
-	const [pointGain, setPointGain] = useState(0);
-	const [start_time, setStartTime] = useState(null);
-	const [minutes, setMinutes] = useState(0);
-	const [isTracking, setIsTracking] = useState(false);
-	const [points, setPoints] = useState(0);
 
 	const [streak, setStreak] = useState(0);
 	const [bestStreak, setBestStreak] = useState(0);
 	const [goal, setGoal] = useState(0);
 	const [profilePic, setProfilePic] = useState(null);
 	const [bio, setBio] = useState('');
+const [isTracking, setIsTracking] = useState(false);
 
-	useEffect(() => {
-		if (!atGym && !start_time) { //for just now arriving
-			setStartTime(Date.now());
-		}
-		if (!atGym && start_time) {
-			//left the gym
-			updateStreakAndPoints();
-			setStartTime(null);
-			setMinutes(0);
-			setPointGain(0);
-		}
-	}, [atGym]);
+    const startBackgroundTracking = async () => {
+        const { status: foreground } = await Location.requestForegroundPermissionsAsync();
+        const { status: background } = await Location.requestBackgroundPermissionsAsync();
 
-	//point gain and minutes tracking
-	useEffect(() => {
-		if (!start_time || !atGym) {
-			return;
-		}
-		const interval = setInterval(() => {
-			//this formula is basically 10 points per minute at the gym (i guessed)
-			const elapsed = Math.floor((Date.now() - start_time) / 60000);
-			setMinutes(elapsed);
-			setPointGain(elapsed + bestStreak);
-		}, 60000); //update every 60 seconds
-		return () => clearInterval(interval); //clean
-		}, [start_time, atGym, bestStreak]);
+        if (foreground !== 'granted' || background !== 'granted') {
+            Alert.alert('Permission denied', 'Background location access is required');
+            return;
+        }
 
+        await Location.startLocationUpdatesAsync(LOCATION_TASK, {
+            accuracy: Location.Accuracy.Balanced,
+            timeInterval: 10000,   // 10 seconds for testing
+            distanceInterval: 0,   // fire regardless of movement
+            showsBackgroundLocationIndicator: true,
+        });
+
+        setIsTracking(true);
+        Alert.alert('Tracking started!');
+    };
+
+    const stopBackgroundTracking = async () => {
+        await Location.stopLocationUpdatesAsync(LOCATION_TASK);
+        setIsTracking(false);
+        Alert.alert('Tracking stopped!');
+    };
+	
 	useEffect(() => {
 		if (!user) {
 			router.replace('/');
@@ -88,36 +84,12 @@ export default function HomeScreen() {
 			setBestStreak(response.data.bestStreak);
 			setProfilePic(response.data.profilePic);
 			setBio(response.data.bio);
-			setPoints(response.data.points);
-			setBestStreak(response.data.bestStreak);
 		}
 		catch (error) {
 			console.error("Error fetching user data:", error);
 		}
 	}
-	//This is for if they stay at gym
-	async function updateStreakAndPoints() {
-		if (pointGain === 0) return; //no points = skip
-		try {
-			//This is how database gets updated
-			await api.patch(`/api/user/${user.username}/updateStreakAndPoints`,{
-					points: points + pointGain,
-					streak: streak + 1,
-				},
-				{ //This is the auth header
-					headers: {
-						'Authorization': `Bearer ${user.token}`
-					}
-				}
-			); //Using prev here since its async... alternative is fetching again ?
-			//prev in this case is just curr points and streak
-			setPoints(prev => prev + pointGain);
-			setStreak(prev => prev + 1);
-		}
-		catch (error) {
-			console.error("Error updating streak and points:", error);
-		}
-	}
+
 	const streakimage =
 		streak >= 20 ? require('../assets/images/streak20.png') :
 		streak >= 15 ? require('../assets/images/streak15.png') :
@@ -154,10 +126,23 @@ export default function HomeScreen() {
 				<View style = {styles.featureBoxContainer}>
 					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={goal}>GOAL</ProfileDisplay>
 					<ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
-					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} points = {pointGain} atGym = {atGym}>LOG</ProfileDisplay>
+					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} onPress={handleLog} >LOG</ProfileDisplay>
 					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay>
 				</View>
 		</View>
+		<TouchableOpacity
+            onPress={isTracking ? stopBackgroundTracking : startBackgroundTracking}
+            style={{
+                backgroundColor: isTracking ? 'red' : 'green',
+                padding: 12,
+                borderRadius: 8,
+                margin: 10
+            }}
+        >
+            <Text style={{ color: 'white' }}>
+                {isTracking ? 'Stop Tracking' : 'Start Tracking'}
+            </Text>
+        </TouchableOpacity>
 	</ScrollView>
   );
 }
