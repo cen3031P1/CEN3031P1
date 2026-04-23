@@ -92,7 +92,7 @@ export default function LoginScreen() {
                     </View>
                     
                     <View style = {{marginBottom: 10, marginTop: 10}}>
-                        <AppText style = {{fontSize: 15}}>Log-In</AppText>
+                        <AppText style = {{fontSize: 15, width: width*.4}}>Log-In</AppText>
                     </View>
 
                     <Input 
@@ -140,7 +140,6 @@ const styles = StyleSheet.create({
         marginTop: 100,
         borderRadius: 10,
         width: width * 0.95,
-        maxWidth: 700,
         height: height * 0.55,
         maxHeight: 350,
         gap: 15,

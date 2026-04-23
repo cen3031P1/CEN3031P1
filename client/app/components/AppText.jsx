@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginBottom: -5,
         fontFamily: fonts.headers,
-        width: '110%',
+        width: '100%',
         textAlign: 'center'
     }
 });

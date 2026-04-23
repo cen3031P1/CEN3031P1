@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Button, FlatList, ScrollView } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, ScrollView} from 'react-native';
 import { useEffect, useState } from 'react';
 import api from '../../api.js';
 import { useAuthContext } from '../hook/useAuthContext.jsx';
@@ -16,6 +16,7 @@ export default function FriendsScreen() {
 	const [friendUsername, setFriendUsername] = useState('')
 	const [message, setMessage] = useState('')
 	const [friends, setFriends] = useState([])
+    const [bestMatch, setBestMatch] = useState('')
 
 	// Load friends when the page is loaded
 	useEffect(() => {
@@ -29,7 +30,23 @@ export default function FriendsScreen() {
 			router.replace('/');
 		}
 	}, [user]);
-	
+
+
+	async function performBestMatch(name){
+        try {
+			const response = await api.patch(`/api/friends/match`, {
+				bestMatch: bestMatch,
+				}, {
+				headers: {
+					'Authorization': `Bearer ${user.token}`
+				}
+			});
+            setFriends(response.data.friends)
+        } catch (error) {
+            console.error("Error loading friends:", error)
+        }
+    }
+
 	// Function to load friends from the server
 	async function loadFriends() {
 		console.log("loading friends for:", user.username)
@@ -132,13 +149,24 @@ export default function FriendsScreen() {
 
 					<TitleComp style={{ fontSize: 40, marginVertical: 15}}>Friends</TitleComp>
 
-					<Input
-						placeholder="Enter friend's username"
-						value={friendUsername}
-						onChangeText={setFriendUsername}
-						style = {{ width: '100%', height: 35}}
-					/>
+                    <View style = {{width: '100%', alignItems: 'center'}}>
+                        <Input
+                            placeholder="Enter friend's username"
+                            value={friendUsername}
+                            onChangeText={(value) => {
+                                setFriendUsername(value);
+                                performBestMatch(value);
+                                }
+                            }
+                            style = {{ width: '100%', height: 35}}
+                        />
 
+                        {bestMatch !== '' &&
+                            <ButtonComp style = {{ width: '100%'}} onPress={addFriend}>
+                                Add Friend
+                            </ButtonComp>
+                        }
+                    </View>
 					<ButtonComp style = {{ width: '100%', marginBottom: 10}} onPress={addFriend}>
 						Add Friend
 					</ButtonComp>
@@ -146,7 +174,6 @@ export default function FriendsScreen() {
 					{message !== '' && <Text style={{ fontFamily: fonts.general, marginBottom: 10, textAlign: 'center', color: message.includes('success') ? 'green' : 'red' }}>{message}</Text>}
 
 				</View>
-{/*                 <ScrollView contentContainerStyle={{ paddingBottom: 200}}> */}
 
                     <View style={{ flex:1,width: '100%', backgroundColor: colors.background, padding: 15, borderRadius: 10, alignItems: 'center', borderWidth: 5, borderColor: colors.primary }}>
                         <FlatList
@@ -157,7 +184,6 @@ export default function FriendsScreen() {
                             renderItem={({ item }) => (
                                 <View style={{marginBottom: 5, marginTop: 5, flexDirection: 'row', justifyContent: 'center', borderWidth: 5,backgroundColor: 'lightgrey', borderColor: '#bad0eb', borderRadius: 15, width: '100%', height: 60, alignItems: 'center' }}>
 
-                                    {/* <Text style={{ flex: 1, textAlign: 'left'}}>{item}</Text> */}
                                     <AppText style={{ flex: 1, textAlign: 'left', fontSize: 12}}> {item} </AppText>
 
                                     <ButtonComp style = {{ width: '30%', height: 35, marginRight: 10}} onPress={() => removeFriend(item)}>
@@ -169,7 +195,6 @@ export default function FriendsScreen() {
                             ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: 'gray', fontFamily: fonts.general}}>No friends found. Add some friends to see them here!</Text>}
                         />
                     </View>
-{/*                    </ScrollView> */}
 
 			</View>
 	);

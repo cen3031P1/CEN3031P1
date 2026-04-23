@@ -37,11 +37,9 @@ import {
     setGoal,
     setBio,
     setStreak,
-    // getPoints,
-    // getStreak,
-    // getBestStreak,
     getAllUsers,
-    deleteUserByName
+    deleteUserByName,
+    updateStreakAndPoints
 } from './controller.js';
 import requireAuth from './middleware/requireAuth.js';
 import adminAuth from './middleware/adminAuth.js';
@@ -112,6 +110,6 @@ router.delete('/delUser/:userName', deleteUserByName)
 //make another user an admin
 router.patch('/user/makeAdmin', makeAdmin);
 
-
+router.patch(`/user/:user.username/updateStreakAndPoints`, updateStreakAndPoints);
 
 export default router;

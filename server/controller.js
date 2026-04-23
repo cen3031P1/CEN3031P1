@@ -291,7 +291,7 @@ export async function fetchProfileData(req, res) {
             return res.status(404).json({msg: "User not found", code: "USER_NOT_FOUND"});
         }
 
-        res.status(200).json({msg: "Profile data retrieved successfully", code: "PROFILE_DATA_RETRIEVED",profilePic: user.profilePic, goal: user.goal, streak: user.streak, bestStreak: user.bestStreak, bio: user.bio});
+        res.status(200).json({msg: "Profile data retrieved successfully", code: "PROFILE_DATA_RETRIEVED",profilePic: user.profilePic, goal: user.goal, streak: user.streak, bestStreak: user.bestStreak, bio: user.bio, points: user.points});
     } catch (error) {
         console.error("Error fetching profile data: ", error);
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
@@ -510,4 +510,26 @@ export async function getGymLocation(req, res){
         res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
     }
 
+}
+
+
+export async function updateStreakAndPoints(req, res) {
+    try {
+        const {userName} = req.params;
+        const {streak, points} = req.body;
+        const user = await User.findOne({userName});
+
+        if (!user) {
+            return res.status(404).json({msg: "User not found in DB", code: "USER_NOT_FOUND"});
+        }
+
+        user.streak = streak > 9999 ? 9999 : streak;
+        user.points = points > 999999 ? 999999 : points;
+
+        await user.save();
+        res.status(200).json({msg: "Streak and points updated successfully", code: "STREAK_AND_POINTS_UPDATED"});
+    } catch (error) {
+        console.error("Error updating streak and points: ", error);
+        res.status(500).json({msg: "Internal server error", code: "INTERNAL_SERVER_ERROR"});
+    }
 }

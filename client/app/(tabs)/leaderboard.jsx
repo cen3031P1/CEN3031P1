@@ -46,7 +46,7 @@ export default function LeaderboardScreen() {
 			console.error("Error loading global leaderboard:", error)
 		}
 	}
-
+	console.log(height*0.42)
 	return (
 			<View style={{ alignItems: 'center', width: '100%', padding: 20,flex:1}}>
 				<View style={{ width: '100%', backgroundColor: colors.background, paddingHorizontal: 15, borderRadius: 10, alignItems: 'center',borderWidth: 5, borderColor: colors.primary, gap: 15, marginBottom:10 }}>

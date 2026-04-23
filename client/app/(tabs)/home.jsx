@@ -30,7 +30,12 @@ export default function HomeScreen() {
 	const [goal, setGoal] = useState(0);
 	const [profilePic, setProfilePic] = useState(null);
 	const [bio, setBio] = useState('');
+	const [points, setPoints] = useState(0);
 
+	const [start_time, setStartTime] = useState(null);
+	const [minutes, setMinutes] = useState(0);
+	const [atgym, setAtGym] = useState(false);
+	const [pointGain, setPointGain] = useState(0);
 
 //     const startBackgroundTracking = async () => {
 //         // Need both foreground and background permission
@@ -68,6 +73,46 @@ export default function HomeScreen() {
 		}, [user])
 	);
 
+	async function UpdateStreakandPoints() {
+		console.log("Updating streak and points: ", pointGain);
+		try {
+			const response = await api.patch(`/api/user/${user.username}/updateStreakAndPoints`,{
+					points: points + pointGain,
+					streak: streak + 1,
+				},
+				{
+					headers: {
+						'Authorization': `Bearer ${user.token}`
+					}
+				}
+			);
+		} catch (error) {
+			console.error("Error updating streak and points:", error);	
+		}
+	}
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+
+            if (!start_time && pointGain !==0){
+				UpdateStreakandPoints();
+            }
+
+            if (!start_time || !atgym){
+                return
+            }
+
+			if (start_time) {
+				const elapsed = Math.floor((Date.now() - start_time) / 60000);
+				setMinutes(elapsed);
+				setPointGain(elapsed+bestStreak)
+			}
+		}, 60000);
+
+		return () => clearInterval(interval);
+	}, [start_time, atgym]);
+
+
 	async function fetchUserData() {
 		if (!user?.username) {
 			return;
@@ -87,9 +132,11 @@ export default function HomeScreen() {
 			setBestStreak(response.data.bestStreak);
 			setProfilePic(response.data.profilePic);
 			setBio(response.data.bio);
+			setPoints(response.data.points);
+			if (bio === '') {setBio("No Bio Yet")};
 		}
 		catch (error) {
-			console.error("Error fetching user data:", error);
+// 			console.error("Error fetching user data:", error);
 		}
 	}
 
@@ -127,9 +174,10 @@ export default function HomeScreen() {
 
 
 				<View style = {styles.featureBoxContainer}>
-					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={goal}>GOAL</ProfileDisplay>
-					<ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
-					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} onPress={handleLog} >LOG</ProfileDisplay>
+                    <ProfileDisplay type='goal' base_numval={streak} optimal_numval={goal}>GOAL</ProfileDisplay>
+                    <ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
+
+					<ProfileDisplay type='log' atgym={atgym} points={88888} time={23} style = {{width: '100%', aspectRatio: 0, height: '45%'}} >LOG</ProfileDisplay>
 					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay>
 				</View>
 		</View>
@@ -154,6 +202,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		flexDirection: 'row',
 		flexWrap: 'wrap',
+		alignItems: 'center',
 		justifyContent: 'center',
 		gap:10
 	},
