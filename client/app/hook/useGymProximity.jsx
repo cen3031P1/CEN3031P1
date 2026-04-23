@@ -3,8 +3,8 @@ import api from '../../api';
 import { Platform } from 'react-native';
 import * as Location from 'expo-location';
 
-
-const ACCEPTED_DIST = 1000
+//I think 1000 was too big
+const ACCEPTED_DIST = 100
 
 const getDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371e3;
@@ -59,17 +59,17 @@ export function useGymProximity(user) {
         if (Platform.OS === 'web') {
             return await getCurrentLocationWeb();
         } else {
-            const loc = await api.get(`/api/${user.username}/user-location`, {
-                headers: {
-                    'Authorization': `Bearer ${user.token}`
-                    }
-                })
-
-            return loc.data;
+            //changed this to await backend location?
+            const loc = await Location.getCurrentPositionAsync({});
+                return {
+                    latitude: loc.coords.latitude,
+                    longitude: loc.coords.longitude,
+                };
         }
     }
 
     useEffect(() => {
+        let interval;
         async function checkProximity() {
             try {
                 const userName = user.username
@@ -100,7 +100,11 @@ export function useGymProximity(user) {
             }
         }
 
-        if (user?.username) checkProximity();
+        if (user?.username) {
+            checkProximity(); //run immediately
+            interval = setInterval(checkProximity, 10000); //then every min
+        }
+        return () => clearInterval(interval);
     }, [user]);
 
     return { atGym: state.proxy, proxyDispatch };
