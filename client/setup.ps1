@@ -1,3 +1,17 @@
+# Install dependencies
+Write-Host "Installing npm dependencies..."
+npm install
+
+# Install special Expo modules that need expo install (not just npm i)
+Write-Host "Installing Expo managed dependencies..."
+npx expo install expo-font
+npx expo install expo-dev-client
+npx expo install react-native-maps
+npx expo install expo-task-manager
+npx expo install
+
+npx expo prebuild --clean
+
 $WIN_USER = $env:USERNAME
 $sdkPath = "sdk.dir=C\:\\Users\\$env:USERNAME\\AppData\\Local\\Android\\Sdk"
 Set-Content -Path android\local.properties -Value $sdkPath -Encoding ASCII
@@ -15,17 +29,5 @@ if ($lines -notcontains $newLine.Trim()) {
 } else {
     Write-Host "Permission already exists, skipping..."
 }
-
-# Install dependencies
-Write-Host "Installing npm dependencies..."
-npm install
-
-# Install special Expo modules that need expo install (not just npm i)
-Write-Host "Installing Expo managed dependencies..."
-npx expo install expo-font
-npx expo install expo-dev-client
-npx expo install react-native-maps
-npx expo install expo-task-manager
-npx expo install
 
 Write-Host "Done!"
