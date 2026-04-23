@@ -10,15 +10,12 @@ import api from '../../api.js';
 import { useFocusEffect } from '@react-navigation/native';
 import { useGymProximity } from '../hook/useGymProximity.jsx';
 
-async function handleLog(){
-	console.log("nothing yet");
-}
+
 
 export default function HomeScreen() {
 	const { user } = useAuthContext();
 	//Using new hook to check if user is at gym
-	const atGym = useGymProximity(user);
-
+	const { atGym, proxyDispatch } = useGymProximity(user);
 	const [streak, setStreak] = useState(0);
 	const [bestStreak, setBestStreak] = useState(0);
 	const [goal, setGoal] = useState(0);
@@ -30,6 +27,14 @@ export default function HomeScreen() {
 			router.replace('/');
 		}
 	}, [user]);
+
+    async function handleLog(){
+        console.log("nothing yet");
+    }
+
+//     useEffect(() => {
+//         console.log(atGym)
+//         }, [atGym])
 
 	useFocusEffect(
 		useCallback(() => {
@@ -100,7 +105,6 @@ export default function HomeScreen() {
 				<View style = {styles.featureBoxContainer}>
 					<ProfileDisplay type='goal' base_numval={streak} optimal_numval={goal}>GOAL</ProfileDisplay>
 					<ProfileDisplay type='streak' base_numval={streak} imgsrc={streakimage}>STREAK</ProfileDisplay>
-					//Btw i changed this button to only be there when youre at the gym feel free to change it
 					<ProfileDisplay type='log' style = {{width: '100%', aspectRatio: 0, height: '45%'}} onPress={atGym ? handleLog : null} disabled={!atGym}>LOG</ProfileDisplay>
 					<ProfileDisplay type='badges' min_bestStreak={bestStreak} style = {{width: '100%', aspectRatio: 0, height: '50%', flexWrap: 'wrap'}} >BADGES</ProfileDisplay>
 				</View>
