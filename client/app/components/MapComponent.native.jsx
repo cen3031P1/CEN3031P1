@@ -104,10 +104,11 @@ const getCurrLocation = async () => {
   const saveLocation = async () => {
     if (!selectedLocation) return;
     try {
-      await api.post(`/api/${user.username}/locations`, {
-          latitude: selectedLocation.latitude,
-          longitude: selectedLocation.longitude,
-          headers: {
+        let userName = user.username
+      await api.post(`/api/${userName}/locations`,
+          {latitude: selectedLocation.latitude,
+          longitude: selectedLocation.longitude,},
+          {headers: {
 		    'Authorization': `Bearer ${user.token}`
           }
 
@@ -124,6 +125,7 @@ const getCurrLocation = async () => {
       );
     } catch (err) {
         console.log(err)
+        console.log(err.config)
         Alert.alert('Error', 'Could not save location');
     }
   };
