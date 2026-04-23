@@ -34,7 +34,7 @@ export default function HomeScreen() {
 	const [minutes, setMinutes] = useState(0);
 	const atGym = useGymProximity(user);
 	const [pointGain, setPointGain] = useState(0);
-	console.log("At gym: ", atGym.atGym);
+	
 // 	const [isTracking, setIsTracking] = useState(false);
 	
     // const startBackgroundTracking = async () => {
@@ -57,15 +57,24 @@ export default function HomeScreen() {
     // };
 
 	useEffect(() => {
-		if (atGym && !start_time) { //for just now arriving
+        console.log("======init==========")
+        console.log(start_time)
+
+		if (atGym.atGym && !start_time) { //for just now arriving
 			setStartTime(Date.now());
 		}
-		if (!atGym && start_time) {
+
+		if (!atGym.atGym && start_time) {
 			//left the gym
 			UpdateStreakandPoints();
 			setStartTime(null);
 			setMinutes(0);
 			setPointGain(0);
+		}
+
+		if (atGym.atGym && start_time) {
+			setMinutes(Math.floor((Date.now() - start_time) / 60000));
+			setPointGain(minutes);
 		}
 	}, [atGym]);
 
@@ -92,22 +101,6 @@ export default function HomeScreen() {
 			}
 		}, [user])
 	);
-
-	useEffect(() => {
-        console.log(start_time)
-        console.log(atGym)
-		if (!start_time || !atGym) {
-			return;
-		}
-		const interval = setInterval(() => {
-			//this is still 10 points per min
-			const elapsed = Math.floor((Date.now() - start_time) / 60000);
-			setMinutes(elapsed);
-			setPointGain(elapsed);
-		}, 60000);
-
-		return () => clearInterval(interval);
-	}, [start_time, atGym, bestStreak]);
 
 	async function UpdateStreakandPoints() {
 		console.log("Updating streak and points: ", pointGain);

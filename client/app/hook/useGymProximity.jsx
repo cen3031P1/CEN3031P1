@@ -59,6 +59,7 @@ export function useGymProximity(user) {
         if (Platform.OS === 'web') {
             return await getCurrentLocationWeb();
         } else {
+
             const loc = await api.get(`/api/${user.username}/user-location`, {
                 headers: {
                     'Authorization': `Bearer ${user.token}`
@@ -66,6 +67,14 @@ export function useGymProximity(user) {
                 })
 
             return loc.data;
+
+//             const loc = await Location.getCurrentPositionAsync({});
+//
+//             return {
+//                 latitude: loc.coords.latitude,
+//                 longitude: loc.coords.longitude,
+//             };
+
         }
     }
 
@@ -74,6 +83,7 @@ export function useGymProximity(user) {
             try {
                 const userName = user.username
                 const currLoc = await getCurrentLocation()
+                
                 const gymLoc = await api.get(`/api/${userName}/gym-location`, {
                     headers: { 'Authorization': `Bearer ${user.token}` }
                 });
@@ -82,10 +92,11 @@ export function useGymProximity(user) {
                     currLoc.latitude, currLoc.longitude,
                     gymLoc.data.latitude, gymLoc.data.longitude
                 );
-
-                console.log("Current Location:", currLoc);
-                console.log("Gym Location:", gymLoc.data);
-                console.log(distance)
+                
+//                 console.log("=============================");
+//                 console.log("Current Location:", currLoc);
+//                 console.log("Gym Location:", gymLoc.data);
+//                 console.log(distance)
 
                 // dispatch based on distance
                 if (distance <= ACCEPTED_DIST) {
@@ -101,6 +112,11 @@ export function useGymProximity(user) {
         }
 
         if (user?.username) checkProximity();
+
+        const interval = setInterval(checkProximity, 10000);
+
+        return () => clearInterval(interval);
+        
     }, [user]);
 
     return { atGym: state.proxy, proxyDispatch };
