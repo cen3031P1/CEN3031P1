@@ -9,7 +9,9 @@ import colors from './theme/colors.jsx';
 import {LinearGradient} from 'expo-linear-gradient';
 import ButtonComp from './components/ButtonComp.jsx';
 import { useAuthContext} from './hook/useAuthContext.jsx';
-//import * as Location from 'expo-location'
+// import * as TaskManager from 'expo-task-manager';
+// import { LOCATION_TASK } from '../tasks/locationTask.js';
+// import * as Location from 'expo-location';
 import {Dimensions} from 'react-native';
 
 
@@ -28,11 +30,11 @@ export default function SigninScreen() {
     const [invalid_Cred, setInvalid_Cred] = useState('');
      const [isSigningUp, setIsSigningUp] = useState(false)
 
-    useEffect(() => {
-        if (user && !isSigningUp) {
-            router.replace('/(tabs)/home');
-        }
-    }, [user]);
+//     useEffect(() => {
+//         if (user && !isSigningUp) {
+//             router.replace('/(tabs)/home');
+//         }
+//     }, [user]);
 
 //     async function getLocation(){
 //         const {status} = await Location.requestForegroundPermissionsAsync()
@@ -75,7 +77,9 @@ export default function SigninScreen() {
         }
 
         const success = await signup(username, password);
-        if (success){router.replace('/map')}
+        console.log("sign up work")
+        if (success){ console.log("routed to map")
+            router.replace('/map')}
         else {setIsSigningUp(false)}
     }
     useEffect(() => {
@@ -84,7 +88,7 @@ export default function SigninScreen() {
             id recommend a conditional component using totalFailure on if it displays or not
             remains till user tries again maybe thatll reset totalFailure
         */
-        console.log("display failure message, ask user to try again. Somethings wrong with server")
+//         console.log("display failure message, ask user to try again. Somethings wrong with server")
     }, [totalFailure])
 
     useEffect(() => {

@@ -8,10 +8,9 @@ import AppText from '../components/AppText.jsx';
 import {useAuthContext} from '../hook/useAuthContext.jsx';
 import api from '../../api.js';
 import { useFocusEffect } from '@react-navigation/native';
-// import * as TaskManager from 'expo-task-manager';
-// import { LOCATION_TASK } from '../tasks/locationTask.js';
-// import * as Location from 'expo-location';
-
+import * as TaskManager from 'expo-task-manager';
+import { LOCATION_TASK } from '../tasks/locationTask.js';
+import * as Location from 'expo-location';
 // will display profile picture
 // log button
 // goal

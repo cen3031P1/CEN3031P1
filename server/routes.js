@@ -53,16 +53,17 @@ router.get('/', (req, res) => {
     res.send("hi");
 })
 
-router.get('/user-location', getCurrLocation);
-router.get('/gym-location', getGymLocation)
-router.post('/curr-location', saveCurrLocation)
-router.post('/locations', saveGymLocation);
 
 router.post('/login', login);
 
 router.post('/signup', signUp);
 
 router.use(requireAuth)
+
+router.get('/:userName/user-location', getCurrLocation);
+router.get('/:userName/gym-location', getGymLocation)
+router.post('/:userName/curr-location', saveCurrLocation)
+router.post('/:userName/locations', saveGymLocation);
 
 // Add friends
 router.post('/addfriend', addFriend);

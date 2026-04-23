@@ -21,7 +21,12 @@ export default {
       "package": "com.csilva1.client",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE"
-      }
+      },
+      "permissions": [
+      "ACCESS_FINE_LOCATION",
+      "ACCESS_COARSE_LOCATION",
+      "ACCESS_BACKGROUND_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./app/assets/images/gfit_logo.png"
