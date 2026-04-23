@@ -28,9 +28,9 @@ TaskManager.defineTask(LOCATION_TASK, async ({ data, error }) => {
         const token = await AsyncStorage.getItem('token');
 
         const gymLoc = await api.get(`/api/${username}/gym-location`,
-        headers: {
+        {headers: {
             'Authorization': `Bearer ${user.token}`
-        });
+        }});
 
         const distance = getDistance(latitude, longitude, gymLoc.data.gymLat, gymLoc.data.gymLon);
 
