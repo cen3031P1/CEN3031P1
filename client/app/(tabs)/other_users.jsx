@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Button, FlatList, ScrollView, Modal, StyleSheet, Pressable, Dimensions} from 'react-native';
+import { View, Text, TextInput, Button, FlatList, ScrollView, Modal, StyleSheet, Pressable, Dimensions, Image} from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
 import api from '../../api.js';
 import { useAuthContext } from '../hook/useAuthContext.jsx';
@@ -151,21 +151,25 @@ export default function OtherUsersScreen() {
                 data={other_users}
                 keyExtractor={(item) => item.userName} // item is username, bio and profile pic
                 renderItem={({ item }) => (
-                    <View style={{marginBottom: 5, marginTop: 5, flexDirection: 'row', justifyContent: 'center', borderWidth: 5,backgroundColor: 'lightgrey', borderColor: '#bad0eb', borderRadius: 15, width: '100%', height: 60, alignItems: 'center' }}>
+                    <View style={styles.friendCard}>
 
-                        <AppText style={{ flex: 1, textAlign: 'left', fontSize: 12}}> {item.userName} </AppText>
+                        <View style={{ flexDirection: 'row', width: width*.4, height: height*.1, alignItems: 'center', justifyContent: 'center', gap: 30}}> 
+                            {item.profilePic ? <Image source={{ uri: item.profilePic }} style={styles.profilePic} /> : <Image source={require('../assets/images/defaultpfp.png')} style={styles.profilePic} />}
+                            <ButtonComp style = {{ width: width*.4, height: 35}} onPress={() => addFriend(item.userName)}> 
+                                Add Friend
+                            </ButtonComp>
+                        </View>
 
-                        <ButtonComp style = {{ width: '30%', height: 35, marginRight: 10}} onPress={() => addFriend(item.userName)}>
-                            Add Friend
-                        </ButtonComp>
-
+                        <AppText style={{ flex: 1, textAlign: 'left', fontSize: 12, marginTop: 10}}> {item.userName} </AppText>
+                        {item.bio ? <AppText style={{ flex: 1, textAlign: 'left', fontSize: 10, color: 'gray', marginBottom: 10, marginHorizontal: 10}}> {item.bio} </AppText> : <AppText style={{ flex: 1, textAlign: 'left', fontSize: 10, color: 'gray', marginBottom: 10, marginHorizontal: 10}}> No bio available. </AppText>}
+                        <AppText style={{ flex: 1, textAlign: 'left', fontSize: 10, color: 'gray', marginBottom: 10, marginHorizontal: 10}}> Points: {item.points} </AppText>
+                        <AppText style={{ flex: 1, textAlign: 'left', fontSize: 10, color: 'gray', marginBottom: 10, marginHorizontal: 10}}> Best Streak: {item.bestStreak} </AppText>
                     </View>
                 )}
                 ListEmptyComponent={() => (finding.trim() !== '' && <Text style={{ textAlign: 'center', color: 'gray', fontFamily: fonts.general}}>Theres no one with that Username. Try Again.</Text>)}
             />
 
         </View>
-      
     </View>
   );
 }
@@ -177,7 +181,7 @@ const styles = StyleSheet.create({
   friendCard: {
         marginBottom: 5,
         marginTop: 5,
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'center',
         borderWidth: 5,
         backgroundColor: 'lightgrey',
@@ -186,5 +190,10 @@ const styles = StyleSheet.create({
         width: width*.8,
         height: height*.3,
         alignItems: 'center'
+    },
+    profilePic: {
+        width: 80,
+        height: 80,
+        borderRadius: 40
     }
 });

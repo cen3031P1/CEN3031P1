@@ -27,10 +27,10 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
                 <View style = {[styles.subdisplay]}>
                     <AppText style ={[styles.numdisplay, [base_numval > optimal_numval ? {color: 'green'} : {color: 'red'}], [optimal_numval === 0 ? {fontSize: 50} : {fontSize: 30}]]}>{optimal_numval}</AppText>
                     {optimal_numval !== 0 && (
-                        <AppText style = {styles.textdisplay}>{base_numval > optimal_numval ? 'You\'ve reached your goal!' : 'Keep going!'}</AppText>
+                        <AppText style = {[styles.textdisplay,{height: height*.04}]}>{base_numval > optimal_numval ? 'You\'ve reached your goal!' : 'Keep going!'}</AppText>
                     )}
                     {optimal_numval === 0 && (
-                        <AppText style = {styles.textdisplay}>No goal set</AppText>
+                        <AppText style = {[styles.textdisplay]}>No goal set</AppText>
                     )}
                 </View>
             }
@@ -44,8 +44,8 @@ export default function ProfileDisplay({imgsrc,min_bestStreak=0,base_numval,opti
 
             {type === 'log'&&
                 <View style = {[styles.subdisplay, {justifyContent: 'null'}]}>
-                    <AppText style ={[styles.textdisplay,{fontSize: 9, width: width*.85}]}>You will get points based off the duration you've been at the gym, as well as your streak.</AppText>
-                    <AppText style ={[styles.textdisplay,{fontSize: 9, marginBottom: 5, width: width*.85}]}>If you are encountering location errors, try setting your gym in the settings menu.</AppText>
+                    <AppText style ={[styles.textdisplay,{fontSize: 9, width: width*.85, height: height*.04}]}>You will get points based off the duration you've been at the gym, as well as your streak.</AppText>
+                    <AppText style ={[styles.textdisplay,{fontSize: 9, marginBottom: 5, width: width*.85,  height: height*.03}]}>If you are encountering location errors, try setting your gym in the settings menu.</AppText>
                     <View style = {{flexDirection: 'row',justifyContent: 'center', width: width*.85, marginTop: 10}}>
                         <View style = {{flexDirection: 'column', width: width*.3}}>
                             <AppText style ={[styles.textdisplay,{fontSize: 9}]}>At Gym: </AppText>
@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
         color: colors.regularText,
         includeFontPadding: false,
         textAlign: 'center',
+        height: height *.05
     },
     badgecontainer: {
         flexDirection: 'row',

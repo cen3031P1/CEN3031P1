@@ -573,6 +573,8 @@ export async function findFriends(req, res) {
                     _id: 1,
                     profilePic: 1,
                     bio: 1,
+                    points: 1,
+                    bestStreak: 1,
                     score: {$meta: "searchScore"}
                 }
             }
